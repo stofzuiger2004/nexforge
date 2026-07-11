@@ -28,4 +28,14 @@ export default defineConfig({
             formVariants: true,
         }),
     ],
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
+
+        hmr: {
+            host: '192.168.0.222',
+            port: 5173,
+        },
+    },
 });
