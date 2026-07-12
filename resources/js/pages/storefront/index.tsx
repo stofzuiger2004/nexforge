@@ -26,22 +26,10 @@ import {
     SheetTrigger,
 } from '@/components/ui/sheet';
 
-type FeaturedSystem = {
-    id: number;
-    name: string;
-    slug: string;
-    description: string | null;
-    processor: string;
-    graphics_card: string;
-    memory: string;
-    storage: string;
-    price_in_cents: number;
-    image_path: string | null;
-};
+import type {
+    FeaturedSystem,HomePageProps
+} from '@/types/storefront';
 
-type HomePageProps = {
-    featuredSystems: FeaturedSystem[];
-};
 
 const categories = [
     {
@@ -82,11 +70,6 @@ const benefits = [
     },
 ];
 
-const currencyFormatter = new Intl.NumberFormat('en-BE', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-});
 
 export default function StorefrontIndex({
     featuredSystems,
@@ -216,7 +199,7 @@ export default function StorefrontIndex({
                                                         Processor
                                                     </dt>
                                                     <dd className="text-right font-medium">
-                                                        {system.processor}
+                                                        {system.processor ?? 'To be announced'}
                                                     </dd>
                                                 </div>
 
@@ -225,7 +208,7 @@ export default function StorefrontIndex({
                                                         Graphics
                                                     </dt>
                                                     <dd className="text-right font-medium">
-                                                        {system.graphics_card}
+                                                        {system.graphics_card ?? 'To be announced'}
                                                     </dd>
                                                 </div>
                                             </dl>
@@ -237,7 +220,7 @@ export default function StorefrontIndex({
                                                     Starting at
                                                 </p>
                                                 <p className="text-2xl font-bold">
-                                                    {currencyFormatter.format(system.price_in_cents/100)}
+                                                    {formatPrice(system)}
                                                 </p>
                                             </div>
 
@@ -546,4 +529,18 @@ function StoreFooter() {
             </div>
         </footer>
     );
+}
+
+function formatPrice(system: FeaturedSystem): string {
+    if (
+        system.price_in_cents === null ||
+        system.currency === null
+    ) {
+        return 'Contact us';
+    }
+
+    return new Intl.NumberFormat('en-BE', {
+        style: 'currency',
+        currency: system.currency,
+    }).format(system.price_in_cents / 100);
 }

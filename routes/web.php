@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Storefront\HomeController;
+use Illuminate\Support\Facades\Route;
 
-Route::get('/',HomeController::class)->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 Route::inertia('/gaming-pcs', 'coming-soon', [
     'title' => 'Gaming PCs',

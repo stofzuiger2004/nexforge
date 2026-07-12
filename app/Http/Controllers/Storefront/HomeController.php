@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Storefront;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Resources\Storefront\FeaturedSystemResource;
+use App\Models\PriceList;
 use App\Models\System;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class HomeController extends Controller
 {
@@ -15,24 +18,39 @@ class HomeController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $featuredSystems = System::query()
-            ->where('is_active',true)
-            ->where('is_featured',true)
-            ->orderBy('price_in_cents')
-            ->limit(3)
-            ->get([
-                'id',
-                'name',
-                'description',
-                'slug',
-                'processor',
-                'graphics_card',
-                'memory',
-                'storage',
-                'price_in_cents',
-                'image_path'
-            ]);
+        $priceList = PriceList::query()
+            ->where('currency', 'EUR')
+            ->default()
+            ->available()
+            ->firstOrFail();
 
-        return Inertia::render('storefront/index',['featuredSystems'=>$featuredSystems]);
+        $systems = System::query()
+            ->published()
+            ->featured()
+            ->with([
+                'components' => static fn ($query) => $query
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
+
+                'components.variant.product',
+
+                'images' => static fn ($query) => $query
+                    ->orderByDesc('is_primary')
+                    ->orderBy('sort_order'),
+
+                'prices' => static fn ($query) => $query
+                    ->where('price_list_id', $priceList->id),
+
+                'prices.priceList',
+            ])
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->limit(3)
+            ->get();
+
+        return Inertia::render('storefront/index', [
+            'featuredSystems' => FeaturedSystemResource::collection($systems)
+                ->resolve(request()),
+        ]);
     }
 }
