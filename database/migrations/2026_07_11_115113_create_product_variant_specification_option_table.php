@@ -18,13 +18,13 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->foreign('product_variant_id','pv_spec_option_variant_fk')->references('id')->on('product_variants')->cascadeOnDelete();
+            $table->foreign('product_variant_id', 'pv_spec_option_variant_fk')->references('id')->on('product_variants')->cascadeOnDelete();
 
-            $table->foreign('specification_option_id','pv_spec_option_option_fk')->references('id')->on('specification_options')->cascadeOnDelete();
+            $table->foreign('specification_option_id', 'pv_spec_option_option_fk')->references('id')->on('specification_options')->cascadeOnDelete();
 
-            $table->primary(['product_variant_id','specification_option_id'],'pv_spec_option_pk',);
+            $table->primary(['product_variant_id', 'specification_option_id'], 'pv_spec_option_pk');
 
-            $table->index('specification_option_id','pv_spec_option_option_idx');
+            $table->index('specification_option_id', 'pv_spec_option_option_idx');
         });
     }
 

@@ -8,20 +8,23 @@ use App\Enums\ComponentSlot;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class SystemComponent extends Model
+class ConfigurationItem extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'system_id',
+        'configuration_id',
         'product_variant_id',
+        'source_system_component_id',
         'slot',
         'quantity',
-        'is_required',
-        'is_replaceable',
         'sort_order',
+        'sku_snapshot',
+        'name_snapshot',
+        'unit_price_in_cents',
+        'line_total_in_cents',
+        'metadata',
     ];
 
     protected function casts(): array
@@ -29,15 +32,16 @@ class SystemComponent extends Model
         return [
             'slot' => ComponentSlot::class,
             'quantity' => 'integer',
-            'is_required' => 'boolean',
-            'is_replaceable' => 'boolean',
             'sort_order' => 'integer',
+            'unit_price_in_cents' => 'integer',
+            'line_total_in_cents' => 'integer',
+            'metadata' => 'array',
         ];
     }
 
-    public function system(): BelongsTo
+    public function configuration(): BelongsTo
     {
-        return $this->belongsTo(System::class);
+        return $this->belongsTo(Configuration::class);
     }
 
     public function variant(): BelongsTo
@@ -48,8 +52,11 @@ class SystemComponent extends Model
         );
     }
 
-    public function configurationItems(): HasMany
+    public function sourceSystemComponent(): BelongsTo
     {
-        return $this->hasMany(ConfigurationItem::class, 'source_system_component_id');
+        return $this->belongsTo(
+            SystemComponent::class,
+            'source_system_component_id',
+        );
     }
 }

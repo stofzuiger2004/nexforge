@@ -70,4 +70,14 @@ class PriceList extends Model
     {
         return $this->hasMany(SystemPrice::class);
     }
+
+    public function sourceCompatibilityRules(): HasMany
+    {
+        return $this->hasMany(CompatibilityRule::class, 'source_specification_id');
+    }
+
+    public function targetCompatibilityRules(): HasMany
+    {
+        return $this->hasMany(CompatibilityRule::class, 'target_specification_id');
+    }
 }

@@ -93,4 +93,9 @@ class ProductVariant extends Model
     {
         return $this->belongsToMany(System::class, 'system_components')->withPivot(['slot', 'quantity', 'is_required', 'is_replaceable', 'sort_order'])->withTimestamps();
     }
+
+    public function configurationItems(): HasMany
+    {
+        return $this->hasMany(ConfigurationItem::class, 'product_variant_id');
+    }
 }

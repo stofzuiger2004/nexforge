@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PriceListSeeder::class,
             CatalogReferenceSeeder::class,
+            CompatibilityRuleSeeder::class,
             DemoStorefrontSeeder::class,
         ]);
     }

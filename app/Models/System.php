@@ -77,4 +77,9 @@ class System extends Model
     {
         return $this->hasMany(SystemPrice::class);
     }
+
+    public function configurations(): HasMany
+    {
+        return $this->hasMany(Configuration::class, 'source_system_id');
+    }
 }
