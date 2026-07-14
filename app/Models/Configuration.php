@@ -49,17 +49,14 @@ class Configuration extends Model
         return [
             'status' => ConfigurationStatus::class,
             'version' => 'integer',
-
             'subtotal_in_cents' => 'integer',
             'adjustment_total_in_cents' => 'integer',
             'tax_in_cents' => 'integer',
             'total_in_cents' => 'integer',
-
             'priced_at' => 'datetime',
             'validated_at' => 'datetime',
             'expires_at' => 'datetime',
             'last_activity_at' => 'datetime',
-
             'metadata' => 'array',
         ];
     }
@@ -73,14 +70,9 @@ class Configuration extends Model
         ]);
     }
 
-    public function scopeForUser(
-        Builder $query,
-        User $user,
-    ): Builder {
-        return $query->where(
-            'user_id',
-            $user->getKey(),
-        );
+    public function scopeForUser(Builder $query, User $user): Builder
+    {
+        return $query->where('user_id', $user->getKey());
     }
 
     public function user(): BelongsTo
@@ -90,10 +82,7 @@ class Configuration extends Model
 
     public function sourceSystem(): BelongsTo
     {
-        return $this->belongsTo(
-            System::class,
-            'source_system_id',
-        );
+        return $this->belongsTo(System::class, 'source_system_id');
     }
 
     public function priceList(): BelongsTo
@@ -103,36 +92,31 @@ class Configuration extends Model
 
     public function items(): HasMany
     {
-        return $this
-            ->hasMany(ConfigurationItem::class)
-            ->orderBy('sort_order')
-            ->orderBy('id');
+        return $this->hasMany(ConfigurationItem::class)->orderBy('sort_order')->orderBy('id');
     }
 
     public function adjustments(): HasMany
     {
-        return $this
-            ->hasMany(ConfigurationAdjustment::class)
-            ->orderBy('sort_order')
-            ->orderBy('id');
+        return $this->hasMany(ConfigurationAdjustment::class)->orderBy('sort_order')->orderBy('id');
     }
 
     public function validationRuns(): HasMany
     {
-        return $this
-            ->hasMany(ConfigurationValidationRun::class)
-            ->latest('id');
+        return $this->hasMany(ConfigurationValidationRun::class)->latest('id');
     }
 
     public function latestValidationRun(): HasOne
     {
-        return $this
-            ->hasOne(ConfigurationValidationRun::class)
-            ->latestOfMany();
+        return $this->hasOne(ConfigurationValidationRun::class)->latestOfMany();
     }
 
     public function inventoryReservations(): HasMany
     {
         return $this->hasMany(inventoryReservation::class);
+    }
+
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'source_configuration_id');
     }
 }

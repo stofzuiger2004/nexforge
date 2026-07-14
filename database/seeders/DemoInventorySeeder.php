@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\ProductVariant;
-use App\Services\Inventory\InventoryStockService;
 use App\Models\Warehouse;
+use App\Services\Inventory\InventoryStockService;
 use Illuminate\Database\Seeder;
 
 class DemoInventorySeeder extends Seeder

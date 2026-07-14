@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Storefront\HomeController;
+use App\Http\Controllers\Webhooks\MolliePaymentWebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -24,5 +25,7 @@ Route::inertia('/support', 'coming-soon', [
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 });
+
+Route::post('/webhooks/mollie/payments', MolliePaymentWebhookController::class)->name('webhooks.mollie.payments');
 
 require __DIR__.'/settings.php';

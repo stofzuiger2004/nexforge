@@ -56,7 +56,6 @@ class ProductVariant extends Model
     public function displayName(): string
     {
         $productName = $this->product->name;
-
         if ($this->name === null || $this->name === '') {
             return $productName;
         }
@@ -102,5 +101,15 @@ class ProductVariant extends Model
     public function inventoryItems(): HasMany
     {
         return $this->hasMany(inventoryItem::class, 'product_variant_id');
+    }
+
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function orderItemComponents(): HasMany
+    {
+        return $this->hasMany(OrderItemComponent::class);
     }
 }

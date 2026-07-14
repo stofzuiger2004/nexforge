@@ -13,6 +13,7 @@ use App\Models\Configuration;
 use App\Models\InventoryItem;
 use App\Models\InventoryReservation;
 use App\Models\InventoryReservationItem;
+use App\Models\Order;
 use App\Models\ProductVariant;
 use App\Models\User;
 use App\Models\Warehouse;
@@ -368,174 +369,179 @@ final class InventoryReservationService
      * is edited.
      */
     public function cancelActiveForConfiguration(
-        Configuration $configuration,
-        ?User $actor = null,
-        string $reason = 'Configuration changed.',
+    Configuration $configuration,
+    ?User $actor = null,
+    string $reason = 'Configuration changed.',
     ): int {
-        return DB::transaction(
-            function () use (
-                $configuration,
-                $actor,
-                $reason,
-            ): int {
-                $reservations =
-                    InventoryReservation::query()
-                        ->where(
-                            'configuration_id',
-                            $configuration->id,
-                        )
-                        ->active()
-                        ->orderBy('id')
-                        ->lockForUpdate()
-                        ->get();
+    return DB::transaction(
+        function () use (
+            $configuration,
+            $actor,
+            $reason,
+        ): int {
+            $reservations =
+                InventoryReservation::query()
+                    ->where(
+                        'configuration_id',
+                        $configuration->getKey(),
+                    )
+                    ->where(
+                        'status',
+                        InventoryReservationStatus
+                            ::Active
+                            ->value,
+                    )
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->get();
 
-                foreach (
-                    $reservations as $reservation
-                ) {
-                    $this->releaseLockedReservation(
-                        reservation: $reservation,
+            foreach ($reservations as $reservation) {
+                $this->releaseLockedReservation(
+                    reservation: $reservation,
 
-                        terminalStatus: InventoryReservationStatus::Cancelled,
+                    terminalStatus:
+                        InventoryReservationStatus
+                            ::Cancelled,
 
-                        actor: $actor,
-                        reason: $reason,
-                    );
-                }
+                    actor: $actor,
+                    reason: $reason,
+                );
+            }
 
-                return $reservations->count();
-            },
-            attempts: 3,
-        );
-    }
+            return $reservations->count();
+        },
+        attempts: 3,
+    );
+}
 
     /**
      * Consume means the units physically leave stock.
      */
-    public function consume(
-        InventoryReservation $reservation,
-        ?User $actor = null,
-        string $reason = 'Reserved stock consumed.',
-    ): InventoryReservation {
-        return DB::transaction(
-            function () use (
-                $reservation,
-                $actor,
-                $reason,
-            ): InventoryReservation {
-                $lockedReservation =
-                    InventoryReservation::query()
-                        ->whereKey($reservation->id)
-                        ->lockForUpdate()
-                        ->firstOrFail();
+    public function consume(InventoryReservation $reservation, ?User $actor = null, string $reason = 'Reserved stock consumed.'): InventoryReservation
+    {
+        return DB::transaction(function () use ($reservation, $actor, $reason): InventoryReservation {
+            $lockedReservation =
+                InventoryReservation::query()
+                    ->whereKey($reservation->id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
 
-                if (
-                    $lockedReservation->status
-                    === InventoryReservationStatus::Consumed
-                ) {
-                    return $this->loadReservation(
-                        $lockedReservation,
-                    );
-                }
-
-                if (
-                    $lockedReservation->status
-                    !== InventoryReservationStatus::Active
-                ) {
-                    throw new DomainException(
-                        'Only an active reservation can be consumed.',
-                    );
-                }
-
-                if (
-                    $lockedReservation->isExpired()
-                ) {
-                    return $this
-                        ->releaseLockedReservation(
-                            reservation: $lockedReservation,
-
-                            terminalStatus: InventoryReservationStatus::Expired,
-
-                            actor: $actor,
-
-                            reason: 'Reservation expired before it could be consumed.',
-                        );
-                }
-
-                [
-                    $reservationItems,
-                    $inventoryItems,
-                ] = $this
-                    ->lockReservationStock(
-                        $lockedReservation,
-                    );
-
-                foreach (
-                    $reservationItems as $reservationItem
-                ) {
-                    $remaining =
-                        $reservationItem
-                            ->outstandingQuantity();
-
-                    if ($remaining === 0) {
-                        continue;
-                    }
-
-                    $inventoryItem =
-                        $inventoryItems->get(
-                            $reservationItem
-                                ->inventory_item_id,
-                        );
-
-                    if ($inventoryItem === null) {
-                        throw new DomainException(
-                            'A reservation inventory item could not be locked.',
-                        );
-                    }
-
-                    $this->ledger
-                        ->applyToLockedItem(
-                            inventoryItem: $inventoryItem,
-
-                            type: InventoryMovementType::ReservationConsumed,
-
-                            onHandDelta: -$remaining,
-
-                            reservedDelta: -$remaining,
-
-                            reservation: $lockedReservation,
-
-                            reservationItem: $reservationItem,
-
-                            actor: $actor,
-
-                            idempotencyKey: sprintf(
-                                'reservation:%s:consume:%d',
-                                $lockedReservation
-                                    ->public_id,
-                                $reservationItem
-                                    ->id,
-                            ),
-
-                            reason: $reason,
-                        );
-
-                    $reservationItem->forceFill([
-                        'consumed_quantity' => $reservationItem
-                            ->consumed_quantity
-                            + $remaining,
-                    ])->save();
-                }
-
-                $lockedReservation->forceFill([
-                    'status' => InventoryReservationStatus::Consumed,
-
-                    'consumed_at' => now(),
-                ])->save();
-
+            if (
+                $lockedReservation->status
+                === InventoryReservationStatus::Consumed
+            ) {
                 return $this->loadReservation(
                     $lockedReservation,
                 );
-            },
+            }
+
+            if (
+                ! in_array(
+                    $lockedReservation->status,
+                    [
+                        InventoryReservationStatus::Active,
+                        InventoryReservationStatus::Committed,
+                    ],
+                    true,
+                )
+            ) {
+                throw new DomainException(
+                    'Only an active reservation can be consumed.',
+                );
+            }
+
+            if (
+                $lockedReservation->status
+                    === InventoryReservationStatus::Active
+                && $lockedReservation->isExpired()
+            ) {
+                return $this
+                    ->releaseLockedReservation(
+                        reservation: $lockedReservation,
+
+                        terminalStatus: InventoryReservationStatus::Expired,
+
+                        actor: $actor,
+
+                        reason: 'Reservation expired before it could be consumed.',
+                    );
+            }
+
+            [
+                $reservationItems,
+                $inventoryItems,
+            ] = $this
+                ->lockReservationStock(
+                    $lockedReservation,
+                );
+
+            foreach (
+                $reservationItems as $reservationItem
+            ) {
+                $remaining =
+                    $reservationItem
+                        ->outstandingQuantity();
+
+                if ($remaining === 0) {
+                    continue;
+                }
+
+                $inventoryItem =
+                    $inventoryItems->get(
+                        $reservationItem
+                            ->inventory_item_id,
+                    );
+
+                if ($inventoryItem === null) {
+                    throw new DomainException(
+                        'A reservation inventory item could not be locked.',
+                    );
+                }
+
+                $this->ledger
+                    ->applyToLockedItem(
+                        inventoryItem: $inventoryItem,
+
+                        type: InventoryMovementType::ReservationConsumed,
+
+                        onHandDelta: -$remaining,
+
+                        reservedDelta: -$remaining,
+
+                        reservation: $lockedReservation,
+
+                        reservationItem: $reservationItem,
+
+                        actor: $actor,
+
+                        idempotencyKey: sprintf(
+                            'reservation:%s:consume:%d',
+                            $lockedReservation
+                                ->public_id,
+                            $reservationItem
+                                ->id,
+                        ),
+
+                        reason: $reason,
+                    );
+
+                $reservationItem->forceFill([
+                    'consumed_quantity' => $reservationItem
+                        ->consumed_quantity
+                        + $remaining,
+                ])->save();
+            }
+
+            $lockedReservation->forceFill([
+                'status' => InventoryReservationStatus::Consumed,
+
+                'consumed_at' => now(),
+            ])->save();
+
+            return $this->loadReservation(
+                $lockedReservation,
+            );
+        },
             attempts: 3,
         );
     }
@@ -995,5 +1001,94 @@ final class InventoryReservationService
 
                 'items.inventoryItem.variant.product',
             ]);
+    }
+
+    public function attachToOrder(
+        InventoryReservation $reservation,
+        Order $order,
+    ): InventoryReservation {
+        return DB::transaction(
+            function () use (
+                $reservation,
+                $order,
+            ): InventoryReservation {
+                $lockedReservation =
+                    InventoryReservation::query()
+                        ->whereKey($reservation->id)
+                        ->lockForUpdate()
+                        ->firstOrFail();
+
+                if (
+                    $lockedReservation->status
+                    !== InventoryReservationStatus::Active
+                ) {
+                    throw new DomainException(
+                        'Only an active reservation can be attached to an order.',
+                    );
+                }
+
+                if ($lockedReservation->isExpired()) {
+                    throw new DomainException(
+                        'The inventory reservation has expired.',
+                    );
+                }
+
+                if (
+                    $lockedReservation->order_id !== null
+                    && $lockedReservation->order_id
+                        !== $order->id
+                ) {
+                    throw new DomainException(
+                        'The reservation already belongs to another order.',
+                    );
+                }
+
+                $lockedReservation->forceFill([
+                    'order_id' => $order->id,
+                ])->save();
+
+                return $lockedReservation->fresh([
+                    'order',
+                    'items',
+                ]);
+            },
+            attempts: 3,
+        );
+    }
+
+    public function commitForOrder(
+        Order $order,
+    ): int {
+        return DB::transaction(
+            function () use ($order): int {
+                $reservations =
+                    InventoryReservation::query()
+                        ->where('order_id', $order->id)
+                        ->where(
+                            'status',
+                            InventoryReservationStatus::Active,
+                        )
+                        ->orderBy('id')
+                        ->lockForUpdate()
+                        ->get();
+
+                foreach ($reservations as $reservation) {
+                    if ($reservation->isExpired()) {
+                        throw new DomainException(
+                            'An order reservation expired before payment was confirmed.',
+                        );
+                    }
+
+                    $reservation->forceFill([
+                        'status' => InventoryReservationStatus::Committed,
+
+                        'committed_at' => now(),
+                    ])->save();
+                }
+
+                return $reservations->count();
+            },
+            attempts: 3,
+        );
     }
 }

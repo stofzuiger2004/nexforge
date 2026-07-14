@@ -31,6 +31,8 @@ class InventoryReservation extends Model
         'cancelled_at',
         'consumed_at',
         'metadata',
+        'order_id',
+        'commited_at',
     ];
 
     protected $hidden = ['idempotency_key'];
@@ -47,6 +49,7 @@ class InventoryReservation extends Model
             'cancelled_at' => 'datetime',
             'consumed_at' => 'datetime',
             'metadata' => 'array',
+            'commited_at' => 'datetime',
         ];
     }
 
@@ -58,6 +61,14 @@ class InventoryReservation extends Model
     public function scopeDueForExpiration(Builder $query): Builder
     {
         return $query->active()->where('expires_at', '<=', now());
+    }
+
+    public function scopeHoldingStock(Builder $query): Builder
+    {
+        return $query->whereIn('status', [
+            InventoryReservationStatus::Active->value,
+            InventoryReservationStatus::Commited->value,
+        ]);
     }
 
     public function isExpired(): bool
@@ -88,5 +99,10 @@ class InventoryReservation extends Model
     public function movements(): HasMany
     {
         return $this->hasMany(InventoryMovement::class, 'inventory_reservation_id')->latest('id');
+    }
+
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
     }
 }

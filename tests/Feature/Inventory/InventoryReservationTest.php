@@ -38,8 +38,8 @@ beforeEach(function (): void {
     ]);
 });
 
-function createValidatedInventoryConfiguration():
-    Configuration {
+function createValidatedInventoryConfiguration(): Configuration
+{
     $system = System::query()
         ->where('slug', '1080p-starter')
         ->firstOrFail();
@@ -134,8 +134,7 @@ test(
             InventoryReservationService::class,
         )->reserveConfiguration(
             configuration: $configuration,
-            idempotencyKey:
-                'test-reservation-1',
+            idempotencyKey: 'test-reservation-1',
         );
 
         expect($reservation->status)
@@ -191,8 +190,7 @@ test(
             fn () => app(
                 InventoryReservationService::class,
             )->reserveConfiguration(
-                configuration:
-                    $configuration,
+                configuration: $configuration,
             ),
         )->toThrow(
             InsufficientInventoryException::class,
@@ -221,8 +219,7 @@ test(
 
         $reservation =
             $service->reserveConfiguration(
-                configuration:
-                    $configuration,
+                configuration: $configuration,
             );
 
         $service->release(
@@ -237,8 +234,7 @@ test(
         );
 
         foreach (
-            $reservation->items
-            as $reservationItem
+            $reservation->items as $reservationItem
         ) {
             expect(
                 $reservationItem
@@ -262,18 +258,16 @@ test(
 
         $reservation =
             $service->reserveConfiguration(
-                configuration:
-                    $configuration,
+                configuration: $configuration,
             );
 
         $before = $reservation
             ->items
             ->mapWithKeys(
                 static fn ($item): array => [
-                    $item->inventory_item_id =>
-                        $item
-                            ->inventoryItem
-                            ->quantity_on_hand,
+                    $item->inventory_item_id => $item
+                        ->inventoryItem
+                        ->quantity_on_hand,
                 ],
             );
 
@@ -289,8 +283,7 @@ test(
         );
 
         foreach (
-            $reservation->items
-            as $reservationItem
+            $reservation->items as $reservationItem
         ) {
             $inventoryItem =
                 $reservationItem
@@ -323,8 +316,7 @@ test(
         $reservation = app(
             InventoryReservationService::class,
         )->reserveConfiguration(
-            configuration:
-                $configuration,
+            configuration: $configuration,
         );
 
         /*
@@ -332,8 +324,7 @@ test(
          * specifically simulating passage of time.
          */
         $reservation->forceFill([
-            'expires_at' =>
-                now()->subSecond(),
+            'expires_at' => now()->subSecond(),
         ])->save();
 
         $this
@@ -364,8 +355,7 @@ test(
         $reservation = app(
             InventoryReservationService::class,
         )->reserveConfiguration(
-            configuration:
-                $configuration,
+            configuration: $configuration,
         );
 
         $replacementGpu =
@@ -379,14 +369,11 @@ test(
         app(
             ConfigurationEditor::class,
         )->setComponent(
-            configuration:
-                $configuration,
+            configuration: $configuration,
 
-            slot:
-                ComponentSlot::GraphicsCard,
+            slot: ComponentSlot::GraphicsCard,
 
-            variant:
-                $replacementGpu,
+            variant: $replacementGpu,
         );
 
         expect(

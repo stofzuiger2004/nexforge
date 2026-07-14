@@ -63,4 +63,19 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->hasMany(inventoryMovement::class, 'actor_user_id');
     }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function requestedPaymentRefunds(): HasMany
+    {
+        return $this->hasMany(PaymentRefund::class, 'requested_by_user_id');
+    }
+
+    public function orderStatusHistory(): HasMany
+    {
+        return $this->hasMany(OrderStatusHistory::class, 'actor_user_id');
+    }
 }

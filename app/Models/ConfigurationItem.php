@@ -47,22 +47,21 @@ class ConfigurationItem extends Model
 
     public function variant(): BelongsTo
     {
-        return $this->belongsTo(
-            ProductVariant::class,
-            'product_variant_id',
-        );
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
     public function sourceSystemComponent(): BelongsTo
     {
-        return $this->belongsTo(
-            SystemComponent::class,
-            'source_system_component_id',
-        );
+        return $this->belongsTo(SystemComponent::class, 'source_system_component_id');
     }
 
     public function inventoryReservationItems(): HasMany
     {
         return $this->hasMany(inventoryReservationItem::class);
+    }
+
+    public function orderItemComponents(): HasMany
+    {
+        return $this->hasMany(OrderItemComponent::class, 'source_configuration_item_id');
     }
 }
