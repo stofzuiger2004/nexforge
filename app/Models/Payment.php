@@ -46,12 +46,13 @@ class Payment extends Model
         'failure_code',
         'failure_message',
         'metadata',
-        'provider_snapshot'
+        'provider_snapshot',
     ];
 
     protected $hidden = ['idempotency_key'];
 
-    protected function casts(): array{
+    protected function casts(): array
+    {
         return [
             'provider' => PaymentProvider::class,
             'status' => PaymentStatus::class,
@@ -68,23 +69,27 @@ class Payment extends Model
             'expired_at' => 'datetime',
             'last_synced_at' => 'datetime',
             'metadata' => 'array',
-            'provider_snapshot' => 'array'
+            'provider_snapshot' => 'array',
         ];
     }
 
-    public function order(): BelongsTo{
+    public function order(): BelongsTo
+    {
         return $this->belongsTo(Order::class);
     }
 
-    public function webhookEvents(): HasMany{
+    public function webhookEvents(): HasMany
+    {
         return $this->hasMany(PaymentWebhookEvent::class);
     }
 
-    public function refunds(): HasMany{
+    public function refunds(): HasMany
+    {
         return $this->hasMany(PaymentRefund::class);
     }
 
-    public function chargebacks(): HasMany{
+    public function chargebacks(): HasMany
+    {
         return $this->hasMany(PaymentChargeback::class);
     }
 }

@@ -369,50 +369,47 @@ final class InventoryReservationService
      * is edited.
      */
     public function cancelActiveForConfiguration(
-    Configuration $configuration,
-    ?User $actor = null,
-    string $reason = 'Configuration changed.',
+        Configuration $configuration,
+        ?User $actor = null,
+        string $reason = 'Configuration changed.',
     ): int {
-    return DB::transaction(
-        function () use (
-            $configuration,
-            $actor,
-            $reason,
-        ): int {
-            $reservations =
-                InventoryReservation::query()
-                    ->where(
-                        'configuration_id',
-                        $configuration->getKey(),
-                    )
-                    ->where(
-                        'status',
-                        InventoryReservationStatus
-                            ::Active
-                            ->value,
-                    )
-                    ->orderBy('id')
-                    ->lockForUpdate()
-                    ->get();
+        return DB::transaction(
+            function () use (
+                $configuration,
+                $actor,
+                $reason,
+            ): int {
+                $reservations =
+                    InventoryReservation::query()
+                        ->where(
+                            'configuration_id',
+                            $configuration->getKey(),
+                        )
+                        ->where(
+                            'status',
+                            InventoryReservationStatus::Active
+                                ->value,
+                        )
+                        ->orderBy('id')
+                        ->lockForUpdate()
+                        ->get();
 
-            foreach ($reservations as $reservation) {
-                $this->releaseLockedReservation(
-                    reservation: $reservation,
+                foreach ($reservations as $reservation) {
+                    $this->releaseLockedReservation(
+                        reservation: $reservation,
 
-                    terminalStatus:
-                        InventoryReservationStatus
-                            ::Cancelled,
+                        terminalStatus: InventoryReservationStatus::Cancelled,
 
-                    actor: $actor,
-                    reason: $reason,
-                );
-            }
+                        actor: $actor,
+                        reason: $reason,
+                    );
+                }
 
-            return $reservations->count();
-        },
-        attempts: 3,
-    );
-}
+                return $reservations->count();
+            },
+            attempts: 3,
+        );
+    }
 
     /**
      * Consume means the units physically leave stock.

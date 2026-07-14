@@ -100,7 +100,7 @@ class ProductVariant extends Model
 
     public function inventoryItems(): HasMany
     {
-        return $this->hasMany(inventoryItem::class, 'product_variant_id');
+        return $this->hasMany(InventoryItem::class, 'product_variant_id');
     }
 
     public function orderItems(): HasMany

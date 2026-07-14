@@ -9,7 +9,6 @@ use App\Enums\InventoryReservationStatus;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
-use App\Models\Configuration;
 use App\Models\PriceList;
 use App\Models\System;
 use App\Services\Configurations\ConfigurationCreator;

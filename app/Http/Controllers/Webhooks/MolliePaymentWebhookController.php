@@ -42,24 +42,21 @@ class MolliePaymentWebhookController extends Controller
         $rawBody = $request->getContent();
 
         PaymentWebhookEvent::query()->create([
-            'provider' =>
-                PaymentProvider::Mollie,
+            'provider' => PaymentProvider::Mollie,
 
             'provider_event_id' => null,
             'event_type' => null,
             'resource_type' => 'payment',
 
-            'provider_resource_id' =>
-                $providerPaymentId,
+            'provider_resource_id' => $providerPaymentId,
 
             'payment_id' => $payment?->id,
 
             'payload' => [
                 'form' => $request->all(),
-                'content_type' =>
-                    $request->header(
-                        'Content-Type',
-                    ),
+                'content_type' => $request->header(
+                    'Content-Type',
+                ),
             ],
 
             'payload_hash' => hash(
@@ -72,8 +69,7 @@ class MolliePaymentWebhookController extends Controller
                     ),
             ),
 
-            'processing_status' =>
-                PaymentWebhookStatus::Received,
+            'processing_status' => PaymentWebhookStatus::Received,
 
             'attempt_count' => 0,
             'received_at' => now(),
