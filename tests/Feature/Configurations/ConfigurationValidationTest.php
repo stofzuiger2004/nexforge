@@ -31,8 +31,7 @@ beforeEach(function (): void {
     ]);
 });
 
-function createPhaseTwoDemoConfiguration():
-    CreatedConfiguration
+function createPhaseTwoDemoConfiguration(): CreatedConfiguration
 {
     $system = System::query()
         ->where('slug', '1080p-starter')
@@ -84,9 +83,8 @@ test(
             [
                 'id' => $configuration->id,
 
-                'source_system_id' =>
-                    $configuration
-                        ->source_system_id,
+                'source_system_id' => $configuration
+                    ->source_system_id,
 
                 'total_in_cents' => 99900,
             ],
@@ -173,8 +171,7 @@ test(
             $configuration
                 ->items
                 ->first(
-                    static fn ($item): bool =>
-                        $item->slot
+                    static fn ($item): bool => $item->slot
                         === ComponentSlot::Motherboard,
                 );
 

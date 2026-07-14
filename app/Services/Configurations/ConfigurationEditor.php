@@ -11,6 +11,7 @@ use App\Enums\VariantStatus;
 use App\Models\Configuration;
 use App\Models\ProductVariant;
 use App\Models\VariantPrice;
+use App\Services\Inventory\InventoryReservationService;
 use DomainException;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -18,7 +19,7 @@ use InvalidArgumentException;
 final class ConfigurationEditor
 {
     public function __construct(
-        private readonly ConfigurationPricingService $pricing,
+        private readonly ConfigurationPricingService $pricing, private readonly InventoryReservationService $inventoryReservations
     ) {}
 
     public function setComponent(
@@ -45,6 +46,7 @@ final class ConfigurationEditor
                         $configuration,
                     );
 
+                $this->inventoryReservations->cancelActiveForConfiguration(configuration: $lockedConfiguration, reason: 'Configuration component changed.');
                 $variant->loadMissing(
                     'product.category',
                 );
@@ -176,6 +178,19 @@ final class ConfigurationEditor
                         $variant->id,
                     );
                 }
+                if (! $query->exists()) {
+                    return $lockedConfiguration->fresh([
+                        'items.variant.product',
+                        'adjustments',
+                    ]);
+                }
+
+                $this->inventoryReservations
+                    ->cancelActiveForConfiguration(
+                        configuration: $lockedConfiguration,
+
+                        reason: 'Configuration component removed.',
+                    );
 
                 $deleted = $query->delete();
 

@@ -53,4 +53,14 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->HasMany(Configuration::class);
     }
+
+    public function createdIventoryReservations(): HasMany
+    {
+        return $this->hasMany(IventoryReservation::class, 'created_by_user_id');
+    }
+
+    public function inventoryMovements(): HasMany
+    {
+        return $this->hasMany(inventoryMovement::class, 'actor_user_id');
+    }
 }

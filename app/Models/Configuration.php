@@ -130,4 +130,9 @@ class Configuration extends Model
             ->hasOne(ConfigurationValidationRun::class)
             ->latestOfMany();
     }
+
+    public function inventoryReservations(): HasMany
+    {
+        return $this->hasMany(inventoryReservation::class);
+    }
 }

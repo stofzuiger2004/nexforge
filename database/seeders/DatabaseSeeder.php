@@ -21,6 +21,13 @@ class DatabaseSeeder extends Seeder
             CatalogReferenceSeeder::class,
             CompatibilityRuleSeeder::class,
             DemoStorefrontSeeder::class,
+            WarehouseSeeder::class,
         ]);
+
+        if (app()->environment(['local', 'testing'])) {
+            $this->call([
+                DemoInventorySeeder::class,
+            ]);
+        }
     }
 }

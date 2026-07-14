@@ -8,6 +8,7 @@ use App\Enums\ComponentSlot;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ConfigurationItem extends Model
 {
@@ -58,5 +59,10 @@ class ConfigurationItem extends Model
             SystemComponent::class,
             'source_system_component_id',
         );
+    }
+
+    public function inventoryReservationItems(): HasMany
+    {
+        return $this->hasMany(inventoryReservationItem::class);
     }
 }
