@@ -62,3 +62,63 @@ export type StorefrontSharedProps = {
 
     [key: string]: unknown;
 };
+export type SystemDetailImage = {
+    id: number;
+    url: string;
+    alt: string;
+    is_primary: boolean;
+};
+
+export type SystemSpecification = {
+    key: string;
+    label: string;
+    value: string;
+};
+
+export type SystemDetailComponent = {
+    id: number;
+
+    slot: string;
+    slot_label: string;
+
+    quantity: number;
+
+    is_required: boolean;
+    is_replaceable: boolean;
+
+    name: string;
+    brand: string | null;
+    sku: string;
+
+    product_slug: string;
+    category: string;
+
+    specifications: SystemSpecification[];
+};
+
+export type SystemDetail = {
+    id: number;
+    sku: string;
+    name: string;
+    slug: string;
+
+    short_description: string | null;
+    description: string | null;
+
+    is_configurable: boolean;
+
+    images: SystemDetailImage[];
+    price: SystemPrice | null;
+
+    availability: {
+        status: SystemAvailabilityStatus;
+        label: string;
+        available_builds: number | null;
+    };
+
+    components: SystemDetailComponent[];
+};
+
+export type SystemDetailPageProps = {
+    system: SystemDetail;
+};

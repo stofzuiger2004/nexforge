@@ -2,9 +2,12 @@
 
 use App\Http\Controllers\Storefront\HomeController;
 use App\Http\Controllers\Webhooks\MolliePaymentWebhookController;
+use App\Http\Controllers\Storefront\SystemShowController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+
+Route::get('/gaming-pcs/{slug}',SystemShowController::class)->where('slug','[a-z0-9-]+')->name('gaming-pcs.show');
 
 Route::inertia('/gaming-pcs', 'coming-soon', [
     'title' => 'Gaming PCs',

@@ -31,8 +31,8 @@ type SystemCardProps = {
 export function SystemCard({
     system,
 }: SystemCardProps) {
-    const configureUrl =
-        `/configure?system=${encodeURIComponent(system.slug)}`;
+    const detailsUrl =
+        `/gaming-pcs/${encodeURIComponent(system.slug)}`;
 
     const price = system.price
         ? formatMoney(
@@ -74,7 +74,7 @@ export function SystemCard({
                 <div>
                     <CardTitle className="text-xl">
                         <Link
-                            href={configureUrl}
+                            href={detailsUrl}
                             className="transition-colors hover:text-muted-foreground"
                         >
                             {system.name}
@@ -142,7 +142,7 @@ export function SystemCard({
                 </div>
 
                 <Button asChild>
-                    <Link href={configureUrl}>
+                    <Link href={detailsUrl}>
                         Configure
                         <ArrowRight className="size-4" />
                     </Link>

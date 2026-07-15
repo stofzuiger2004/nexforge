@@ -63,4 +63,20 @@ enum ComponentSlot: string
             self::OperatingSystem => 'operating-systems',
         };
     }
+
+    public function label(): string{
+        return match ($this){
+            self::Cpu => 'Processor',
+            self::Motherboard => 'Motherboard',
+            self::GraphicsCard => 'Graphics Card',
+            self::Memory => 'Memory',
+            self::PrimaryStorage => 'Primary Storage',
+            self::SecondaryStorage => 'Secondary Storage',
+            self::PowerSupply => 'Power supply',
+            self::Case => 'Case',
+            self::CpuCooler => 'CPU cooler',
+            self::CaseFan => 'Case fan',
+            self::OperatingSystem => 'Operating system'
+        };
+    }
 }
