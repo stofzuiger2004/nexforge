@@ -12,5 +12,6 @@ final readonly class CheckoutData
         public CheckoutAddressData $billingAddress,
         public CheckoutAddressData $shippingAddress,
         public int $shippingInCents = 0,
+        public bool $termsAccepted = false
     ) {}
 }

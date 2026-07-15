@@ -9,6 +9,7 @@ enum ConfigurationStatus: string
     case Draft = 'draft';
     case Valid = 'valid';
     case Invalid = 'invalid';
+    case ReadyForCheckout = 'ready_for_checkout';
     case Converted = 'converted';
     case Expired = 'expired';
 
@@ -18,7 +19,7 @@ enum ConfigurationStatus: string
             self::Draft,
             self::Valid,
             self::Invalid => true,
-
+            self::ReadyForCheckout,
             self::Converted,
             self::Expired => false,
         };

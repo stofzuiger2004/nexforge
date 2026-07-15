@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources\Storefront;
 
 use App\Models\ProductVariant;
+use App\Models\System;
 use App\Models\SystemComponent;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -12,7 +13,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * @mixin \App\Models\System
+ * @mixin System
  */
 class SystemDetailResource extends JsonResource
 {
@@ -36,14 +37,11 @@ class SystemDetailResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
 
-            'short_description' =>
-                $this->short_description,
+            'short_description' => $this->short_description,
 
-            'description' =>
-                $this->description,
+            'description' => $this->description,
 
-            'is_configurable' =>
-                $this->is_configurable,
+            'is_configurable' => $this->is_configurable,
 
             'images' => $this->images
                 ->map(
@@ -54,12 +52,10 @@ class SystemDetailResource extends JsonResource
                             $image->disk,
                         )->url($image->path),
 
-                        'alt' =>
-                            $image->alt_text
+                        'alt' => $image->alt_text
                             ?: $this->name,
 
-                        'is_primary' =>
-                            $image->is_primary,
+                        'is_primary' => $image->is_primary,
                     ],
                 )
                 ->values()
@@ -68,23 +64,19 @@ class SystemDetailResource extends JsonResource
             'price' => $price === null
                 ? null
                 : [
-                    'amount_in_cents' =>
-                        $price->amount_in_cents,
+                    'amount_in_cents' => $price->amount_in_cents,
 
-                    'compare_at_amount_in_cents' =>
-                        $price
-                            ->compare_at_amount_in_cents,
+                    'compare_at_amount_in_cents' => $price
+                        ->compare_at_amount_in_cents,
 
-                    'currency' =>
-                        $price
-                            ->priceList
-                            ->currency,
+                    'currency' => $price
+                        ->priceList
+                        ->currency,
                 ],
 
-            'availability' =>
-                $this->availabilityData(
-                    $availableBuilds,
-                ),
+            'availability' => $this->availabilityData(
+                $availableBuilds,
+            ),
 
             'components' => $this->components
                 ->map(
@@ -148,40 +140,29 @@ class SystemDetailResource extends JsonResource
         return [
             'id' => $component->id,
 
-            'slot' =>
-                $component->slot->value,
+            'slot' => $component->slot->value,
 
-            'slot_label' =>
-                $component->slot->label(),
+            'slot_label' => $component->slot->label(),
 
-            'quantity' =>
-                $component->quantity,
+            'quantity' => $component->quantity,
 
-            'is_required' =>
-                $component->is_required,
+            'is_required' => $component->is_required,
 
-            'is_replaceable' =>
-                $component->is_replaceable,
+            'is_replaceable' => $component->is_replaceable,
 
-            'name' =>
-                $variant->displayName(),
+            'name' => $variant->displayName(),
 
-            'brand' =>
-                $product->brand?->name,
+            'brand' => $product->brand?->name,
 
-            'sku' =>
-                $variant->sku,
+            'sku' => $variant->sku,
 
-            'product_slug' =>
-                $product->slug,
+            'product_slug' => $product->slug,
 
-            'category' =>
-                $product->category->name,
+            'category' => $product->category->name,
 
-            'specifications' =>
-                $this->specificationData(
-                    $variant,
-                ),
+            'specifications' => $this->specificationData(
+                $variant,
+            ),
         ];
     }
 
@@ -212,21 +193,17 @@ class SystemDetailResource extends JsonResource
                     }
 
                     return [
-                        'key' =>
-                            $specification->key,
+                        'key' => $specification->key,
 
-                        'label' =>
-                            $specification->name,
+                        'label' => $specification->name,
 
-                        'value' =>
-                            $this->formatValue(
-                                $rawValue,
-                                $specification->unit,
-                            ),
+                        'value' => $this->formatValue(
+                            $rawValue,
+                            $specification->unit,
+                        ),
 
-                        'sort_order' =>
-                            $specification
-                                ->sort_order,
+                        'sort_order' => $specification
+                            ->sort_order,
                     ];
                 },
             )
@@ -247,19 +224,16 @@ class SystemDetailResource extends JsonResource
                             ->specification;
 
                     return [
-                        'key' =>
-                            $specification->key,
+                        'key' => $specification->key,
 
-                        'label' =>
-                            $specification->name,
+                        'label' => $specification->name,
 
                         'value' => $options
                             ->pluck('label')
                             ->implode(', '),
 
-                        'sort_order' =>
-                            $specification
-                                ->sort_order,
+                        'sort_order' => $specification
+                            ->sort_order,
                     ];
                 },
             );
@@ -288,8 +262,7 @@ class SystemDetailResource extends JsonResource
                 'value_integer',
                 'value_decimal',
                 'value_boolean',
-            ]
-            as $column
+            ] as $column
         ) {
             $candidate =
                 $value->getAttribute($column);

@@ -1,24 +1,39 @@
 <?php
 
-use App\Http\Controllers\Storefront\HomeController;
-use App\Http\Controllers\Webhooks\MolliePaymentWebhookController;
+use App\Http\Controllers\Storefront\CheckoutOrderController;
+use App\Http\Controllers\Storefront\ConfigurationReviewDestroyController;
+use App\Http\Controllers\Storefront\ConfigurationReviewShowController;
+use App\Http\Controllers\Storefront\ConfigurationReviewStartController;
 use App\Http\Controllers\Storefront\ConfiguratorComponentController;
 use App\Http\Controllers\Storefront\ConfiguratorShowController;
 use App\Http\Controllers\Storefront\ConfiguratorStartController;
+use App\Http\Controllers\Storefront\HomeController;
+use App\Http\Controllers\Storefront\OrderPaymentShowController;
 use App\Http\Controllers\Storefront\SystemShowController;
+use App\Http\Controllers\Webhooks\MolliePaymentWebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 
-Route::get('/gaming-pcs/{slug}',SystemShowController::class)->where('slug','[a-z0-9-]+')->name('gaming-pcs.show');
+Route::get('/gaming-pcs/{slug}', SystemShowController::class)->where('slug', '[a-z0-9-]+')->name('gaming-pcs.show');
 
-Route::redirect('/configure','/gaming-pcs')->name('configurator.index');
+Route::redirect('/configure', '/gaming-pcs')->name('configurator.index');
 
-Route::post('/configure/start/{system}',ConfiguratorStartController::class)->where('system','[a-z0-9-]+')->name('configurator.start');
+Route::post('/configure/start/{system}', ConfiguratorStartController::class)->where('system', '[a-z0-9-]+')->name('configurator.start');
 
-Route::get('/configure/{configuration}',ConfiguratorShowController::class)->whereUlid('configuration')->name('configurator.show');
+Route::get('/configure/{configuration}', ConfiguratorShowController::class)->whereUlid('configuration')->name('configurator.show');
 
-Route::patch('/configure/{configuration}/components/{slot}',ConfiguratorComponentController::class)->whereUlid('configuration')->name('configurator.components.update');
+Route::patch('/configure/{configuration}/components/{slot}', ConfiguratorComponentController::class)->whereUlid('configuration')->name('configurator.components.update');
+
+Route::post('/configure/{configuration}/review', ConfigurationReviewStartController::class)->whereUlid('configuration')->name('configurator.review.start');
+
+Route::get('/configure/{configuration}/review', ConfigurationReviewShowController::class)->whereUlid('configuration')->name('configurator.review.show');
+
+Route::delete('/configure/{configuration}/review', ConfigurationReviewDestroyController::class)->whereUlid('configuration')->name('configurator.review.destroy');
+
+Route::post('/configure/{configuration}/order', CheckoutOrderController::class)->whereUlid('configuration')->name('checkout.orders.store');
+
+Route::get('/orders/{order}/payment', OrderPaymentShowController::class)->whereUlid('order')->name('checkout.payment.show');
 
 Route::inertia('/gaming-pcs', 'coming-soon', [
     'title' => 'Gaming PCs',

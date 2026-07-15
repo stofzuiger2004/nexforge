@@ -2,10 +2,13 @@ import {
     Check,
     CircleAlert,
     Clock3,
+    LoaderCircle,
     PackageCheck,
     TriangleAlert,
 } from 'lucide-react';
 import { useState } from 'react';
+
+import { router } from '@inertiajs/react';
 
 import { SystemVisual } from '@/components/storefront/system-visual';
 import { Button } from '@/components/ui/button';
@@ -369,6 +372,40 @@ function ReviewDialog({
     open,
     onOpenChange,
 }: ReviewDialogProps) {
+    const [processing, setProcessing] =
+        useState(false);
+
+    const [error, setError] =
+        useState<string | null>(null);
+
+    function continueToReview() {
+        setError(null);
+
+        router.post(
+            `/configure/${configuration.public_id}/review`,
+            {},
+            {
+                onStart: () =>
+                    setProcessing(true),
+
+                onFinish: () =>
+                    setProcessing(false),
+
+                onError: (errors) => {
+                    const configurationError =
+                        errors.configuration;
+
+                    setError(
+                        typeof configurationError
+                            === 'string'
+                            ? configurationError
+                            : 'The configuration could not be prepared for review.',
+                    );
+                },
+            },
+        );
+    }
+
     return (
         <Dialog
             open={open}
@@ -382,7 +419,7 @@ function ReviewDialog({
                         ! configuration.can_review
                     }
                 >
-                    Review configuration
+                    Review and reserve stock
                 </Button>
             </DialogTrigger>
 
@@ -393,9 +430,9 @@ function ReviewDialog({
                     </DialogTitle>
 
                     <DialogDescription>
-                        Check the selected components
-                        and current total before moving
-                        to the future checkout step.
+                        The selected components will be
+                        validated again and temporarily
+                        reserved before checkout.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -431,15 +468,37 @@ function ReviewDialog({
                     </span>
                 </div>
 
+                {error && (
+                    <p className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+                        {error}
+                    </p>
+                )}
+
                 <DialogFooter>
                     <Button
                         type="button"
                         variant="outline"
+                        disabled={processing}
                         onClick={() =>
                             onOpenChange(false)
                         }
                     >
                         Continue configuring
+                    </Button>
+
+                    <Button
+                        type="button"
+                        disabled={processing}
+                        onClick={continueToReview}
+                    >
+                        {processing ? (
+                            <>
+                                <LoaderCircle className="size-4 animate-spin" />
+                                Reserving stock
+                            </>
+                        ) : (
+                            'Reserve stock and continue'
+                        )}
                     </Button>
                 </DialogFooter>
             </DialogContent>

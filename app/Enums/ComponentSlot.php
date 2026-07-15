@@ -64,8 +64,9 @@ enum ComponentSlot: string
         };
     }
 
-    public function label(): string{
-        return match ($this){
+    public function label(): string
+    {
+        return match ($this) {
             self::Cpu => 'Processor',
             self::Motherboard => 'Motherboard',
             self::GraphicsCard => 'Graphics Card',
@@ -79,40 +80,31 @@ enum ComponentSlot: string
             self::OperatingSystem => 'Operating system'
         };
     }
-    public function description(): string{
+
+    public function description(): string
+    {
         return match ($this) {
-            self::Cpu =>
-                'Choose the processor that best matches your gaming and productivity needs.',
+            self::Cpu => 'Choose the processor that best matches your gaming and productivity needs.',
 
-            self::Motherboard =>
-                'The motherboard determines platform compatibility, connectivity, and expansion options.',
+            self::Motherboard => 'The motherboard determines platform compatibility, connectivity, and expansion options.',
 
-            self::GraphicsCard =>
-                'The graphics card has the largest impact on gaming resolution, detail settings, and frame rate.',
+            self::GraphicsCard => 'The graphics card has the largest impact on gaming resolution, detail settings, and frame rate.',
 
-            self::Memory =>
-                'More memory improves multitasking and performance in demanding games and applications.',
+            self::Memory => 'More memory improves multitasking and performance in demanding games and applications.',
 
-            self::PrimaryStorage =>
-                'Choose the primary drive for Windows, applications, and your most frequently played games.',
+            self::PrimaryStorage => 'Choose the primary drive for Windows, applications, and your most frequently played games.',
 
-            self::SecondaryStorage =>
-                'Add extra storage for a larger game library, recordings, and project files.',
+            self::SecondaryStorage => 'Add extra storage for a larger game library, recordings, and project files.',
 
-            self::PowerSupply =>
-                'The power supply must provide enough capacity for the selected processor and graphics card.',
+            self::PowerSupply => 'The power supply must provide enough capacity for the selected processor and graphics card.',
 
-            self::Case =>
-                'The case determines the system appearance, airflow, and available component clearance.',
+            self::Case => 'The case determines the system appearance, airflow, and available component clearance.',
 
-            self::CpuCooler =>
-                'A suitable cooler keeps processor temperatures and noise under control.',
+            self::CpuCooler => 'A suitable cooler keeps processor temperatures and noise under control.',
 
-            self::CaseFan =>
-                'Additional case fans can improve airflow and reduce component temperatures.',
+            self::CaseFan => 'Additional case fans can improve airflow and reduce component temperatures.',
 
-            self::OperatingSystem =>
-                'Choose whether the system should be supplied with an operating system.',
+            self::OperatingSystem => 'Choose whether the system should be supplied with an operating system.',
         };
     }
 }

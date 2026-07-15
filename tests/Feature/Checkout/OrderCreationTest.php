@@ -12,8 +12,8 @@ use App\Enums\PaymentStatus;
 use App\Models\PriceList;
 use App\Models\System;
 use App\Services\Configurations\ConfigurationCreator;
+use App\Services\Configurations\ConfigurationReviewService;
 use App\Services\Configurations\ConfigurationValidator;
-use App\Services\Inventory\InventoryReservationService;
 use App\Services\Orders\OrderCreator;
 use App\Services\Payments\PaymentAttemptCreator;
 use Database\Seeders\CatalogReferenceSeeder;
@@ -61,9 +61,9 @@ function createCheckoutConfiguration(): array
     $configuration = $configuration->fresh();
 
     $reservation = app(
-        InventoryReservationService::class,
-    )->reserveConfiguration(
-        configuration: $configuration,
+        ConfigurationReviewService::class,
+    )->prepare(
+        $configuration,
     );
 
     return [
@@ -95,6 +95,7 @@ function testCheckoutData(): CheckoutData
         billingAddress: $address,
         shippingAddress: $address,
         shippingInCents: 0,
+        termsAccepted: true
     );
 }
 

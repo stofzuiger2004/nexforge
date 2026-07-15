@@ -33,8 +33,7 @@ test(
             route(
                 'gaming-pcs.show',
                 [
-                    'slug' =>
-                        '1080p-starter',
+                    'slug' => '1080p-starter',
                 ],
             ),
         );
@@ -106,16 +105,14 @@ test(
             ->firstOrFail();
 
         $system->forceFill([
-            'status' =>
-                SystemStatus::Draft,
+            'status' => SystemStatus::Draft,
         ])->save();
 
         $this->get(
             route(
                 'gaming-pcs.show',
                 [
-                    'slug' =>
-                        $system->slug,
+                    'slug' => $system->slug,
                 ],
             ),
         )->assertNotFound();
@@ -129,8 +126,7 @@ test(
             route(
                 'gaming-pcs.show',
                 [
-                    'slug' =>
-                        'unknown-gaming-pc',
+                    'slug' => 'unknown-gaming-pc',
                 ],
             ),
         )->assertNotFound();

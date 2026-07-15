@@ -105,6 +105,7 @@ export type ConfiguratorConfiguration = {
         | 'draft'
         | 'valid'
         | 'invalid'
+        | 'ready_for_checkout'
         | 'converted'
         | 'expired';
 

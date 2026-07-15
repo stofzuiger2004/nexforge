@@ -20,8 +20,7 @@ final class ConfigurationOptionCompatibilityService
     ) {}
 
     /**
-     * @param Collection<int, CompatibilityRule> $rules
-     *
+     * @param  Collection<int, CompatibilityRule>  $rules
      * @return array{
      *     status: string,
      *     has_errors: bool,
@@ -47,8 +46,7 @@ final class ConfigurationOptionCompatibilityService
         $affectedRules = $rules->filter(
             static fn (
                 CompatibilityRule $rule,
-            ): bool =>
-                $rule->source_slot === $slot
+            ): bool => $rule->source_slot === $slot
                 || $rule->target_slot === $slot,
         );
 
@@ -71,21 +69,18 @@ final class ConfigurationOptionCompatibilityService
                 'rule_key' => $rule->key,
                 'severity' => $rule->severity->value,
 
-                'message' =>
-                    $evaluation->message
+                'message' => $evaluation->message
                     ?? $rule->failure_message,
             ];
         }
 
         $hasErrors = collect($messages)->contains(
-            static fn (array $message): bool =>
-                $message['severity']
+            static fn (array $message): bool => $message['severity']
                 === CompatibilitySeverity::Error->value,
         );
 
         $hasWarnings = collect($messages)->contains(
-            static fn (array $message): bool =>
-                $message['severity']
+            static fn (array $message): bool => $message['severity']
                 !== CompatibilitySeverity::Error->value,
         );
 

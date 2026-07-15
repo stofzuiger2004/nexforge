@@ -50,6 +50,10 @@ final class OrderCreator
                             $configuration->id,
                         );
 
+                if (! $checkout->termsAccepted) {
+                    throw new DomainException('The checkout terms must be accepted.');
+                }
+
                 $lockedReservation =
                     InventoryReservation::query()
                         ->lockForUpdate()
@@ -163,6 +167,8 @@ final class OrderCreator
 
                         'reservation_public_id' => $lockedReservation
                             ->public_id,
+                        'terms_version' => config('checkout.terms_version'),
+                        'terms_accepted_at' => now()->toIso8601String(),
                     ],
                 ]);
 
@@ -223,10 +229,10 @@ final class OrderCreator
     ): void {
         if (
             $configuration->status
-            !== ConfigurationStatus::Valid
+            !== ConfigurationStatus::ReadyForCheckout
         ) {
             throw new DomainException(
-                'Only a valid configuration can become an order.',
+                'Only a reviewed configuration can become an order.',
             );
         }
 

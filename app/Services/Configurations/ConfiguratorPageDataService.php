@@ -25,14 +25,11 @@ use Illuminate\Support\Facades\Storage;
 final class ConfiguratorPageDataService
 {
     public function __construct(
-        private readonly ConfigurationAvailabilityService
-            $availability,
+        private readonly ConfigurationAvailabilityService $availability,
 
-        private readonly ConfigurationOptionCompatibilityService
-            $compatibility,
+        private readonly ConfigurationOptionCompatibilityService $compatibility,
 
-        private readonly VariantPresentationService
-            $variantPresentation,
+        private readonly VariantPresentationService $variantPresentation,
     ) {}
 
     /**
@@ -72,8 +69,7 @@ final class ConfiguratorPageDataService
             ->groupBy(
                 static fn (
                     SystemComponent $component,
-                ): string =>
-                    $component->slot->value,
+                ): string => $component->slot->value,
             )
             ->map(
                 fn (
@@ -108,28 +104,22 @@ final class ConfiguratorPageDataService
 
         return [
             'configuration' => [
-                'public_id' =>
-                    $configuration->public_id,
+                'public_id' => $configuration->public_id,
 
-                'name' =>
-                    $configuration->name
+                'name' => $configuration->name
                     ?? $system->name,
 
-                'status' =>
-                    $configuration->status->value,
+                'status' => $configuration->status->value,
 
-                'version' =>
-                    $configuration->version,
+                'version' => $configuration->version,
 
-                'read_only' =>
-                    ! $configuration
-                        ->status
-                        ->isEditable(),
+                'read_only' => ! $configuration
+                    ->status
+                    ->isEditable(),
 
-                'updated_at' =>
-                    $configuration
-                        ->updated_at
-                        ?->toIso8601String(),
+                'updated_at' => $configuration
+                    ->updated_at
+                    ?->toIso8601String(),
 
                 'source_system' => [
                     'id' => $system->id,
@@ -148,55 +138,44 @@ final class ConfiguratorPageDataService
                                 $image->disk,
                             )->url($image->path),
 
-                            'alt' =>
-                                $image->alt_text
+                            'alt' => $image->alt_text
                                 ?: $system->name,
                         ],
                 ],
 
                 'pricing' => [
-                    'currency' =>
-                        $configuration->currency,
+                    'currency' => $configuration->currency,
 
-                    'base_price_in_cents' =>
-                        $basePrice,
+                    'base_price_in_cents' => $basePrice,
 
-                    'component_change_in_cents' =>
-                        $configuration
-                            ->total_in_cents
+                    'component_change_in_cents' => $configuration
+                        ->total_in_cents
                         - $basePrice,
 
-                    'subtotal_in_cents' =>
-                        $configuration
-                            ->subtotal_in_cents,
+                    'subtotal_in_cents' => $configuration
+                        ->subtotal_in_cents,
 
-                    'adjustment_total_in_cents' =>
-                        $configuration
-                            ->adjustment_total_in_cents,
+                    'adjustment_total_in_cents' => $configuration
+                        ->adjustment_total_in_cents,
 
-                    'tax_in_cents' =>
-                        $configuration
-                            ->tax_in_cents,
+                    'tax_in_cents' => $configuration
+                        ->tax_in_cents,
 
-                    'total_in_cents' =>
-                        $configuration
-                            ->total_in_cents,
+                    'total_in_cents' => $configuration
+                        ->total_in_cents,
 
-                    'prices_include_tax' =>
-                        $configuration
-                            ->priceList
-                            ->prices_include_tax,
+                    'prices_include_tax' => $configuration
+                        ->priceList
+                        ->prices_include_tax,
                 ],
 
-                'availability' =>
-                    $this->availabilityData(
-                        $availableBuilds,
-                    ),
+                'availability' => $this->availabilityData(
+                    $availableBuilds,
+                ),
 
                 'validation' => $validation,
 
-                'can_review' =>
-                    $configuration->status
+                'can_review' => $configuration->status
                         === ConfigurationStatus::Valid
                     && $validation['is_current']
                     && $availableBuilds !== 0,
@@ -215,10 +194,9 @@ final class ConfiguratorPageDataService
         $configuration->load([
             'priceList',
 
-            'items' => static fn ($query) =>
-                $query
-                    ->orderBy('sort_order')
-                    ->orderBy('id'),
+            'items' => static fn ($query) => $query
+                ->orderBy('sort_order')
+                ->orderBy('id'),
 
             'items.variant.product.brand',
             'items.variant.product.category',
@@ -235,38 +213,31 @@ final class ConfiguratorPageDataService
 
             'sourceSystem.images',
 
-            'sourceSystem.prices' =>
-                static fn ($query) =>
-                    $query->where(
-                        'price_list_id',
-                        $priceListId,
-                    ),
+            'sourceSystem.prices' => static fn ($query) => $query->where(
+                'price_list_id',
+                $priceListId,
+            ),
 
             'sourceSystem.prices.priceList',
 
-            'sourceSystem.components' =>
-                static fn ($query) =>
-                    $query
-                        ->orderBy('sort_order')
-                        ->orderBy('id'),
+            'sourceSystem.components' => static fn ($query) => $query
+                ->orderBy('sort_order')
+                ->orderBy('id'),
 
             'sourceSystem.components.variant.product.brand',
 
             'sourceSystem.components.variant.product.category',
 
-            'sourceSystem.components.variant.prices' =>
-                static fn ($query) =>
-                    $query->where(
-                        'price_list_id',
-                        $priceListId,
-                    ),
+            'sourceSystem.components.variant.prices' => static fn ($query) => $query->where(
+                'price_list_id',
+                $priceListId,
+            ),
         ]);
     }
 
     /**
-     * @param Collection<int, SystemComponent> $components
-     * @param Collection<int, CompatibilityRule> $rules
-     *
+     * @param  Collection<int, SystemComponent>  $components
+     * @param  Collection<int, CompatibilityRule>  $rules
      * @return array<string, mixed>
      */
     private function groupData(
@@ -286,8 +257,7 @@ final class ConfiguratorPageDataService
             ->first(
                 static fn (
                     ConfigurationItem $item,
-                ): bool =>
-                    $item->slot === $slot,
+                ): bool => $item->slot === $slot,
             );
 
         $basePrice = (int) (
@@ -373,81 +343,67 @@ final class ConfiguratorPageDataService
                         'id' => $variant->id,
                         'sku' => $variant->sku,
 
-                        'name' =>
-                            $variant->displayName(),
+                        'name' => $variant->displayName(),
 
-                        'brand' =>
-                            $variant
-                                ->product
-                                ->brand
-                                ?->name,
+                        'brand' => $variant
+                            ->product
+                            ->brand
+                            ?->name,
 
-                        'description' =>
-                            $variant
-                                ->product
-                                ->short_description,
+                        'description' => $variant
+                            ->product
+                            ->short_description,
 
-                        'image' =>
-                            $this
-                                ->variantPresentation
-                                ->image($variant),
+                        'image' => $this
+                            ->variantPresentation
+                            ->image($variant),
 
-                        'specifications' =>
-                            $this
-                                ->variantPresentation
-                                ->specifications(
-                                    $variant,
-                                    4,
-                                ),
+                        'specifications' => $this
+                            ->variantPresentation
+                            ->specifications(
+                                $variant,
+                                4,
+                            ),
 
-                        'is_selected' =>
-                            $isSelected,
+                        'is_selected' => $isSelected,
 
-                        'is_base' =>
-                            $baseComponent
-                                ->product_variant_id
+                        'is_base' => $baseComponent
+                            ->product_variant_id
                             === $variant->id,
 
                         /*
                          * Compatibility issues are visible but do
                          * not prevent platform-transition changes.
                          */
-                        'selectable' =>
-                            $canEdit
+                        'selectable' => $canEdit
                             && ! $isSelected,
 
                         'price' => [
-                            'amount_in_cents' =>
-                                $price
-                                    ->amount_in_cents,
+                            'amount_in_cents' => $price
+                                ->amount_in_cents,
 
                             /*
                              * Immediate effect when clicked.
                              */
-                            'delta_from_current_in_cents' =>
-                                $price
-                                    ->amount_in_cents
+                            'delta_from_current_in_cents' => $price
+                                ->amount_in_cents
                                 - $selectedPrice,
 
                             /*
                              * Difference from the original system.
                              */
-                            'delta_from_base_in_cents' =>
-                                $price
-                                    ->amount_in_cents
+                            'delta_from_base_in_cents' => $price
+                                ->amount_in_cents
                                 - $basePrice,
 
-                            'currency' =>
-                                $configuration->currency,
+                            'currency' => $configuration->currency,
                         ],
 
-                        'availability' =>
-                            $this->availabilityData(
-                                $availableBuilds,
-                            ),
+                        'availability' => $this->availabilityData(
+                            $availableBuilds,
+                        ),
 
-                        'compatibility' =>
-                            $compatibility,
+                        'compatibility' => $compatibility,
                     ];
                 },
             )
@@ -462,30 +418,23 @@ final class ConfiguratorPageDataService
             'slot' => $slot->value,
             'label' => $slot->label(),
 
-            'description' =>
-                $slot->description(),
+            'description' => $slot->description(),
 
-            'sort_order' =>
-                $baseComponent->sort_order,
+            'sort_order' => $baseComponent->sort_order,
 
-            'is_required' =>
-                $baseComponent->is_required,
+            'is_required' => $baseComponent->is_required,
 
-            'is_replaceable' =>
-                $baseComponent->is_replaceable,
+            'is_replaceable' => $baseComponent->is_replaceable,
 
             'can_edit' => $canEdit,
 
-            'selection_mode' =>
-                $slot->allowsMultiple()
+            'selection_mode' => $slot->allowsMultiple()
                     ? 'multiple'
                     : 'single',
 
-            'selected' =>
-                $selectedOption,
+            'selected' => $selectedOption,
 
-            'selected_price_change_from_base_in_cents' =>
-                $selectedItem === null
+            'selected_price_change_from_base_in_cents' => $selectedItem === null
                     ? 0
                     : $selectedItem
                         ->unit_price_in_cents
@@ -552,11 +501,10 @@ final class ConfiguratorPageDataService
                 'prices',
                 static fn (
                     Builder $query,
-                ) =>
-                    $query->where(
-                        'price_list_id',
-                        $priceListId,
-                    ),
+                ) => $query->where(
+                    'price_list_id',
+                    $priceListId,
+                ),
             )
 
             ->with([
@@ -565,12 +513,10 @@ final class ConfiguratorPageDataService
                 'product.images',
                 'images',
 
-                'prices' =>
-                    static fn ($query) =>
-                        $query->where(
-                            'price_list_id',
-                            $priceListId,
-                        ),
+                'prices' => static fn ($query) => $query->where(
+                    'price_list_id',
+                    $priceListId,
+                ),
 
                 'specificationValues.specification',
 
@@ -593,12 +539,10 @@ final class ConfiguratorPageDataService
                 'product.images',
                 'images',
 
-                'prices' =>
-                    static fn ($query) =>
-                        $query->where(
-                            'price_list_id',
-                            $priceListId,
-                        ),
+                'prices' => static fn ($query) => $query->where(
+                    'price_list_id',
+                    $priceListId,
+                ),
 
                 'specificationValues.specification',
 
@@ -665,28 +609,23 @@ final class ConfiguratorPageDataService
             : $run
                 ->results
                 ->filter(
-                    static fn ($result): bool =>
-                        $result->status
+                    static fn ($result): bool => $result->status
                         === ValidationResultStatus::Failed,
                 );
 
         $errors = $failedResults
             ->filter(
-                static fn ($result): bool =>
-                    $result->severity
+                static fn ($result): bool => $result->severity
                     === CompatibilitySeverity::Error,
             )
             ->map(
                 static fn ($result): array => [
-                    'rule_key' =>
-                        $result->rule_key,
+                    'rule_key' => $result->rule_key,
 
-                    'message' =>
-                        $result->message
+                    'message' => $result->message
                         ?? $result->rule_name,
 
-                    'context' =>
-                        $result->context ?? [],
+                    'context' => $result->context ?? [],
                 ],
             )
             ->values()
@@ -694,55 +633,46 @@ final class ConfiguratorPageDataService
 
         $warnings = $failedResults
             ->reject(
-                static fn ($result): bool =>
-                    $result->severity
+                static fn ($result): bool => $result->severity
                     === CompatibilitySeverity::Error,
             )
             ->map(
                 static fn ($result): array => [
-                    'rule_key' =>
-                        $result->rule_key,
+                    'rule_key' => $result->rule_key,
 
-                    'message' =>
-                        $result->message
+                    'message' => $result->message
                         ?? $result->rule_name,
 
-                    'context' =>
-                        $result->context ?? [],
+                    'context' => $result->context ?? [],
                 ],
             )
             ->values()
             ->all();
 
         return [
-            'status' =>
-                $configuration->status->value,
+            'status' => $configuration->status->value,
 
             'label' => match (
                 $configuration->status
             ) {
-                ConfigurationStatus::Draft =>
-                    'Validation required',
+                ConfigurationStatus::Draft => 'Validation required',
 
-                ConfigurationStatus::Valid =>
-                    'Configuration compatible',
+                ConfigurationStatus::Valid => 'Configuration compatible',
 
-                ConfigurationStatus::Invalid =>
-                    'Compatibility issues found',
+                ConfigurationStatus::Invalid => 'Compatibility issues found',
 
-                ConfigurationStatus::Converted =>
-                    'Configuration converted',
+                ConfigurationStatus::Converted => 'Configuration converted',
 
-                ConfigurationStatus::Expired =>
-                    'Configuration expired',
+                ConfigurationStatus::Expired => 'Configuration expired',
+
+                ConfigurationStatus::ReadyForCheckout => 'Ready For Checkout'
             },
 
             'is_current' => $isCurrent,
 
-            'completed_at' =>
-                $run
-                    ?->completed_at
-                    ?->toIso8601String(),
+            'completed_at' => $run
+                ?->completed_at
+                ?->toIso8601String(),
 
             'errors' => $errors,
             'warnings' => $warnings,
@@ -767,8 +697,7 @@ final class ConfiguratorPageDataService
         return $run
             ->results
             ->filter(
-                static fn ($result): bool =>
-                    $result->status
+                static fn ($result): bool => $result->status
                     === ValidationResultStatus::Failed,
             )
             ->filter(
@@ -790,16 +719,13 @@ final class ConfiguratorPageDataService
             )
             ->map(
                 static fn ($result): array => [
-                    'rule_key' =>
-                        $result->rule_key,
+                    'rule_key' => $result->rule_key,
 
-                    'severity' =>
-                        $result
-                            ->severity
-                            ->value,
+                    'severity' => $result
+                        ->severity
+                        ->value,
 
-                    'message' =>
-                        $result->message
+                    'message' => $result->message
                         ?? $result->rule_name,
                 ],
             )

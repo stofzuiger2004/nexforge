@@ -198,16 +198,13 @@ test(
             route(
                 'configurator.components.update',
                 [
-                    'configuration' =>
-                        $configuration,
+                    'configuration' => $configuration,
 
-                    'slot' =>
-                        'graphics_card',
+                    'slot' => 'graphics_card',
                 ],
             ),
             [
-                'variant_id' =>
-                    $replacementGpu->id,
+                'variant_id' => $replacementGpu->id,
 
                 'quantity' => 1,
             ],
@@ -241,17 +238,13 @@ test(
         $this->assertDatabaseHas(
             'configuration_items',
             [
-                'configuration_id' =>
-                    $configuration->id,
+                'configuration_id' => $configuration->id,
 
-                'slot' =>
-                    'graphics_card',
+                'slot' => 'graphics_card',
 
-                'product_variant_id' =>
-                    $replacementGpu->id,
+                'product_variant_id' => $replacementGpu->id,
 
-                'unit_price_in_cents' =>
-                    64900,
+                'unit_price_in_cents' => 64900,
             ],
         );
     },
@@ -312,15 +305,13 @@ test(
             route(
                 'configurator.components.update',
                 [
-                    'configuration' =>
-                        $configuration,
+                    'configuration' => $configuration,
 
                     'slot' => 'cpu',
                 ],
             ),
             [
-                'variant_id' =>
-                    $memoryVariant->id,
+                'variant_id' => $memoryVariant->id,
             ],
         )->assertSessionHasErrors(
             'variant_id',

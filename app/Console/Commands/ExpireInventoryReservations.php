@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Models\InventoryReservation;
+use App\Services\Configurations\ConfigurationReviewService;
 use App\Services\Inventory\InventoryReservationService;
 use Illuminate\Console\Command;
 use Throwable;
@@ -20,6 +21,7 @@ class ExpireInventoryReservations extends Command
 
     public function handle(
         InventoryReservationService $reservationService,
+        ConfigurationReviewService $reviewService
     ): int {
         $limit = max(
             1,
@@ -49,6 +51,8 @@ class ExpireInventoryReservations extends Command
                 $result =
                     $reservationService
                         ->expire($reservation);
+
+                $reviewService->unlockAfterReservationEnd($result);
 
                 if (
                     $result->status->value

@@ -14,35 +14,31 @@ use Inertia\Response;
 
 class SystemShowController extends Controller
 {
-    public function __invoke(string $slug,SystemAvailabilityService $availability): Response {
+    public function __invoke(string $slug, SystemAvailabilityService $availability): Response
+    {
         $priceList = PriceList::query()->where('currency', 'EUR')->default()->available()->firstOrFail();
-        $system = System::query()->published()->where('slug', $slug)->whereHas('prices',static fn ($query) =>$query->where('price_list_id',$priceList->id))
+        $system = System::query()->published()->where('slug', $slug)->whereHas('prices', static fn ($query) => $query->where('price_list_id', $priceList->id))
             ->with([
-                'prices' => static fn ($query) =>
-                    $query->where(
-                        'price_list_id',
-                        $priceList->id,
-                    ),
+                'prices' => static fn ($query) => $query->where(
+                    'price_list_id',
+                    $priceList->id,
+                ),
                 'prices.priceList',
-                'images' => static fn ($query) =>
-                    $query
-                        ->orderByDesc('is_primary')
-                        ->orderBy('sort_order')
-                        ->orderBy('id'),
-                'components' => static fn ($query) =>
-                    $query
-                        ->orderBy('sort_order')
-                        ->orderBy('id'),
+                'images' => static fn ($query) => $query
+                    ->orderByDesc('is_primary')
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
+                'components' => static fn ($query) => $query
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
                 'components.variant.product.brand',
                 'components.variant.product.category',
                 'components.variant.specificationValues.specification',
                 'components.variant.specificationOptions.specification',
-                'components.variant.inventoryItems' =>
-                    static fn ($query) =>
-                        $query->where(
-                            'is_active',
-                            true,
-                        ),
+                'components.variant.inventoryItems' => static fn ($query) => $query->where(
+                    'is_active',
+                    true,
+                ),
                 'components.variant.inventoryItems.warehouse',
             ])
             ->firstOrFail();

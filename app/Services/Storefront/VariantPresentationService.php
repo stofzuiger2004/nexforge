@@ -32,8 +32,7 @@ final class VariantPresentationService
                 $image->disk,
             )->url($image->path),
 
-            'alt' =>
-                $image->alt_text
+            'alt' => $image->alt_text
                 ?: $variant->displayName(),
         ];
     }
@@ -64,20 +63,16 @@ final class VariantPresentationService
                     }
 
                     return [
-                        'key' =>
-                            $specification->key,
+                        'key' => $specification->key,
 
-                        'label' =>
-                            $specification->name,
+                        'label' => $specification->name,
 
-                        'value' =>
-                            $this->formatValue(
-                                $rawValue,
-                                $specification->unit,
-                            ),
+                        'value' => $this->formatValue(
+                            $rawValue,
+                            $specification->unit,
+                        ),
 
-                        'sort_order' =>
-                            $specification->sort_order,
+                        'sort_order' => $specification->sort_order,
                     ];
                 },
             )
@@ -95,18 +90,15 @@ final class VariantPresentationService
                         $first->specification;
 
                     return [
-                        'key' =>
-                            $specification->key,
+                        'key' => $specification->key,
 
-                        'label' =>
-                            $specification->name,
+                        'label' => $specification->name,
 
                         'value' => $options
                             ->pluck('label')
                             ->implode(', '),
 
-                        'sort_order' =>
-                            $specification->sort_order,
+                        'sort_order' => $specification->sort_order,
                     ];
                 },
             );
@@ -135,8 +127,7 @@ final class VariantPresentationService
                 'value_integer',
                 'value_decimal',
                 'value_boolean',
-            ]
-            as $column
+            ] as $column
         ) {
             $candidate =
                 $value->getAttribute($column);

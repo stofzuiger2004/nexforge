@@ -77,8 +77,7 @@ final class ConfigurationAvailabilityService
                     ->first(
                         fn (
                             InventoryItem $item,
-                        ): bool =>
-                            (int) $item->warehouse_id
+                        ): bool => (int) $item->warehouse_id
                                 === (int) $warehouseId
                             && $this->isUsable($item),
                     );

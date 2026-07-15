@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -26,14 +28,14 @@ class UpdateConfiguratorComponentRequest extends FormRequest
             'variant_id' => [
                 'required',
                 'integer',
-                'exists:product_variants,id'
+                'exists:product_variants,id',
             ],
             'quantity' => [
                 'sometimes',
                 'integer',
                 'min:1',
-                'max:100'
-            ]
+                'max:100',
+            ],
         ];
     }
 }
