@@ -1,7 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import {
     ArrowLeft,
-    ArrowRight,
     Check,
     ChevronRight,
     ShieldCheck,
@@ -10,6 +9,7 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { StartConfigurationButton } from '@/components/storefront/start-configuration-button';
 import { SystemComponentList } from '@/components/storefront/system-component-list';
 import { SystemImageGallery } from '@/components/storefront/system-image-gallery';
 import { Badge } from '@/components/ui/badge';
@@ -25,8 +25,6 @@ import type {
 export default function SystemShow({
     system,
 }: SystemDetailPageProps) {
-    const configuratorUrl =
-        `/configure?system=${encodeURIComponent(system.slug)}`;
 
     return (
         <StorefrontLayout>
@@ -36,18 +34,12 @@ export default function SystemShow({
 
             <SystemHero
                 system={system}
-                configuratorUrl={
-                    configuratorUrl
-                }
             />
 
             <SystemDetails system={system} />
 
             <BottomCallToAction
                 system={system}
-                configuratorUrl={
-                    configuratorUrl
-                }
             />
         </StorefrontLayout>
     );
@@ -55,12 +47,10 @@ export default function SystemShow({
 
 type SystemHeroProps = {
     system: SystemDetail;
-    configuratorUrl: string;
 };
 
 function SystemHero({
     system,
-    configuratorUrl,
 }: SystemHeroProps) {
     const price = system.price
         ? formatMoney(
@@ -197,21 +187,9 @@ function SystemHero({
 
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                             {system.is_configurable ? (
-                                <Button
-                                    size="lg"
-                                    asChild
-                                >
-                                    <Link
-                                        href={
-                                            configuratorUrl
-                                        }
-                                    >
-                                        Configure this
-                                        system
-
-                                        <ArrowRight className="size-4" />
-                                    </Link>
-                                </Button>
+                                <StartConfigurationButton
+                                    systemSlug={system.slug}
+                                />
                             ) : (
                                 <Button
                                     size="lg"
@@ -468,12 +446,10 @@ function ProcessItem({
 
 type BottomCallToActionProps = {
     system: SystemDetail;
-    configuratorUrl: string;
 };
 
 function BottomCallToAction({
     system,
-    configuratorUrl,
 }: BottomCallToActionProps) {
     return (
         <section className="pb-20 sm:pb-24">
@@ -499,21 +475,10 @@ function BottomCallToAction({
 
                     <div className="mt-8 shrink-0 lg:mt-0">
                         {system.is_configurable ? (
-                            <Button
-                                size="lg"
+                            <StartConfigurationButton
+                                systemSlug={system.slug}
                                 variant="secondary"
-                                asChild
-                            >
-                                <Link
-                                    href={
-                                        configuratorUrl
-                                    }
-                                >
-                                    Open configurator
-
-                                    <ArrowRight className="size-4" />
-                                </Link>
-                            </Button>
+                            />
                         ) : (
                             <Button
                                 size="lg"
