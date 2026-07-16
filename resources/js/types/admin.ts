@@ -1,0 +1,298 @@
+export type AdminSharedProps = {
+    auth: {
+        user: {
+            id: number;
+            name: string;
+            email: string;
+        } | null;
+
+        roles: string[];
+
+        can: {
+            adminAccess: boolean;
+            viewOrders: boolean;
+            viewCustomerData: boolean;
+            viewPayments: boolean;
+            viewInventory: boolean;
+        };
+    };
+
+    [key: string]: unknown;
+};
+
+export type AdminOrderListItem = {
+    public_id: string;
+    order_number: string;
+    href: string;
+
+    customer: {
+        name: string;
+        email: string;
+        has_account: boolean;
+    };
+
+    status: string;
+    payment_status: string;
+    fulfillment_status: string;
+
+    currency: string;
+    total_in_cents: number;
+
+    item_count: number;
+    placed_at: string | null;
+
+    latest_payment: {
+        provider: string;
+        provider_payment_id: string | null;
+        status: string;
+        method: string | null;
+    } | null;
+
+    requires_attention: boolean;
+};
+
+export type AdminOrderPaginator = {
+    data: AdminOrderListItem[];
+
+    meta: {
+        current_page: number;
+        last_page: number;
+        per_page: number;
+        from: number | null;
+        to: number | null;
+        total: number;
+    };
+
+    links: {
+        previous: string | null;
+        next: string | null;
+    };
+};
+
+export type AdminFilterOption = {
+    value: string;
+    label: string;
+};
+
+export type AdminOrderFilters = {
+    search: string;
+    status: string;
+    payment_status: string;
+    fulfillment_status: string;
+    date_from: string;
+    date_to: string;
+    sort: string;
+    per_page: string;
+};
+
+export type AdminOrderDetail = {
+    public_id: string;
+    order_number: string;
+
+    status: string;
+    payment_status: string;
+    fulfillment_status: string;
+
+    customer: {
+        account_id: number | null;
+        name: string;
+        email: string;
+        locale: string;
+        has_account: boolean;
+    };
+
+    pricing: {
+        currency: string;
+        subtotal_in_cents: number;
+        adjustment_total_in_cents: number;
+        shipping_in_cents: number;
+        tax_in_cents: number;
+        total_in_cents: number;
+        paid_in_cents: number;
+        refunded_in_cents: number;
+        charged_back_in_cents: number;
+        outstanding_in_cents: number;
+    };
+
+    dates: {
+        created_at: string;
+        placed_at: string | null;
+        paid_at: string | null;
+        cancelled_at: string | null;
+        completed_at: string | null;
+    };
+
+    addresses: AdminOrderAddress[] | null;
+    items: AdminOrderItem[];
+    adjustments: AdminOrderAdjustment[];
+
+    payments: AdminPayment[] | null;
+
+    inventory_reservations:
+        | AdminInventoryReservation[]
+        | null;
+
+    timeline: AdminOrderTimelineItem[];
+
+    references: {
+        configuration_public_id: string | null;
+        configuration_version: number | null;
+        reservation_public_id: string | null;
+        terms_version: string | null;
+        terms_accepted_at: string | null;
+    };
+
+    can: {
+        view_customer_data: boolean;
+        view_payments: boolean;
+        view_inventory: boolean;
+    };
+};
+
+export type AdminOrderAddress = {
+    id: number;
+    type: string;
+
+    first_name: string;
+    last_name: string;
+
+    company: string | null;
+    vat_number: string | null;
+
+    address_line_1: string;
+    address_line_2: string | null;
+
+    postal_code: string;
+    city: string;
+    state: string | null;
+    country_code: string;
+
+    email: string;
+    phone: string | null;
+};
+
+export type AdminOrderItem = {
+    id: number;
+    line_number: number;
+    type: string;
+
+    sku: string | null;
+    name: string;
+    description: string | null;
+
+    quantity: number;
+
+    unit_price_in_cents: number;
+    subtotal_in_cents: number;
+    adjustment_total_in_cents: number;
+    tax_in_cents: number;
+    line_total_in_cents: number;
+
+    configuration: {
+        public_id: string | null;
+        version: number | null;
+    };
+
+    components: {
+        id: number;
+        slot: string;
+        slot_label: string;
+        sku: string;
+        name: string;
+        quantity: number;
+        unit_price_in_cents: number | null;
+        line_total_in_cents: number | null;
+    }[];
+};
+
+export type AdminOrderAdjustment = {
+    id: number;
+    type: string;
+    code: string | null;
+    label: string;
+    amount_in_cents: number;
+    tax_in_cents: number;
+};
+
+export type AdminPayment = {
+    public_id: string;
+    attempt_number: number;
+
+    provider: string;
+    provider_payment_id: string | null;
+    provider_profile_id: string | null;
+
+    status: string;
+    provider_status: string | null;
+    mode: string | null;
+    method: string | null;
+
+    amount_in_cents: number;
+    currency: string;
+
+    failure_code: string | null;
+    failure_message: string | null;
+
+    webhook_event_count: number;
+
+    dates: Record<string, string | null>;
+
+    refunds: {
+        public_id: string;
+        provider_refund_id: string | null;
+        status: string;
+        amount_in_cents: number;
+        currency: string;
+        reason: string | null;
+        created_at: string;
+    }[];
+
+    chargebacks: {
+        public_id: string;
+        provider_chargeback_id: string;
+        status: string;
+        amount_in_cents: number;
+        currency: string;
+        reason_code: string | null;
+        reason_description: string | null;
+        provider_created_at: string;
+    }[];
+};
+
+export type AdminInventoryReservation = {
+    public_id: string;
+    status: string;
+    configuration_version: number;
+
+    warehouse: {
+        code: string;
+        name: string;
+    };
+
+    reserved_at: string;
+    expires_at: string;
+    committed_at: string | null;
+    released_at: string | null;
+    consumed_at: string | null;
+
+    items: {
+        id: number;
+        sku: string;
+        name: string;
+        quantity: number;
+        released_quantity: number;
+        consumed_quantity: number;
+        outstanding_quantity: number;
+        inventory_item_id: number;
+    }[];
+};
+
+export type AdminOrderTimelineItem = {
+    id: number;
+    category: string;
+    from_status: string | null;
+    to_status: string;
+    reason: string | null;
+    actor: string | null;
+    created_at: string;
+};

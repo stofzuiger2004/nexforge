@@ -1,5 +1,6 @@
 <?php
 
+require __DIR__.'/admin.php';
 use App\Http\Controllers\Storefront\CheckoutOrderController;
 use App\Http\Controllers\Storefront\ConfigurationReviewDestroyController;
 use App\Http\Controllers\Storefront\ConfigurationReviewShowController;

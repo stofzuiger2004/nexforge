@@ -43,8 +43,7 @@ class CheckoutOrderController extends Controller
                 ->whereNull('order_id')
                 ->where(
                     'status',
-                    InventoryReservationStatus
-                        ::Active
+                    InventoryReservationStatus::Active
                         ->value,
                 )
                 ->latest('id')
@@ -55,8 +54,7 @@ class CheckoutOrderController extends Controller
             || $reservation->isExpired()
         ) {
             throw ValidationException::withMessages([
-                'checkout' =>
-                    'The stock reservation expired. Refresh the reservation before continuing.',
+                'checkout' => 'The stock reservation expired. Refresh the reservation before continuing.',
             ]);
         }
 
@@ -64,20 +62,16 @@ class CheckoutOrderController extends Controller
             $created =
                 $orderCreator
                     ->createFromConfiguration(
-                        configuration:
-                            $configuration,
+                        configuration: $configuration,
 
-                        reservation:
-                            $reservation,
+                        reservation: $reservation,
 
-                        checkout:
-                            $request
-                                ->checkoutData(),
+                        checkout: $request
+                            ->checkoutData(),
                     );
         } catch (DomainException $exception) {
             throw ValidationException::withMessages([
-                'checkout' =>
-                    $exception->getMessage(),
+                'checkout' => $exception->getMessage(),
             ]);
         }
 
