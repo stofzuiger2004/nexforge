@@ -31,8 +31,7 @@ const navigation = [
 ];
 
 export function SiteHeader() {
-    const { auth } =
-        usePage<StorefrontSharedProps>().props;
+    const { auth } = usePage<StorefrontSharedProps>().props;
 
     const user = auth?.user ?? null;
 
@@ -55,30 +54,20 @@ export function SiteHeader() {
 
                 <div className="hidden items-center gap-2 lg:flex">
                     {user ? (
-                        <Button
-                            variant="ghost"
-                            asChild
-                        >
+                        <Button variant="ghost" asChild>
                             <Link href="/dashboard">
                                 <UserRound className="size-4" />
                                 Account
                             </Link>
                         </Button>
                     ) : (
-                        <Button
-                            variant="ghost"
-                            asChild
-                        >
-                            <Link href="/login">
-                                Log in
-                            </Link>
+                        <Button variant="ghost" asChild>
+                            <Link href="/login">Log in</Link>
                         </Button>
                     )}
 
                     <Button asChild>
-                        <Link href="/configure">
-                            Configure a PC
-                        </Link>
+                        <Link href="/configure">Configure a PC</Link>
                     </Button>
                 </div>
 
@@ -100,9 +89,7 @@ export function SiteHeader() {
                         className="flex w-[320px] flex-col p-0 sm:w-[380px]"
                     >
                         <SheetHeader className="border-b p-6 text-left">
-                            <SheetTitle>
-                                Navigation
-                            </SheetTitle>
+                            <SheetTitle>Navigation</SheetTitle>
                         </SheetHeader>
 
                         <nav className="flex flex-1 flex-col gap-1 p-4">
@@ -136,9 +123,7 @@ export function SiteHeader() {
                                         className="w-full"
                                         asChild
                                     >
-                                        <Link href="/login">
-                                            Log in
-                                        </Link>
+                                        <Link href="/login">Log in</Link>
                                     </Button>
 
                                     <Button
@@ -153,13 +138,8 @@ export function SiteHeader() {
                                 </>
                             )}
 
-                            <Button
-                                className="w-full"
-                                asChild
-                            >
-                                <Link href="/configure">
-                                    Configure a PC
-                                </Link>
+                            <Button className="w-full" asChild>
+                                <Link href="/configure">Configure a PC</Link>
                             </Button>
                         </div>
                     </SheetContent>

@@ -25,10 +25,7 @@ const attentionStatuses = new Set([
     'manual_review',
 ]);
 
-export function StatusBadge({
-    status,
-    className,
-}: StatusBadgeProps) {
+export function StatusBadge({ status, className }: StatusBadgeProps) {
     return (
         <Badge
             variant="outline"
@@ -49,15 +46,9 @@ export function StatusBadge({
     );
 }
 
-export function humanizeStatus(
-    status: string,
-): string {
+export function humanizeStatus(status: string): string {
     return status
         .split('_')
-        .map(
-            (part) =>
-                part.charAt(0).toUpperCase() +
-                part.slice(1),
-        )
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
         .join(' ');
 }

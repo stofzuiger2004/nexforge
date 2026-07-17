@@ -39,8 +39,7 @@ export function MobileConfigurationSummary({
                     <p className="text-lg font-semibold">
                         {formatMoney(
                             displayedTotalInCents,
-                            configuration.pricing
-                                .currency,
+                            configuration.pricing.currency,
                         )}
                     </p>
                 </div>
@@ -58,20 +57,14 @@ export function MobileConfigurationSummary({
                         className="max-h-[88vh] overflow-y-auto rounded-t-3xl"
                     >
                         <SheetHeader className="text-left">
-                            <SheetTitle>
-                                Configuration summary
-                            </SheetTitle>
+                            <SheetTitle>Configuration summary</SheetTitle>
                         </SheetHeader>
 
                         <div className="mt-5 pb-6">
                             <ConfigurationSummary
-                                configuration={
-                                    configuration
-                                }
+                                configuration={configuration}
                                 groups={groups}
-                                displayedTotalInCents={
-                                    displayedTotalInCents
-                                }
+                                displayedTotalInCents={displayedTotalInCents}
                                 saving={saving}
                                 compact
                             />

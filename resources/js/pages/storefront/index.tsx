@@ -50,14 +50,12 @@ const trustItems: {
     {
         icon: ShieldCheck,
         title: 'Compatibility checked',
-        description:
-            'Every final configuration is validated before checkout.',
+        description: 'Every final configuration is validated before checkout.',
     },
     {
         icon: Wrench,
         title: 'Professionally assembled',
-        description:
-            'Your system is built, inspected, and stress-tested.',
+        description: 'Your system is built, inspected, and stress-tested.',
     },
     {
         icon: Truck,
@@ -67,11 +65,8 @@ const trustItems: {
     },
 ];
 
-export default function StorefrontIndex({
-    featuredSystems,
-}: HomePageProps) {
-    const heroSystem =
-        featuredSystems.at(0) ?? null;
+export default function StorefrontIndex({ featuredSystems }: HomePageProps) {
+    const heroSystem = featuredSystems.at(0) ?? null;
 
     return (
         <StorefrontLayout>
@@ -79,9 +74,7 @@ export default function StorefrontIndex({
 
             <HeroSection system={heroSystem} />
 
-            <FeaturedSystemsSection
-                systems={featuredSystems}
-            />
+            <FeaturedSystemsSection systems={featuredSystems} />
 
             <ProcessSection />
 
@@ -92,69 +85,44 @@ export default function StorefrontIndex({
     );
 }
 
-function HeroSection({
-    system,
-}: {
-    system: FeaturedSystem | null;
-}) {
+function HeroSection({ system }: { system: FeaturedSystem | null }) {
     return (
         <section className="overflow-hidden border-b bg-muted/20">
             <div className="mx-auto grid max-w-7xl items-center gap-14 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.02fr_0.98fr] lg:px-8 lg:py-24">
                 <div>
-                    <Badge
-                        variant="outline"
-                        className="rounded-full"
-                    >
+                    <Badge variant="outline" className="rounded-full">
                         Custom gaming systems
                     </Badge>
 
-                    <h1 className="mt-6 max-w-3xl text-balance text-4xl font-semibold tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-                        Performance, configured around
-                        you.
+                    <h1 className="mt-6 max-w-3xl text-4xl font-semibold tracking-[-0.035em] text-balance sm:text-5xl lg:text-6xl">
+                        Performance, configured around you.
                     </h1>
 
                     <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
-                        Start with a carefully balanced
-                        gaming PC, then choose the
-                        components that match your games,
-                        budget, and upgrade plans.
+                        Start with a carefully balanced gaming PC, then choose
+                        the components that match your games, budget, and
+                        upgrade plans.
                     </p>
 
                     <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                        <Button
-                            size="lg"
-                            asChild
-                        >
+                        <Button size="lg" asChild>
                             <Link href="/configure">
                                 Configure your PC
                                 <ArrowRight className="size-4" />
                             </Link>
                         </Button>
 
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            asChild
-                        >
-                            <a href="#featured-systems">
-                                View gaming PCs
-                            </a>
+                        <Button size="lg" variant="outline" asChild>
+                            <a href="#featured-systems">View gaming PCs</a>
                         </Button>
                     </div>
 
                     <div className="mt-9 flex flex-col gap-3 text-sm text-muted-foreground sm:flex-row sm:flex-wrap sm:gap-x-7">
-                        <TrustPoint>
-                            Automatic compatibility
-                            checks
-                        </TrustPoint>
+                        <TrustPoint>Automatic compatibility checks</TrustPoint>
 
-                        <TrustPoint>
-                            Component-level inventory
-                        </TrustPoint>
+                        <TrustPoint>Component-level inventory</TrustPoint>
 
-                        <TrustPoint>
-                            Built and tested by hand
-                        </TrustPoint>
+                        <TrustPoint>Built and tested by hand</TrustPoint>
                     </div>
                 </div>
 
@@ -164,11 +132,7 @@ function HeroSection({
     );
 }
 
-function TrustPoint({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+function TrustPoint({ children }: { children: React.ReactNode }) {
     return (
         <span className="flex items-center gap-2">
             <span className="grid size-5 place-items-center rounded-full border bg-background">
@@ -180,16 +144,9 @@ function TrustPoint({
     );
 }
 
-function HeroSystemPanel({
-    system,
-}: {
-    system: FeaturedSystem | null;
-}) {
+function HeroSystemPanel({ system }: { system: FeaturedSystem | null }) {
     const price = system?.price
-        ? formatMoney(
-              system.price.amount_in_cents,
-              system.price.currency,
-          )
+        ? formatMoney(system.price.amount_in_cents, system.price.currency)
         : null;
 
     return (
@@ -198,10 +155,7 @@ function HeroSystemPanel({
 
             <div className="rounded-[2rem] border bg-card p-3 shadow-[0_30px_100px_-45px_rgba(0,0,0,0.4)]">
                 <SystemVisual
-                    name={
-                        system?.name ??
-                        'Custom gaming PC'
-                    }
+                    name={system?.name ?? 'Custom gaming PC'}
                     image={system?.image ?? null}
                     eager
                     className="rounded-[1.5rem]"
@@ -216,11 +170,7 @@ function HeroSystemPanel({
                                         variant="outline"
                                         className="mb-3 rounded-full font-normal"
                                     >
-                                        {
-                                            system
-                                                .availability
-                                                .label
-                                        }
+                                        {system.availability.label}
                                     </Badge>
 
                                     <h2 className="text-xl font-semibold">
@@ -234,8 +184,7 @@ function HeroSystemPanel({
                                     </p>
 
                                     <p className="mt-1 text-xl font-semibold">
-                                        {price ??
-                                            'Price on request'}
+                                        {price ?? 'Price on request'}
                                     </p>
                                 </div>
                             </div>
@@ -243,34 +192,22 @@ function HeroSystemPanel({
                             <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 border-t pt-6">
                                 <HeroSpecification
                                     label="Processor"
-                                    component={
-                                        system.components
-                                            .processor
-                                    }
+                                    component={system.components.processor}
                                 />
 
                                 <HeroSpecification
                                     label="Graphics"
-                                    component={
-                                        system.components
-                                            .graphics_card
-                                    }
+                                    component={system.components.graphics_card}
                                 />
 
                                 <HeroSpecification
                                     label="Memory"
-                                    component={
-                                        system.components
-                                            .memory
-                                    }
+                                    component={system.components.memory}
                                 />
 
                                 <HeroSpecification
                                     label="Storage"
-                                    component={
-                                        system.components
-                                            .storage
-                                    }
+                                    component={system.components.storage}
                                 />
                             </div>
                         </>
@@ -281,8 +218,7 @@ function HeroSystemPanel({
                             </p>
 
                             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                                Featured systems will
-                                appear here after they are
+                                Featured systems will appear here after they are
                                 published in the catalogue.
                             </p>
                         </div>
@@ -302,28 +238,18 @@ function HeroSpecification({
 }) {
     return (
         <div className="min-w-0">
-            <p className="text-xs text-muted-foreground">
-                {label}
-            </p>
+            <p className="text-xs text-muted-foreground">{label}</p>
 
             <p className="mt-1 truncate text-sm font-medium">
-                {component?.name ??
-                    'To be confirmed'}
+                {component?.name ?? 'To be confirmed'}
             </p>
         </div>
     );
 }
 
-function FeaturedSystemsSection({
-    systems,
-}: {
-    systems: FeaturedSystem[];
-}) {
+function FeaturedSystemsSection({ systems }: { systems: FeaturedSystem[] }) {
     return (
-        <section
-            id="featured-systems"
-            className="scroll-mt-24 py-20 sm:py-24"
-        >
+        <section id="featured-systems" className="scroll-mt-24 py-20 sm:py-24">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
                     <div className="max-w-2xl">
@@ -332,22 +258,16 @@ function FeaturedSystemsSection({
                         </p>
 
                         <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-                            Choose your performance
-                            level
+                            Choose your performance level
                         </h2>
 
                         <p className="mt-4 text-base leading-7 text-muted-foreground">
-                            Each system is a configurable
-                            foundation. Change the
-                            components without starting
-                            from an empty build.
+                            Each system is a configurable foundation. Change the
+                            components without starting from an empty build.
                         </p>
                     </div>
 
-                    <Button
-                        variant="outline"
-                        asChild
-                    >
+                    <Button variant="outline" asChild>
                         <Link href="/gaming-pcs">
                             View all systems
                             <ArrowRight className="size-4" />
@@ -358,10 +278,7 @@ function FeaturedSystemsSection({
                 {systems.length > 0 ? (
                     <div className="mt-10 grid gap-6 lg:grid-cols-3">
                         {systems.map((system) => (
-                            <SystemCard
-                                key={system.id}
-                                system={system}
-                            />
+                            <SystemCard key={system.id} system={system} />
                         ))}
                     </div>
                 ) : (
@@ -371,9 +288,8 @@ function FeaturedSystemsSection({
                         </h3>
 
                         <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                            Publish systems and mark them
-                            as featured to show them on
-                            the homepage.
+                            Publish systems and mark them as featured to show
+                            them on the homepage.
                         </p>
                     </div>
                 )}
@@ -392,17 +308,13 @@ function ProcessSection() {
                     </p>
 
                     <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-                        From configuration to completed
-                        system
+                        From configuration to completed system
                     </h2>
                 </div>
 
                 <div className="mt-12 grid gap-8 lg:grid-cols-3">
                     {processSteps.map((step) => (
-                        <article
-                            key={step.number}
-                            className="border-t pt-6"
-                        >
+                        <article key={step.number} className="border-t pt-6">
                             <p className="font-mono text-sm text-muted-foreground">
                                 {step.number}
                             </p>
@@ -467,24 +379,18 @@ function CallToActionSection() {
                         </div>
 
                         <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-                            Start with a solid base.
-                            Make it yours.
+                            Start with a solid base. Make it yours.
                         </h2>
 
                         <p className="mt-4 max-w-xl leading-7 text-background/70">
-                            Select your system and adjust
-                            every major component while
-                            compatibility and availability
-                            are checked in the background.
+                            Select your system and adjust every major component
+                            while compatibility and availability are checked in
+                            the background.
                         </p>
                     </div>
 
                     <div className="mt-8 flex shrink-0 flex-col gap-3 sm:flex-row lg:mt-0">
-                        <Button
-                            size="lg"
-                            variant="secondary"
-                            asChild
-                        >
+                        <Button size="lg" variant="secondary" asChild>
                             <Link href="/configure">
                                 Open configurator
                                 <ArrowRight className="size-4" />

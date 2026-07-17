@@ -50,10 +50,7 @@ type ConfiguratorGroupProps = {
     requestPending: boolean;
     pendingVariantId: number | null;
 
-    onSelect: (
-        group: ConfiguratorGroup,
-        option: ConfiguratorOption,
-    ) => void;
+    onSelect: (group: ConfiguratorGroup, option: ConfiguratorOption) => void;
 };
 
 export function ConfiguratorGroupSection({
@@ -62,14 +59,9 @@ export function ConfiguratorGroupSection({
     pendingVariantId,
     onSelect,
 }: ConfiguratorGroupProps) {
-    const Icon =
-        slotIcons[group.slot]
-        ?? Package;
+    const Icon = slotIcons[group.slot] ?? Package;
 
-    const currency =
-        group.selected
-            ?.price.currency
-        ?? 'EUR';
+    const currency = group.selected?.price.currency ?? 'EUR';
 
     return (
         <AccordionItem
@@ -85,11 +77,9 @@ export function ConfiguratorGroupSection({
 
                     <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                            <h2 className="font-semibold">
-                                {group.label}
-                            </h2>
+                            <h2 className="font-semibold">{group.label}</h2>
 
-                            {! group.is_replaceable && (
+                            {!group.is_replaceable && (
                                 <Badge
                                     variant="outline"
                                     className="rounded-full font-normal"
@@ -98,24 +88,19 @@ export function ConfiguratorGroupSection({
                                 </Badge>
                             )}
 
-                            {group.issues.length
-                                > 0 && (
+                            {group.issues.length > 0 && (
                                 <Badge
                                     variant="destructive"
                                     className="rounded-full"
                                 >
                                     <TriangleAlert className="size-3" />
-                                    {
-                                        group.issues
-                                            .length
-                                    }
+                                    {group.issues.length}
                                 </Badge>
                             )}
                         </div>
 
                         <p className="mt-1 truncate text-sm font-normal text-muted-foreground">
-                            {group.selected?.name
-                                ?? 'No component selected'}
+                            {group.selected?.name ?? 'No component selected'}
                         </p>
                     </div>
 
@@ -125,13 +110,11 @@ export function ConfiguratorGroupSection({
                         </p>
 
                         <p className="mt-1 text-sm font-medium">
-                            {group
-                                .selected_price_change_from_base_in_cents
-                                === 0
+                            {group.selected_price_change_from_base_in_cents ===
+                            0
                                 ? 'Included'
                                 : formatSignedMoney(
-                                      group
-                                          .selected_price_change_from_base_in_cents,
+                                      group.selected_price_change_from_base_in_cents,
                                       currency,
                                   )}
                         </p>
@@ -139,73 +122,51 @@ export function ConfiguratorGroupSection({
                 </div>
             </AccordionTrigger>
 
-            <AccordionContent className="border-t px-5 pb-6 pt-5 sm:px-6">
+            <AccordionContent className="border-t px-5 pt-5 pb-6 sm:px-6">
                 <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
                     {group.description}
                 </p>
 
                 {group.issues.length > 0 && (
                     <div className="mt-4 space-y-2">
-                        {group.issues.map(
-                            (issue) => (
-                                <div
-                                    key={
-                                        issue.rule_key
-                                    }
-                                    className="flex gap-3 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm"
-                                >
-                                    <TriangleAlert className="mt-0.5 size-4 shrink-0 text-destructive" />
+                        {group.issues.map((issue) => (
+                            <div
+                                key={issue.rule_key}
+                                className="flex gap-3 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm"
+                            >
+                                <TriangleAlert className="mt-0.5 size-4 shrink-0 text-destructive" />
 
-                                    <p className="leading-6">
-                                        {
-                                            issue.message
-                                        }
-                                    </p>
-                                </div>
-                            ),
-                        )}
+                                <p className="leading-6">{issue.message}</p>
+                            </div>
+                        ))}
                     </div>
                 )}
 
                 {group.can_edit && (
                     <p className="mt-5 text-xs text-muted-foreground">
-                        Price differences show the
-                        immediate change against your
+                        Price differences show the immediate change against your
                         current selection.
                     </p>
                 )}
 
                 <div className="mt-5 grid gap-3 xl:grid-cols-2">
-                    {group.options.map(
-                        (option) => (
-                            <ComponentOptionCard
-                                key={option.id}
-                                option={option}
-                                disabled={
-                                    requestPending
-                                    || ! group.can_edit
-                                }
-                                pending={
-                                    pendingVariantId
-                                    === option.id
-                                }
-                                onSelect={(
-                                    selectedOption,
-                                ) =>
-                                    onSelect(
-                                        group,
-                                        selectedOption,
-                                    )
-                                }
-                            />
-                        ),
-                    )}
+                    {group.options.map((option) => (
+                        <ComponentOptionCard
+                            key={option.id}
+                            option={option}
+                            disabled={requestPending || !group.can_edit}
+                            pending={pendingVariantId === option.id}
+                            onSelect={(selectedOption) =>
+                                onSelect(group, selectedOption)
+                            }
+                        />
+                    ))}
                 </div>
 
-                {! group.can_edit && (
+                {!group.can_edit && (
                     <p className="mt-4 text-xs text-muted-foreground">
-                        This component is part of the
-                        fixed starting configuration.
+                        This component is part of the fixed starting
+                        configuration.
                     </p>
                 )}
             </AccordionContent>

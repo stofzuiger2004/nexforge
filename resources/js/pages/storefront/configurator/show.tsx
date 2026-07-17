@@ -1,21 +1,11 @@
-import {
-    Head,
-    Link,
-    router,
-} from '@inertiajs/react';
-import {
-    Check,
-    ChevronRight,
-    CircleAlert,
-} from 'lucide-react';
+import { Head, Link, router } from '@inertiajs/react';
+import { Check, ChevronRight, CircleAlert } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { ConfigurationSummary } from '@/components/configurator/configuration-summary';
 import { ConfiguratorGroupSection } from '@/components/configurator/configurator-group';
 import { MobileConfigurationSummary } from '@/components/configurator/mobile-configuration-summary';
-import {
-    Accordion,
-} from '@/components/ui/accordion';
+import { Accordion } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import StorefrontLayout from '@/layouts/storefront-layout';
 import type {
@@ -34,63 +24,38 @@ export default function ConfiguratorShow({
     configuration,
     groups,
 }: ConfiguratorPageProps) {
-    const [
-        pendingSelection,
-        setPendingSelection,
-    ] = useState<PendingSelection | null>(
-        null,
-    );
+    const [pendingSelection, setPendingSelection] =
+        useState<PendingSelection | null>(null);
 
-    const [
-        requestError,
-        setRequestError,
-    ] = useState<string | null>(
-        null,
-    );
+    const [requestError, setRequestError] = useState<string | null>(null);
 
-    const defaultOpenGroups = useMemo(
-        () => {
-            const issueGroups = groups
-                .filter(
-                    (group) =>
-                        group.issues.length > 0,
-                )
-                .map(
-                    (group) => group.slot,
-                );
+    const defaultOpenGroups = useMemo(() => {
+        const issueGroups = groups
+            .filter((group) => group.issues.length > 0)
+            .map((group) => group.slot);
 
-            if (issueGroups.length > 0) {
-                return issueGroups;
-            }
+        if (issueGroups.length > 0) {
+            return issueGroups;
+        }
 
-            return groups[0]
-                ? [groups[0].slot]
-                : [];
-        },
-        [groups],
-    );
+        return groups[0] ? [groups[0].slot] : [];
+    }, [groups]);
 
     const displayedTotalInCents =
-        configuration.pricing
-            .total_in_cents
-        + (
-            pendingSelection
-                ?.priceDeltaInCents
-            ?? 0
-        );
+        configuration.pricing.total_in_cents +
+        (pendingSelection?.priceDeltaInCents ?? 0);
 
-    const requestPending =
-        pendingSelection !== null;
+    const requestPending = pendingSelection !== null;
 
     function selectOption(
         group: ConfiguratorGroup,
         option: ConfiguratorOption,
     ) {
         if (
-            requestPending
-            || ! group.can_edit
-            || option.is_selected
-            || ! option.selectable
+            requestPending ||
+            !group.can_edit ||
+            option.is_selected ||
+            !option.selectable
         ) {
             return;
         }
@@ -101,9 +66,7 @@ export default function ConfiguratorShow({
             slot: group.slot,
             variantId: option.id,
 
-            priceDeltaInCents:
-                option.price
-                    .delta_from_current_in_cents,
+            priceDeltaInCents: option.price.delta_from_current_in_cents,
         });
 
         router.patch(
@@ -117,12 +80,10 @@ export default function ConfiguratorShow({
                 preserveState: true,
 
                 onError: (errors) => {
-                    const variantError =
-                        errors.variant_id;
+                    const variantError = errors.variant_id;
 
                     setRequestError(
-                        typeof variantError
-                            === 'string'
+                        typeof variantError === 'string'
                             ? variantError
                             : 'The component could not be selected.',
                     );
@@ -137,32 +98,16 @@ export default function ConfiguratorShow({
 
     return (
         <StorefrontLayout>
-            <Head
-                title={`Configure ${configuration.source_system.name}`}
-            />
+            <Head title={`Configure ${configuration.source_system.name}`} />
 
             <ConfiguratorHeader
-                configurationName={
-                    configuration.name
-                }
-                systemName={
-                    configuration
-                        .source_system
-                        .name
-                }
-                systemUrl={
-                    configuration
-                        .source_system
-                        .details_url
-                }
-                status={
-                    configuration
-                        .validation
-                        .status
-                }
+                configurationName={configuration.name}
+                systemName={configuration.source_system.name}
+                systemUrl={configuration.source_system.details_url}
+                status={configuration.validation.status}
             />
 
-            <section className="pb-32 pt-10 lg:pb-20">
+            <section className="pt-10 pb-32 lg:pb-20">
                 <div className="mx-auto grid max-w-7xl items-start gap-8 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_23rem] lg:px-8">
                     <div>
                         <div className="mb-8">
@@ -175,11 +120,9 @@ export default function ConfiguratorShow({
                             </h2>
 
                             <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-                                Select an option in each
-                                section. Price differences
-                                show exactly how that
-                                choice changes your
-                                current total.
+                                Select an option in each section. Price
+                                differences show exactly how that choice changes
+                                your current total.
                             </p>
                         </div>
 
@@ -187,37 +130,26 @@ export default function ConfiguratorShow({
                             <div className="mb-5 flex gap-3 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm">
                                 <CircleAlert className="mt-0.5 size-4 shrink-0 text-destructive" />
 
-                                <p>
-                                    {requestError}
-                                </p>
+                                <p>{requestError}</p>
                             </div>
                         )}
 
                         <Accordion
                             type="multiple"
-                            defaultValue={
-                                defaultOpenGroups
-                            }
+                            defaultValue={defaultOpenGroups}
                             className="space-y-4"
                         >
                             {groups.map((group) => (
                                 <ConfiguratorGroupSection
                                     key={group.slot}
                                     group={group}
-                                    requestPending={
-                                        requestPending
-                                    }
+                                    requestPending={requestPending}
                                     pendingVariantId={
-                                        pendingSelection
-                                            ?.slot
-                                        === group.slot
-                                            ? pendingSelection
-                                                  .variantId
+                                        pendingSelection?.slot === group.slot
+                                            ? pendingSelection.variantId
                                             : null
                                     }
-                                    onSelect={
-                                        selectOption
-                                    }
+                                    onSelect={selectOption}
                                 />
                             ))}
                         </Accordion>
@@ -226,16 +158,10 @@ export default function ConfiguratorShow({
                     <aside className="hidden lg:block">
                         <div className="sticky top-24">
                             <ConfigurationSummary
-                                configuration={
-                                    configuration
-                                }
+                                configuration={configuration}
                                 groups={groups}
-                                displayedTotalInCents={
-                                    displayedTotalInCents
-                                }
-                                saving={
-                                    requestPending
-                                }
+                                displayedTotalInCents={displayedTotalInCents}
+                                saving={requestPending}
                             />
                         </div>
                     </aside>
@@ -243,13 +169,9 @@ export default function ConfiguratorShow({
             </section>
 
             <MobileConfigurationSummary
-                configuration={
-                    configuration
-                }
+                configuration={configuration}
                 groups={groups}
-                displayedTotalInCents={
-                    displayedTotalInCents
-                }
+                displayedTotalInCents={displayedTotalInCents}
                 saving={requestPending}
             />
         </StorefrontLayout>
@@ -278,47 +200,32 @@ function ConfiguratorHeader({
                     aria-label="Breadcrumb"
                     className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground"
                 >
-                    <Link
-                        href="/"
-                        className="hover:text-foreground"
-                    >
+                    <Link href="/" className="hover:text-foreground">
                         Home
                     </Link>
 
                     <ChevronRight className="size-4" />
 
-                    <Link
-                        href="/gaming-pcs"
-                        className="hover:text-foreground"
-                    >
+                    <Link href="/gaming-pcs" className="hover:text-foreground">
                         Gaming PCs
                     </Link>
 
                     <ChevronRight className="size-4" />
 
-                    <Link
-                        href={systemUrl}
-                        className="hover:text-foreground"
-                    >
+                    <Link href={systemUrl} className="hover:text-foreground">
                         {systemName}
                     </Link>
 
                     <ChevronRight className="size-4" />
 
-                    <span
-                        className="text-foreground"
-                        aria-current="page"
-                    >
+                    <span className="text-foreground" aria-current="page">
                         Configure
                     </span>
                 </nav>
 
                 <div className="mt-7 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
                     <div>
-                        <Badge
-                            variant="outline"
-                            className="rounded-full"
-                        >
+                        <Badge variant="outline" className="rounded-full">
                             {isValid ? (
                                 <>
                                     <Check className="size-3" />
@@ -333,16 +240,13 @@ function ConfiguratorHeader({
                         </Badge>
 
                         <h1 className="mt-4 text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-                            Configure{' '}
-                            {configurationName}
+                            Configure {configurationName}
                         </h1>
 
                         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-                            Customize the starting
-                            system while pricing,
-                            compatibility, and component
-                            availability update after
-                            every selection.
+                            Customize the starting system while pricing,
+                            compatibility, and component availability update
+                            after every selection.
                         </p>
                     </div>
 
@@ -356,25 +260,15 @@ function ConfiguratorHeader({
 function ConfigurationSteps() {
     return (
         <ol className="flex items-center gap-2 text-xs">
-            <Step
-                number="1"
-                label="Configure"
-                active
-            />
+            <Step number="1" label="Configure" active />
 
             <span className="h-px w-5 bg-border" />
 
-            <Step
-                number="2"
-                label="Review"
-            />
+            <Step number="2" label="Review" />
 
             <span className="h-px w-5 bg-border" />
 
-            <Step
-                number="3"
-                label="Payment"
-            />
+            <Step number="3" label="Payment" />
         </ol>
     );
 }
@@ -400,13 +294,7 @@ function Step({
                 {number}
             </span>
 
-            <span
-                className={
-                    active
-                        ? 'font-medium'
-                        : 'text-muted-foreground'
-                }
-            >
+            <span className={active ? 'font-medium' : 'text-muted-foreground'}>
                 {label}
             </span>
         </li>

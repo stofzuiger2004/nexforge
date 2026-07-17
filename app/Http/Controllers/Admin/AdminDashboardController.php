@@ -22,9 +22,10 @@ class AdminDashboardController extends Controller
     public function __invoke(
         Request $request,
     ): Response {
-        Gate::authorize(
-            'admin.access',
-        );
+        Gate::authorize('admin.access');
+        $canViewPayments = Gate::allows('payments.view');
+
+        $revenueByCurrency = $canViewPayments ? $this->revenueByCurrency() : [];
 
         $recentOrders = $this
             ->baseOrderListQuery()
@@ -98,60 +99,12 @@ class AdminDashboardController extends Controller
             ->limit(8)
             ->get();
 
-        $revenueByCurrency =
-            Order::query()
-                ->selectRaw(
-                    'currency,
-                    SUM(paid_in_cents) AS paid_total,
-                    SUM(refunded_in_cents) AS refunded_total,
-                    SUM(charged_back_in_cents) AS charged_back_total',
-                )
-                ->groupBy('currency')
-                ->get()
-                ->map(
-                    static function (
-                        Order $order,
-                    ): array {
-                        $paid = (int) (
-                            $order->paid_total
-                            ?? 0
-                        );
-
-                        $refunded = (int) (
-                            $order->refunded_total
-                            ?? 0
-                        );
-
-                        $chargedBack = (int) (
-                            $order
-                                ->charged_back_total
-                            ?? 0
-                        );
-
-                        return [
-                            'currency' => $order->currency,
-
-                            'paid_in_cents' => $paid,
-
-                            'refunded_in_cents' => $refunded,
-
-                            'charged_back_in_cents' => $chargedBack,
-
-                            'net_in_cents' => max(
-                                0,
-                                $paid
-                                    - $refunded
-                                    - $chargedBack,
-                            ),
-                        ];
-                    },
-                )
-                ->values()
-                ->all();
-
         return Inertia::render(
             'admin/dashboard',
             [
+                'can' => [
+                    'view_payments' => $canViewPayments
+                ],
                 'metrics' => [
                     'total_orders' => Order::query()->count(),
 
@@ -214,31 +167,59 @@ class AdminDashboardController extends Controller
                     $attentionOrders,
                     $request,
                 ),
+                
             ],
         );
     }
+    /**
+ * @return array<int, array{
+ *     currency: string,
+ *     paid_in_cents: int,
+ *     refunded_in_cents: int,
+ *     charged_back_in_cents: int,
+ *     net_in_cents: int
+ * }>
+ */
+private function revenueByCurrency(): array
+{
+    return Order::query()
+        ->selectRaw(
+            'currency,
+             SUM(paid_in_cents) AS paid_total,
+             SUM(refunded_in_cents) AS refunded_total,
+             SUM(charged_back_in_cents) AS charged_back_total',
+        )
+        ->groupBy('currency')
+        ->get()
+        ->map(static function (Order $order): array {
+            $paid = (int) ($order->paid_total ?? 0);
+            $refunded = (int) ($order->refunded_total ?? 0);
+            $chargedBack = (int) ($order->charged_back_total ?? 0);
+
+            return [
+                'currency' => $order->currency,
+                'paid_in_cents' => $paid,
+                'refunded_in_cents' => $refunded,
+                'charged_back_in_cents' => $chargedBack,
+                'net_in_cents' => max(
+                    0,
+                    $paid - $refunded - $chargedBack,
+                ),
+            ];
+        })
+        ->values()
+        ->all();
+}
 
     /**
      * @return Builder<Order>
      */
     private function baseOrderListQuery(): Builder
-    {
-        return Order::query()
-            ->with([
-                'user:id,name,email',
-
-                'latestPayment' => static fn ($query) => $query->select([
-                    'payments.id',
-                    'payments.order_id',
-                    'payments.provider',
-                    'payments.provider_payment_id',
-                    'payments.status',
-                    'payments.method',
-                    'payments.created_at',
-                ]),
-            ])
-            ->withCount('items');
-    }
+{
+    return Order::query()
+        ->with('user:id,name,email')
+        ->withCount('items');
+}
 
     /**
      * @return array<int, array<string, mixed>>

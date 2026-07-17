@@ -1,3 +1,4 @@
+import { router } from '@inertiajs/react';
 import {
     Check,
     CircleAlert,
@@ -7,8 +8,6 @@ import {
     TriangleAlert,
 } from 'lucide-react';
 import { useState } from 'react';
-
-import { router } from '@inertiajs/react';
 
 import { SystemVisual } from '@/components/storefront/system-visual';
 import { Button } from '@/components/ui/button';
@@ -22,10 +21,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
-import {
-    formatMoney,
-    formatSignedMoney,
-} from '@/lib/money';
+import { formatMoney, formatSignedMoney } from '@/lib/money';
 import type {
     ConfiguratorConfiguration,
     ConfiguratorGroup,
@@ -48,32 +44,20 @@ export function ConfigurationSummary({
     saving,
     compact = false,
 }: ConfigurationSummaryProps) {
-    const [reviewOpen, setReviewOpen] =
-        useState(false);
+    const [reviewOpen, setReviewOpen] = useState(false);
 
-    const currency =
-        configuration.pricing.currency;
+    const currency = configuration.pricing.currency;
 
     const componentChange =
-        displayedTotalInCents
-        - configuration.pricing
-            .base_price_in_cents;
+        displayedTotalInCents - configuration.pricing.base_price_in_cents;
 
     return (
         <div className="rounded-2xl border bg-background p-5 shadow-sm sm:p-6">
-            {! compact && (
+            {!compact && (
                 <>
                     <SystemVisual
-                        name={
-                            configuration
-                                .source_system
-                                .name
-                        }
-                        image={
-                            configuration
-                                .source_system
-                                .image
-                        }
+                        name={configuration.source_system.name}
+                        image={configuration.source_system.image}
                         className="aspect-[16/9] rounded-xl"
                     />
 
@@ -95,8 +79,7 @@ export function ConfigurationSummary({
                 <PriceRow
                     label="Base system"
                     value={formatMoney(
-                        configuration.pricing
-                            .base_price_in_cents,
+                        configuration.pricing.base_price_in_cents,
                         currency,
                     )}
                 />
@@ -106,10 +89,7 @@ export function ConfigurationSummary({
                     value={
                         componentChange === 0
                             ? 'Included'
-                            : formatSignedMoney(
-                                  componentChange,
-                                  currency,
-                              )
+                            : formatSignedMoney(componentChange, currency)
                     }
                 />
 
@@ -117,23 +97,17 @@ export function ConfigurationSummary({
 
                 <div className="flex items-end justify-between gap-4">
                     <div>
-                        <p className="font-medium">
-                            Total
-                        </p>
+                        <p className="font-medium">Total</p>
 
                         <p className="mt-1 text-xs text-muted-foreground">
-                            {configuration.pricing
-                                .prices_include_tax
+                            {configuration.pricing.prices_include_tax
                                 ? 'Including tax'
                                 : 'Excluding tax'}
                         </p>
                     </div>
 
                     <p className="text-2xl font-semibold tracking-tight">
-                        {formatMoney(
-                            displayedTotalInCents,
-                            currency,
-                        )}
+                        {formatMoney(displayedTotalInCents, currency)}
                     </p>
                 </div>
             </div>
@@ -143,22 +117,14 @@ export function ConfigurationSummary({
             <SaveStatus saving={saving} />
 
             <div className="mt-5">
-                <ValidationStatus
-                    configuration={
-                        configuration
-                    }
-                />
+                <ValidationStatus configuration={configuration} />
             </div>
 
             <div className="mt-5">
-                <AvailabilityStatus
-                    configuration={
-                        configuration
-                    }
-                />
+                <AvailabilityStatus configuration={configuration} />
             </div>
 
-            {! compact && (
+            {!compact && (
                 <>
                     <Separator className="my-5" />
 
@@ -168,77 +134,48 @@ export function ConfigurationSummary({
                         </h3>
 
                         <div className="mt-4 space-y-3">
-                            {groups.map(
-                                (group) => (
-                                    <a
-                                        key={
-                                            group.slot
-                                        }
-                                        href={`#group-${group.slot}`}
-                                        className="flex items-start justify-between gap-4 text-sm"
-                                    >
-                                        <span className="text-muted-foreground">
-                                            {
-                                                group.label
-                                            }
-                                        </span>
+                            {groups.map((group) => (
+                                <a
+                                    key={group.slot}
+                                    href={`#group-${group.slot}`}
+                                    className="flex items-start justify-between gap-4 text-sm"
+                                >
+                                    <span className="text-muted-foreground">
+                                        {group.label}
+                                    </span>
 
-                                        <span className="max-w-[13rem] truncate text-right font-medium">
-                                            {group
-                                                .selected
-                                                ?.name
-                                                ?? 'Not selected'}
-                                        </span>
-                                    </a>
-                                ),
-                            )}
+                                    <span className="max-w-[13rem] truncate text-right font-medium">
+                                        {group.selected?.name ?? 'Not selected'}
+                                    </span>
+                                </a>
+                            ))}
                         </div>
                     </div>
                 </>
             )}
 
             <ReviewDialog
-                configuration={
-                    configuration
-                }
+                configuration={configuration}
                 groups={groups}
-                displayedTotalInCents={
-                    displayedTotalInCents
-                }
+                displayedTotalInCents={displayedTotalInCents}
                 open={reviewOpen}
-                onOpenChange={
-                    setReviewOpen
-                }
+                onOpenChange={setReviewOpen}
             />
         </div>
     );
 }
 
-function PriceRow({
-    label,
-    value,
-}: {
-    label: string;
-    value: string;
-}) {
+function PriceRow({ label, value }: { label: string; value: string }) {
     return (
         <div className="flex justify-between gap-4">
-            <span className="text-muted-foreground">
-                {label}
-            </span>
+            <span className="text-muted-foreground">{label}</span>
 
-            <span className="font-medium">
-                {value}
-            </span>
+            <span className="font-medium">{value}</span>
         </div>
     );
 }
 
-function SaveStatus({
-    saving,
-}: {
-    saving: boolean;
-}) {
+function SaveStatus({ saving }: { saving: boolean }) {
     return (
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
             {saving ? (
@@ -261,14 +198,11 @@ function ValidationStatus({
 }: {
     configuration: ConfiguratorConfiguration;
 }) {
-    const errors =
-        configuration.validation.errors;
+    const errors = configuration.validation.errors;
 
     if (
-        configuration.validation.status
-        === 'valid'
-        && configuration.validation
-            .is_current
+        configuration.validation.status === 'valid' &&
+        configuration.validation.is_current
     ) {
         return (
             <div className="rounded-xl border bg-muted/25 p-4">
@@ -281,8 +215,7 @@ function ValidationStatus({
                         </p>
 
                         <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                            The selected components
-                            passed the current
+                            The selected components passed the current
                             compatibility checks.
                         </p>
                     </div>
@@ -317,41 +250,29 @@ function AvailabilityStatus({
 }: {
     configuration: ConfiguratorConfiguration;
 }) {
-    const availability =
-        configuration.availability;
+    const availability = configuration.availability;
 
     return (
         <div className="flex items-start gap-3 text-sm">
-            {availability.status
-                === 'unavailable' ? (
+            {availability.status === 'unavailable' ? (
                 <TriangleAlert className="mt-0.5 size-4 shrink-0 text-destructive" />
             ) : (
                 <Check className="mt-0.5 size-4 shrink-0" />
             )}
 
             <div>
-                <p className="font-medium">
-                    {availability.label}
-                </p>
+                <p className="font-medium">{availability.label}</p>
 
-                {availability.available_builds
-                    !== null
-                    && availability.available_builds
-                        > 0 && (
-                    <p className="mt-1 text-xs text-muted-foreground">
-                        {
-                            availability
-                                .available_builds
-                        }{' '}
-                        complete build
-                        {availability
-                            .available_builds
-                            === 1
-                            ? ''
-                            : 's'}{' '}
-                        currently available.
-                    </p>
-                )}
+                {availability.available_builds !== null &&
+                    availability.available_builds > 0 && (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            {availability.available_builds} complete build
+                            {availability.available_builds === 1
+                                ? ''
+                                : 's'}{' '}
+                            currently available.
+                        </p>
+                    )}
             </div>
         </div>
     );
@@ -372,11 +293,9 @@ function ReviewDialog({
     open,
     onOpenChange,
 }: ReviewDialogProps) {
-    const [processing, setProcessing] =
-        useState(false);
+    const [processing, setProcessing] = useState(false);
 
-    const [error, setError] =
-        useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     function continueToReview() {
         setError(null);
@@ -385,19 +304,15 @@ function ReviewDialog({
             `/configure/${configuration.public_id}/review`,
             {},
             {
-                onStart: () =>
-                    setProcessing(true),
+                onStart: () => setProcessing(true),
 
-                onFinish: () =>
-                    setProcessing(false),
+                onFinish: () => setProcessing(false),
 
                 onError: (errors) => {
-                    const configurationError =
-                        errors.configuration;
+                    const configurationError = errors.configuration;
 
                     setError(
-                        typeof configurationError
-                            === 'string'
+                        typeof configurationError === 'string'
                             ? configurationError
                             : 'The configuration could not be prepared for review.',
                     );
@@ -407,17 +322,12 @@ function ReviewDialog({
     }
 
     return (
-        <Dialog
-            open={open}
-            onOpenChange={onOpenChange}
-        >
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogTrigger asChild>
                 <Button
                     type="button"
                     className="mt-6 w-full"
-                    disabled={
-                        ! configuration.can_review
-                    }
+                    disabled={!configuration.can_review}
                 >
                     Review and reserve stock
                 </Button>
@@ -425,14 +335,11 @@ function ReviewDialog({
 
             <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
                 <DialogHeader>
-                    <DialogTitle>
-                        Review your configuration
-                    </DialogTitle>
+                    <DialogTitle>Review your configuration</DialogTitle>
 
                     <DialogDescription>
-                        The selected components will be
-                        validated again and temporarily
-                        reserved before checkout.
+                        The selected components will be validated again and
+                        temporarily reserved before checkout.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -447,23 +354,19 @@ function ReviewDialog({
                             </span>
 
                             <span className="text-right text-sm font-medium">
-                                {group.selected?.name
-                                    ?? 'Not selected'}
+                                {group.selected?.name ?? 'Not selected'}
                             </span>
                         </div>
                     ))}
                 </div>
 
                 <div className="flex items-center justify-between border-t pt-5">
-                    <span className="font-medium">
-                        Current total
-                    </span>
+                    <span className="font-medium">Current total</span>
 
                     <span className="text-2xl font-semibold">
                         {formatMoney(
                             displayedTotalInCents,
-                            configuration.pricing
-                                .currency,
+                            configuration.pricing.currency,
                         )}
                     </span>
                 </div>
@@ -479,9 +382,7 @@ function ReviewDialog({
                         type="button"
                         variant="outline"
                         disabled={processing}
-                        onClick={() =>
-                            onOpenChange(false)
-                        }
+                        onClick={() => onOpenChange(false)}
                     >
                         Continue configuring
                     </Button>

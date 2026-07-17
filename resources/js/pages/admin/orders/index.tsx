@@ -1,12 +1,5 @@
-import {
-    Head,
-    router,
-    useForm,
-} from '@inertiajs/react';
-import {
-    RotateCcw,
-    Search,
-} from 'lucide-react';
+import { Head, router, useForm } from '@inertiajs/react';
+import { RotateCcw, Search } from 'lucide-react';
 import type { FormEvent } from 'react';
 
 import { AdminPagination } from '@/components/admin/admin-pagination';
@@ -58,22 +51,15 @@ export default function OrdersIndex({
     const form = useForm<AdminOrderFilters>({
         search: filters.search ?? '',
         status: filters.status ?? '',
-        payment_status:
-            filters.payment_status ?? '',
-        fulfillment_status:
-            filters.fulfillment_status ?? '',
-        date_from:
-            filters.date_from ?? '',
-        date_to:
-            filters.date_to ?? '',
+        payment_status: filters.payment_status ?? '',
+        fulfillment_status: filters.fulfillment_status ?? '',
+        date_from: filters.date_from ?? '',
+        date_to: filters.date_to ?? '',
         sort: filters.sort,
-        per_page:
-            String(filters.per_page),
+        per_page: String(filters.per_page),
     });
 
-    function applyFilters(
-        event: FormEvent,
-    ) {
+    function applyFilters(event: FormEvent) {
         event.preventDefault();
 
         form.get('/admin/orders', {
@@ -106,87 +92,49 @@ export default function OrdersIndex({
             >
                 <div className="grid gap-4 lg:grid-cols-4">
                     <div className="relative lg:col-span-2">
-                        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
 
                         <Input
-                            value={
-                                form.data.search
-                            }
+                            value={form.data.search}
                             className="pl-9"
                             placeholder="Order, customer email, name, or payment ID"
                             onChange={(event) =>
-                                form.setData(
-                                    'search',
-                                    event.target
-                                        .value,
-                                )
+                                form.setData('search', event.target.value)
                             }
                         />
                     </div>
 
                     <FilterSelect
-                        value={
-                            form.data.status
-                        }
+                        value={form.data.status}
                         placeholder="All order statuses"
-                        options={
-                            filterOptions.statuses
-                        }
-                        onChange={(value) =>
-                            form.setData(
-                                'status',
-                                value,
-                            )
-                        }
+                        options={filterOptions.statuses}
+                        onChange={(value) => form.setData('status', value)}
                     />
 
                     <FilterSelect
-                        value={
-                            form.data
-                                .payment_status
-                        }
+                        value={form.data.payment_status}
                         placeholder="All payment statuses"
-                        options={
-                            filterOptions
-                                .payment_statuses
-                        }
+                        options={filterOptions.payment_statuses}
                         onChange={(value) =>
-                            form.setData(
-                                'payment_status',
-                                value,
-                            )
+                            form.setData('payment_status', value)
                         }
                     />
 
                     <FilterSelect
-                        value={
-                            form.data
-                                .fulfillment_status
-                        }
+                        value={form.data.fulfillment_status}
                         placeholder="All fulfilment statuses"
-                        options={
-                            filterOptions
-                                .fulfillment_statuses
-                        }
+                        options={filterOptions.fulfillment_statuses}
                         onChange={(value) =>
-                            form.setData(
-                                'fulfillment_status',
-                                value,
-                            )
+                            form.setData('fulfillment_status', value)
                         }
                     />
 
                     <Input
                         type="date"
-                        value={
-                            form.data.date_from
-                        }
+                        value={form.data.date_from}
                         aria-label="From date"
                         onChange={(event) =>
-                            form.setData(
-                                'date_from',
-                                event.target.value,
-                            )
+                            form.setData('date_from', event.target.value)
                         }
                     />
 
@@ -195,37 +143,22 @@ export default function OrdersIndex({
                         value={form.data.date_to}
                         aria-label="To date"
                         onChange={(event) =>
-                            form.setData(
-                                'date_to',
-                                event.target.value,
-                            )
+                            form.setData('date_to', event.target.value)
                         }
                     />
 
                     <FilterSelect
                         value={form.data.sort}
                         placeholder="Sort"
-                        options={
-                            filterOptions.sorts
-                        }
+                        options={filterOptions.sorts}
                         allowAll={false}
-                        onChange={(value) =>
-                            form.setData(
-                                'sort',
-                                value,
-                            )
-                        }
+                        onChange={(value) => form.setData('sort', value)}
                     />
 
                     <Select
-                        value={
-                            form.data.per_page
-                        }
+                        value={form.data.per_page}
                         onValueChange={(value) =>
-                            form.setData(
-                                'per_page',
-                                value,
-                            )
+                            form.setData('per_page', value)
                         }
                     >
                         <SelectTrigger>
@@ -233,18 +166,11 @@ export default function OrdersIndex({
                         </SelectTrigger>
 
                         <SelectContent>
-                            {filterOptions.per_page.map(
-                                (value) => (
-                                    <SelectItem
-                                        key={value}
-                                        value={String(
-                                            value,
-                                        )}
-                                    >
-                                        {value} per page
-                                    </SelectItem>
-                                ),
-                            )}
+                            {filterOptions.per_page.map((value) => (
+                                <SelectItem key={value} value={String(value)}>
+                                    {value} per page
+                                </SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
                 </div>
@@ -259,32 +185,22 @@ export default function OrdersIndex({
                         Reset
                     </Button>
 
-                    <Button type="submit">
-                        Apply filters
-                    </Button>
+                    <Button type="submit">Apply filters</Button>
                 </div>
             </form>
 
             <div className="mt-6">
                 <div className="mb-4 flex items-center justify-between">
                     <p className="text-sm text-muted-foreground">
-                        {orders.meta.total}{' '}
-                        order
-                        {orders.meta.total === 1
-                            ? ''
-                            : 's'}
+                        {orders.meta.total} order
+                        {orders.meta.total === 1 ? '' : 's'}
                     </p>
                 </div>
 
-                <OrdersTable
-                    orders={orders.data}
-                />
+                <OrdersTable orders={orders.data} />
 
                 <div className="mt-6">
-                    <AdminPagination
-                        meta={orders.meta}
-                        links={orders.links}
-                    />
+                    <AdminPagination meta={orders.meta} links={orders.links} />
                 </div>
             </div>
         </AdminLayout>
@@ -310,31 +226,18 @@ function FilterSelect({
         <Select
             value={value || 'all'}
             onValueChange={(selected) =>
-                onChange(
-                    selected === 'all'
-                        ? ''
-                        : selected,
-                )
+                onChange(selected === 'all' ? '' : selected)
             }
         >
             <SelectTrigger>
-                <SelectValue
-                    placeholder={placeholder}
-                />
+                <SelectValue placeholder={placeholder} />
             </SelectTrigger>
 
             <SelectContent>
-                {allowAll && (
-                    <SelectItem value="all">
-                        {placeholder}
-                    </SelectItem>
-                )}
+                {allowAll && <SelectItem value="all">{placeholder}</SelectItem>}
 
                 {options.map((option) => (
-                    <SelectItem
-                        key={option.value}
-                        value={option.value}
-                    >
+                    <SelectItem key={option.value} value={option.value}>
                         {option.label}
                     </SelectItem>
                 ))}

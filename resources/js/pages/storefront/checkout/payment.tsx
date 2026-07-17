@@ -1,12 +1,5 @@
-import {
-    Head,
-    Link,
-} from '@inertiajs/react';
-import {
-    Check,
-    ChevronRight,
-    CreditCard,
-} from 'lucide-react';
+import { Head, Link } from '@inertiajs/react';
+import { Check, ChevronRight, CreditCard } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -47,33 +40,22 @@ type PaymentPageProps = {
     };
 };
 
-export default function PaymentPage({
-    order,
-}: PaymentPageProps) {
+export default function PaymentPage({ order }: PaymentPageProps) {
     return (
         <StorefrontLayout>
-            <Head
-                title={`Payment for ${order.order_number}`}
-            />
+            <Head title={`Payment for ${order.order_number}`} />
 
             <section className="border-b bg-muted/20">
                 <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
                     <nav className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Link href="/">
-                            Home
-                        </Link>
+                        <Link href="/">Home</Link>
 
                         <ChevronRight className="size-4" />
 
-                        <span aria-current="page">
-                            Payment
-                        </span>
+                        <span aria-current="page">Payment</span>
                     </nav>
 
-                    <Badge
-                        variant="outline"
-                        className="mt-7 rounded-full"
-                    >
+                    <Badge variant="outline" className="mt-7 rounded-full">
                         <Check className="size-3" />
                         Order created
                     </Badge>
@@ -83,10 +65,8 @@ export default function PaymentPage({
                     </h1>
 
                     <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                        Order {order.order_number} was
-                        created and the selected
-                        components remain temporarily
-                        reserved.
+                        Order {order.order_number} was created and the selected
+                        components remain temporarily reserved.
                     </p>
                 </div>
             </section>
@@ -101,34 +81,27 @@ export default function PaymentPage({
 
                             <div>
                                 <h2 className="font-semibold">
-                                    Mollie payment comes
-                                    next
+                                    Mollie payment comes next
                                 </h2>
 
                                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                                    The order and inventory
-                                    records are now ready.
-                                    The next implementation
-                                    phase will create the
-                                    Mollie payment and
-                                    redirect the customer to
-                                    Mollie Checkout.
+                                    The order and inventory records are now
+                                    ready. The next implementation phase will
+                                    create the Mollie payment and redirect the
+                                    customer to Mollie Checkout.
                                 </p>
                             </div>
                         </div>
 
                         <div className="mt-6 rounded-xl border border-dashed p-5 text-sm text-muted-foreground">
-                            Do not enable this flow in
-                            production until the Mollie
-                            payment creation and webhook
-                            processing are connected.
+                            Do not enable this flow in production until the
+                            Mollie payment creation and webhook processing are
+                            connected.
                         </div>
                     </div>
 
                     <aside className="rounded-2xl border p-5">
-                        <p className="text-xs text-muted-foreground">
-                            Order
-                        </p>
+                        <p className="text-xs text-muted-foreground">Order</p>
 
                         <p className="mt-1 font-semibold">
                             {order.order_number}
@@ -149,10 +122,7 @@ export default function PaymentPage({
                             </span>
                         </div>
 
-                        <Button
-                            className="mt-6 w-full"
-                            disabled
-                        >
+                        <Button className="mt-6 w-full" disabled>
                             Pay with Mollie
                         </Button>
                     </aside>

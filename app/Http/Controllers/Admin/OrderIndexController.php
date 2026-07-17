@@ -30,20 +30,8 @@ class OrderIndexController extends Controller
             $request->filters();
 
         $query = Order::query()
-            ->with([
-                'user:id,name,email',
-
-                'latestPayment' => static fn ($query) => $query->select([
-                    'payments.id',
-                    'payments.order_id',
-                    'payments.provider',
-                    'payments.provider_payment_id',
-                    'payments.status',
-                    'payments.method',
-                    'payments.created_at',
-                ]),
-            ])
-            ->withCount('items');
+    ->with('user:id,name,email')
+    ->withCount('items');
 
         $orders = $orderQuery
             ->apply(

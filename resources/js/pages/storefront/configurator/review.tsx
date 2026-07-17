@@ -1,9 +1,4 @@
-import {
-    Head,
-    Link,
-    router,
-    useForm,
-} from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import {
     ArrowLeft,
     Check,
@@ -11,11 +6,8 @@ import {
     LoaderCircle,
     ShieldCheck,
 } from 'lucide-react';
-import {
-    useCallback,
-    useState,
-} from 'react';
-
+import { useCallback, useState } from 'react';
+import type { FormEvent } from 'react';
 import { AddressFields } from '@/components/checkout/address-fields';
 import { ReservationCountdown } from '@/components/configurator/reservation-countdown';
 import { SystemVisual } from '@/components/storefront/system-visual';
@@ -32,59 +24,39 @@ import type {
     ConfigurationReviewPageProps,
 } from '@/types/checkout';
 
-import type { FormEvent } from 'react';
+
 
 export default function ConfigurationReviewPage({
     review,
     checkout_defaults,
     countries,
 }: ConfigurationReviewPageProps) {
-    const [reservationExpired, setReservationExpired] =
-        useState(
-            review.reservation.is_expired,
-        );
-
-    const [refreshing, setRefreshing] =
-        useState(false);
-
-    const [returning, setReturning] =
-        useState(false);
-
-    const form = useForm<CheckoutFormData>(
-        checkout_defaults,
+    const [reservationExpired, setReservationExpired] = useState(
+        review.reservation.is_expired,
     );
 
-    const errors =
-        form.errors as Record<
-            string,
-            string
-        >;
+    const [refreshing, setRefreshing] = useState(false);
 
-    const markExpired = useCallback(
-        () => {
-            setReservationExpired(true);
-        },
-        [],
-    );
+    const [returning, setReturning] = useState(false);
 
-    function submit(
-        event: FormEvent,
-    ) {
+    const form = useForm<CheckoutFormData>(checkout_defaults);
+
+    const errors = form.errors as Record<string, string>;
+
+    const markExpired = useCallback(() => {
+        setReservationExpired(true);
+    }, []);
+
+    function submit(event: FormEvent) {
         event.preventDefault();
 
-        if (
-            reservationExpired
-            || ! review.can_submit
-        ) {
+        if (reservationExpired || !review.can_submit) {
             return;
         }
 
-        form.post(
-            `/configure/${review.configuration.public_id}/order`,
-            {
-                preserveScroll: 'errors',
-            },
-        );
+        form.post(`/configure/${review.configuration.public_id}/order`, {
+            preserveScroll: 'errors',
+        });
     }
 
     function refreshReservation() {
@@ -94,44 +66,30 @@ export default function ConfigurationReviewPage({
             {
                 preserveScroll: true,
 
-                onStart: () =>
-                    setRefreshing(true),
+                onStart: () => setRefreshing(true),
 
-                onFinish: () =>
-                    setRefreshing(false),
+                onFinish: () => setRefreshing(false),
             },
         );
     }
 
     function returnToConfigurator() {
-        router.delete(
-            `/configure/${review.configuration.public_id}/review`,
-            {
-                onStart: () =>
-                    setReturning(true),
+        router.delete(`/configure/${review.configuration.public_id}/review`, {
+            onStart: () => setReturning(true),
 
-                onFinish: () =>
-                    setReturning(false),
-            },
-        );
+            onFinish: () => setReturning(false),
+        });
     }
 
     return (
         <StorefrontLayout>
             <Head title="Review your configuration" />
 
-            <ReviewHeader
-                configurationName={
-                    review.configuration.name
-                }
-            />
+            <ReviewHeader configurationName={review.configuration.name} />
 
             <section className="py-10 sm:py-14">
                 <div className="mx-auto grid max-w-7xl items-start gap-8 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_23rem] lg:px-8">
-                    <form
-                        className="space-y-8"
-                        onSubmit={submit}
-                    >
+                    <form className="space-y-8" onSubmit={submit}>
                         <div className="rounded-2xl border p-5 sm:p-6">
                             <div className="flex items-start gap-4">
                                 <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-muted">
@@ -140,26 +98,19 @@ export default function ConfigurationReviewPage({
 
                                 <div>
                                     <h2 className="font-semibold">
-                                        {
-                                            review.validation
-                                                .label
-                                        }
+                                        {review.validation.label}
                                     </h2>
 
                                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                                        The component
-                                        selection passed
-                                        compatibility
-                                        validation before
-                                        stock was reserved.
+                                        The component selection passed
+                                        compatibility validation before stock
+                                        was reserved.
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <SelectedComponents
-                            review={review}
-                        />
+                        <SelectedComponents review={review} />
 
                         <section className="rounded-2xl border p-5 sm:p-6">
                             <div>
@@ -182,30 +133,19 @@ export default function ConfigurationReviewPage({
                                         id="checkout-email"
                                         type="email"
                                         autoComplete="email"
-                                        value={
-                                            form.data
-                                                .email
-                                        }
-                                        disabled={
-                                            form.processing
-                                        }
-                                        onChange={(
-                                            event,
-                                        ) =>
+                                        value={form.data.email}
+                                        disabled={form.processing}
+                                        onChange={(event) =>
                                             form.setData(
                                                 'email',
-                                                event
-                                                    .target
-                                                    .value,
+                                                event.target.value,
                                             )
                                         }
                                     />
 
                                     {errors.email && (
                                         <p className="text-xs text-destructive">
-                                            {
-                                                errors.email
-                                            }
+                                            {errors.email}
                                         </p>
                                     )}
                                 </div>
@@ -219,30 +159,19 @@ export default function ConfigurationReviewPage({
                                         id="checkout-phone"
                                         type="tel"
                                         autoComplete="tel"
-                                        value={
-                                            form.data
-                                                .phone
-                                        }
-                                        disabled={
-                                            form.processing
-                                        }
-                                        onChange={(
-                                            event,
-                                        ) =>
+                                        value={form.data.phone}
+                                        disabled={form.processing}
+                                        onChange={(event) =>
                                             form.setData(
                                                 'phone',
-                                                event
-                                                    .target
-                                                    .value,
+                                                event.target.value,
                                             )
                                         }
                                     />
 
                                     {errors.phone && (
                                         <p className="text-xs text-destructive">
-                                            {
-                                                errors.phone
-                                            }
+                                            {errors.phone}
                                         </p>
                                     )}
                                 </div>
@@ -261,27 +190,13 @@ export default function ConfigurationReviewPage({
                             <div className="mt-6">
                                 <AddressFields
                                     idPrefix="shipping"
-                                    value={
-                                        form.data
-                                            .shipping
-                                    }
-                                    countries={
-                                        countries
-                                    }
-                                    errors={
-                                        errors
-                                    }
+                                    value={form.data.shipping}
+                                    countries={countries}
+                                    errors={errors}
                                     fieldPrefix="shipping"
-                                    disabled={
-                                        form.processing
-                                    }
-                                    onChange={(
-                                        value,
-                                    ) =>
-                                        form.setData(
-                                            'shipping',
-                                            value,
-                                        )
+                                    disabled={form.processing}
+                                    onChange={(value) =>
+                                        form.setData('shipping', value)
                                     }
                                 />
                             </div>
@@ -291,20 +206,12 @@ export default function ConfigurationReviewPage({
                             <div className="flex items-start gap-3">
                                 <Checkbox
                                     id="billing-same"
-                                    checked={
-                                        form.data
-                                            .billing_same_as_shipping
-                                    }
-                                    disabled={
-                                        form.processing
-                                    }
-                                    onCheckedChange={(
-                                        checked,
-                                    ) =>
+                                    checked={form.data.billing_same_as_shipping}
+                                    disabled={form.processing}
+                                    onCheckedChange={(checked) =>
                                         form.setData(
                                             'billing_same_as_shipping',
-                                            checked
-                                                === true,
+                                            checked === true,
                                         )
                                     }
                                 />
@@ -314,21 +221,18 @@ export default function ConfigurationReviewPage({
                                         htmlFor="billing-same"
                                         className="cursor-pointer"
                                     >
-                                        Billing address is
-                                        the same as the
+                                        Billing address is the same as the
                                         shipping address
                                     </Label>
 
                                     <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                                        Disable this when
-                                        the invoice requires
-                                        a different address.
+                                        Disable this when the invoice requires a
+                                        different address.
                                     </p>
                                 </div>
                             </div>
 
-                            {! form.data
-                                .billing_same_as_shipping && (
+                            {!form.data.billing_same_as_shipping && (
                                 <div className="mt-7 border-t pt-7">
                                     <h2 className="mb-6 text-xl font-semibold">
                                         Billing address
@@ -336,27 +240,13 @@ export default function ConfigurationReviewPage({
 
                                     <AddressFields
                                         idPrefix="billing"
-                                        value={
-                                            form.data
-                                                .billing
-                                        }
-                                        countries={
-                                            countries
-                                        }
-                                        errors={
-                                            errors
-                                        }
+                                        value={form.data.billing}
+                                        countries={countries}
+                                        errors={errors}
                                         fieldPrefix="billing"
-                                        disabled={
-                                            form.processing
-                                        }
-                                        onChange={(
-                                            value,
-                                        ) =>
-                                            form.setData(
-                                                'billing',
-                                                value,
-                                            )
+                                        disabled={form.processing}
+                                        onChange={(value) =>
+                                            form.setData('billing', value)
                                         }
                                     />
                                 </div>
@@ -367,21 +257,10 @@ export default function ConfigurationReviewPage({
                             <div className="flex items-start gap-3">
                                 <Checkbox
                                     id="checkout-terms"
-                                    checked={
-                                        form.data
-                                            .terms
-                                    }
-                                    disabled={
-                                        form.processing
-                                    }
-                                    onCheckedChange={(
-                                        checked,
-                                    ) =>
-                                        form.setData(
-                                            'terms',
-                                            checked
-                                                === true,
-                                        )
+                                    checked={form.data.terms}
+                                    disabled={form.processing}
+                                    onCheckedChange={(checked) =>
+                                        form.setData('terms', checked === true)
                                     }
                                 />
 
@@ -390,8 +269,7 @@ export default function ConfigurationReviewPage({
                                         htmlFor="checkout-terms"
                                         className="cursor-pointer"
                                     >
-                                        I accept the terms
-                                        and privacy policy
+                                        I accept the terms and privacy policy
                                     </Label>
 
                                     <p className="mt-1 text-xs leading-5 text-muted-foreground">
@@ -414,9 +292,7 @@ export default function ConfigurationReviewPage({
 
                                     {errors.terms && (
                                         <p className="mt-2 text-xs text-destructive">
-                                            {
-                                                errors.terms
-                                            }
+                                            {errors.terms}
                                         </p>
                                     )}
                                 </div>
@@ -425,9 +301,7 @@ export default function ConfigurationReviewPage({
 
                         {errors.checkout && (
                             <p className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
-                                {
-                                    errors.checkout
-                                }
+                                {errors.checkout}
                             </p>
                         )}
 
@@ -435,20 +309,14 @@ export default function ConfigurationReviewPage({
                             <Button
                                 type="button"
                                 variant="outline"
-                                disabled={
-                                    returning
-                                    || form.processing
-                                }
-                                onClick={
-                                    returnToConfigurator
-                                }
+                                disabled={returning || form.processing}
+                                onClick={returnToConfigurator}
                             >
                                 {returning ? (
                                     <LoaderCircle className="size-4 animate-spin" />
                                 ) : (
                                     <ArrowLeft className="size-4" />
                                 )}
-
                                 Return to configuration
                             </Button>
 
@@ -456,9 +324,9 @@ export default function ConfigurationReviewPage({
                                 type="submit"
                                 size="lg"
                                 disabled={
-                                    form.processing
-                                    || reservationExpired
-                                    || ! review.can_submit
+                                    form.processing ||
+                                    reservationExpired ||
+                                    !review.can_submit
                                 }
                             >
                                 {form.processing ? (
@@ -475,19 +343,11 @@ export default function ConfigurationReviewPage({
 
                     <aside>
                         <div className="sticky top-24 space-y-4">
-                            <ReviewSummary
-                                review={review}
-                            />
+                            <ReviewSummary review={review} />
 
                             <ReservationCountdown
-                                expiresAt={
-                                    review
-                                        .reservation
-                                        .expires_at
-                                }
-                                onExpired={
-                                    markExpired
-                                }
+                                expiresAt={review.reservation.expires_at}
+                                onExpired={markExpired}
                             />
 
                             {reservationExpired && (
@@ -495,17 +355,12 @@ export default function ConfigurationReviewPage({
                                     type="button"
                                     variant="outline"
                                     className="w-full"
-                                    disabled={
-                                        refreshing
-                                    }
-                                    onClick={
-                                        refreshReservation
-                                    }
+                                    disabled={refreshing}
+                                    onClick={refreshReservation}
                                 >
                                     {refreshing && (
                                         <LoaderCircle className="size-4 animate-spin" />
                                     )}
-
                                     Refresh stock hold
                                 </Button>
                             )}
@@ -517,70 +372,45 @@ export default function ConfigurationReviewPage({
     );
 }
 
-function ReviewHeader({
-    configurationName,
-}: {
-    configurationName: string;
-}) {
+function ReviewHeader({ configurationName }: { configurationName: string }) {
     return (
         <section className="border-b bg-muted/20">
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <nav className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Link href="/">
-                        Home
-                    </Link>
+                    <Link href="/">Home</Link>
 
                     <ChevronRight className="size-4" />
 
-                    <span aria-current="page">
-                        Review
-                    </span>
+                    <span aria-current="page">Review</span>
                 </nav>
 
                 <div className="mt-7 flex flex-col justify-between gap-5 md:flex-row md:items-end">
                     <div>
-                        <Badge
-                            variant="outline"
-                            className="rounded-full"
-                        >
+                        <Badge variant="outline" className="rounded-full">
                             <Check className="size-3" />
                             Configuration complete
                         </Badge>
 
                         <h1 className="mt-4 text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-                            Review{' '}
-                            {configurationName}
+                            Review {configurationName}
                         </h1>
 
                         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-                            Confirm the selected
-                            components and provide the
-                            details required to create
-                            the order.
+                            Confirm the selected components and provide the
+                            details required to create the order.
                         </p>
                     </div>
 
                     <ol className="flex items-center gap-2 text-xs">
-                        <Step
-                            number="1"
-                            label="Configure"
-                            complete
-                        />
+                        <Step number="1" label="Configure" complete />
 
                         <span className="h-px w-5 bg-border" />
 
-                        <Step
-                            number="2"
-                            label="Review"
-                            active
-                        />
+                        <Step number="2" label="Review" active />
 
                         <span className="h-px w-5 bg-border" />
 
-                        <Step
-                            number="3"
-                            label="Payment"
-                        />
+                        <Step number="3" label="Payment" />
                     </ol>
                 </div>
             </div>
@@ -590,10 +420,7 @@ function ReviewHeader({
 
 function SelectedComponents({
     review,
-}: Pick<
-    ConfigurationReviewPageProps,
-    'review'
->) {
+}: Pick<ConfigurationReviewPageProps, 'review'>) {
     return (
         <section className="rounded-2xl border">
             <div className="p-5 sm:p-6">
@@ -607,51 +434,39 @@ function SelectedComponents({
             </div>
 
             <div className="divide-y border-t">
-                {review.components.map(
-                    (component) => (
-                        <div
-                            key={component.id}
-                            className="flex items-start justify-between gap-5 px-5 py-4 sm:px-6"
-                        >
-                            <div className="min-w-0">
-                                <p className="text-xs text-muted-foreground">
-                                    {
-                                        component.slot_label
-                                    }
-                                </p>
+                {review.components.map((component) => (
+                    <div
+                        key={component.id}
+                        className="flex items-start justify-between gap-5 px-5 py-4 sm:px-6"
+                    >
+                        <div className="min-w-0">
+                            <p className="text-xs text-muted-foreground">
+                                {component.slot_label}
+                            </p>
 
-                                <p className="mt-1 font-medium">
-                                    {component.name}
-                                </p>
+                            <p className="mt-1 font-medium">{component.name}</p>
 
-                                <p className="mt-1 text-xs text-muted-foreground">
-                                    SKU {component.sku}
-                                </p>
-                            </div>
-
-                            <div className="shrink-0 text-right">
-                                <p className="font-medium">
-                                    {formatMoney(
-                                        component
-                                            .line_total_in_cents,
-                                        review.pricing
-                                            .currency,
-                                    )}
-                                </p>
-
-                                {component.quantity
-                                    > 1 && (
-                                    <p className="mt-1 text-xs text-muted-foreground">
-                                        Quantity{' '}
-                                        {
-                                            component.quantity
-                                        }
-                                    </p>
-                                )}
-                            </div>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                                SKU {component.sku}
+                            </p>
                         </div>
-                    ),
-                )}
+
+                        <div className="shrink-0 text-right">
+                            <p className="font-medium">
+                                {formatMoney(
+                                    component.line_total_in_cents,
+                                    review.pricing.currency,
+                                )}
+                            </p>
+
+                            {component.quantity > 1 && (
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    Quantity {component.quantity}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                ))}
             </div>
         </section>
     );
@@ -659,12 +474,8 @@ function SelectedComponents({
 
 function ReviewSummary({
     review,
-}: Pick<
-    ConfigurationReviewPageProps,
-    'review'
->) {
-    const currency =
-        review.pricing.currency;
+}: Pick<ConfigurationReviewPageProps, 'review'>) {
+    const currency = review.pricing.currency;
 
     return (
         <div className="rounded-2xl border bg-background p-5 shadow-sm">
@@ -674,16 +485,13 @@ function ReviewSummary({
                 className="aspect-[16/9] rounded-xl"
             />
 
-            <h2 className="mt-5 font-semibold">
-                Order summary
-            </h2>
+            <h2 className="mt-5 font-semibold">Order summary</h2>
 
             <div className="mt-5 space-y-3 text-sm">
                 <PriceRow
                     label="Configuration"
                     value={formatMoney(
-                        review.pricing
-                            .configuration_total_in_cents,
+                        review.pricing.configuration_total_in_cents,
                         currency,
                     )}
                 />
@@ -691,13 +499,10 @@ function ReviewSummary({
                 <PriceRow
                     label="Shipping"
                     value={
-                        review.pricing
-                            .shipping_in_cents
-                            === 0
+                        review.pricing.shipping_in_cents === 0
                             ? 'Free'
                             : formatMoney(
-                                  review.pricing
-                                      .shipping_in_cents,
+                                  review.pricing.shipping_in_cents,
                                   currency,
                               )
                     }
@@ -707,13 +512,10 @@ function ReviewSummary({
 
                 <div className="flex items-end justify-between gap-4">
                     <div>
-                        <p className="font-medium">
-                            Total
-                        </p>
+                        <p className="font-medium">Total</p>
 
                         <p className="mt-1 text-xs text-muted-foreground">
-                            {review.pricing
-                                .prices_include_tax
+                            {review.pricing.prices_include_tax
                                 ? 'Including tax'
                                 : 'Excluding tax'}
                         </p>
@@ -721,8 +523,7 @@ function ReviewSummary({
 
                     <p className="text-2xl font-semibold">
                         {formatMoney(
-                            review.pricing
-                                .order_total_in_cents,
+                            review.pricing.order_total_in_cents,
                             currency,
                         )}
                     </p>
@@ -732,22 +533,12 @@ function ReviewSummary({
     );
 }
 
-function PriceRow({
-    label,
-    value,
-}: {
-    label: string;
-    value: string;
-}) {
+function PriceRow({ label, value }: { label: string; value: string }) {
     return (
         <div className="flex justify-between gap-4">
-            <span className="text-muted-foreground">
-                {label}
-            </span>
+            <span className="text-muted-foreground">{label}</span>
 
-            <span className="font-medium">
-                {value}
-            </span>
+            <span className="font-medium">{value}</span>
         </div>
     );
 }
@@ -772,20 +563,10 @@ function Step({
                         : 'grid size-7 place-items-center rounded-full border bg-background text-muted-foreground'
                 }
             >
-                {complete ? (
-                    <Check className="size-3.5" />
-                ) : (
-                    number
-                )}
+                {complete ? <Check className="size-3.5" /> : number}
             </span>
 
-            <span
-                className={
-                    active
-                        ? 'font-medium'
-                        : 'text-muted-foreground'
-                }
-            >
+            <span className={active ? 'font-medium' : 'text-muted-foreground'}>
                 {label}
             </span>
         </li>

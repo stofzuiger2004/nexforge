@@ -1,7 +1,4 @@
-import {
-    Head,
-    Link,
-} from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import {
     CircleAlert,
     Clock3,
@@ -18,6 +15,9 @@ import { formatMoney } from '@/lib/money';
 import type { AdminOrderListItem } from '@/types/admin';
 
 type DashboardProps = {
+    can: {
+        view_payments: boolean;
+    };
     metrics: {
         total_orders: number;
         orders_today: number;
@@ -45,6 +45,7 @@ type DashboardProps = {
 };
 
 export default function Dashboard({
+    can,
     metrics,
     statusBreakdown,
     recentOrders,
@@ -56,9 +57,7 @@ export default function Dashboard({
             description="Orders, payments, and fulfilment activity across the store."
             actions={
                 <Button asChild>
-                    <Link href="/admin/orders">
-                        View all orders
-                    </Link>
+                    <Link href="/admin/orders">View all orders</Link>
                 </Button>
             }
         >
@@ -86,21 +85,17 @@ export default function Dashboard({
                 <MetricCard
                     icon={PackageCheck}
                     label="Fulfilment queue"
-                    value={
-                        metrics.fulfillment_queue
-                    }
+                    value={metrics.fulfillment_queue}
                 />
 
                 <MetricCard
                     icon={CircleAlert}
                     label="Manual review"
                     value={metrics.manual_review}
-                    attention={
-                        metrics.manual_review > 0
-                    }
+                    attention={metrics.manual_review > 0}
                 />
             </div>
-
+            {can.view_payments && (
             <div className="mt-8 grid gap-6 xl:grid-cols-[1fr_24rem]">
                 <section className="rounded-2xl border bg-background p-5 sm:p-6">
                     <div className="flex items-center justify-between">
@@ -110,59 +105,50 @@ export default function Dashboard({
                             </h2>
 
                             <p className="mt-1 text-sm text-muted-foreground">
-                                Paid amounts less refunds
-                                and chargebacks.
+                                Paid amounts less refunds and chargebacks.
                             </p>
                         </div>
                     </div>
 
                     <div className="mt-6 space-y-5">
-                        {metrics
-                            .revenue_by_currency
-                            .length > 0 ? (
-                            metrics
-                                .revenue_by_currency
-                                .map((revenue) => (
-                                    <div
-                                        key={
-                                            revenue.currency
-                                        }
-                                        className="flex items-end justify-between border-b pb-5 last:border-0 last:pb-0"
-                                    >
-                                        <div>
-                                            <p className="text-sm text-muted-foreground">
-                                                {
-                                                    revenue.currency
-                                                }
-                                            </p>
+                        {metrics.revenue_by_currency.length > 0 ? (
+                            metrics.revenue_by_currency.map((revenue) => (
+                                <div
+                                    key={revenue.currency}
+                                    className="flex items-end justify-between border-b pb-5 last:border-0 last:pb-0"
+                                >
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">
+                                            {revenue.currency}
+                                        </p>
 
-                                            <p className="mt-1 text-3xl font-semibold">
-                                                {formatMoney(
-                                                    revenue.net_in_cents,
-                                                    revenue.currency,
-                                                )}
-                                            </p>
-                                        </div>
-
-                                        <div className="text-right text-xs text-muted-foreground">
-                                            <p>
-                                                Paid{' '}
-                                                {formatMoney(
-                                                    revenue.paid_in_cents,
-                                                    revenue.currency,
-                                                )}
-                                            </p>
-
-                                            <p className="mt-1">
-                                                Refunded{' '}
-                                                {formatMoney(
-                                                    revenue.refunded_in_cents,
-                                                    revenue.currency,
-                                                )}
-                                            </p>
-                                        </div>
+                                        <p className="mt-1 text-3xl font-semibold">
+                                            {formatMoney(
+                                                revenue.net_in_cents,
+                                                revenue.currency,
+                                            )}
+                                        </p>
                                     </div>
-                                ))
+
+                                    <div className="text-right text-xs text-muted-foreground">
+                                        <p>
+                                            Paid{' '}
+                                            {formatMoney(
+                                                revenue.paid_in_cents,
+                                                revenue.currency,
+                                            )}
+                                        </p>
+
+                                        <p className="mt-1">
+                                            Refunded{' '}
+                                            {formatMoney(
+                                                revenue.refunded_in_cents,
+                                                revenue.currency,
+                                            )}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))
                         ) : (
                             <p className="text-sm text-muted-foreground">
                                 No completed payments yet.
@@ -172,58 +158,45 @@ export default function Dashboard({
                 </section>
 
                 <section className="rounded-2xl border bg-background p-5 sm:p-6">
-                    <h2 className="font-semibold">
-                        Order status
-                    </h2>
+                    <h2 className="font-semibold">Order status</h2>
 
                     <div className="mt-6 space-y-4">
-                        {statusBreakdown.map(
-                            (item) => {
-                                const percentage =
-                                    metrics.total_orders
-                                        > 0
-                                        ? Math.round(
-                                              (item.count /
-                                                  metrics.total_orders) *
-                                                  100,
-                                          )
-                                        : 0;
+                        {statusBreakdown.map((item) => {
+                            const percentage =
+                                metrics.total_orders > 0
+                                    ? Math.round(
+                                          (item.count / metrics.total_orders) *
+                                              100,
+                                      )
+                                    : 0;
 
-                                return (
-                                    <div
-                                        key={
-                                            item.status
-                                        }
-                                    >
-                                        <div className="flex justify-between gap-4 text-sm">
-                                            <span className="text-muted-foreground">
-                                                {
-                                                    item.label
-                                                }
-                                            </span>
+                            return (
+                                <div key={item.status}>
+                                    <div className="flex justify-between gap-4 text-sm">
+                                        <span className="text-muted-foreground">
+                                            {item.label}
+                                        </span>
 
-                                            <span className="font-medium">
-                                                {
-                                                    item.count
-                                                }
-                                            </span>
-                                        </div>
-
-                                        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                                            <div
-                                                className="h-full rounded-full bg-foreground"
-                                                style={{
-                                                    width: `${percentage}%`,
-                                                }}
-                                            />
-                                        </div>
+                                        <span className="font-medium">
+                                            {item.count}
+                                        </span>
                                     </div>
-                                );
-                            },
-                        )}
+
+                                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                                        <div
+                                            className="h-full rounded-full bg-foreground"
+                                            style={{
+                                                width: `${percentage}%`,
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </section>
             </div>
+            )}
 
             {attentionOrders.length > 0 && (
                 <section className="mt-8">
@@ -233,40 +206,27 @@ export default function Dashboard({
                         </h2>
 
                         <p className="mt-1 text-sm text-muted-foreground">
-                            Failed payments, manual
-                            reviews, stale checkouts, or
-                            paid orders without
-                            fulfilment.
+                            Failed payments, manual reviews, stale checkouts, or
+                            paid orders without fulfilment.
                         </p>
                     </div>
 
-                    <OrdersTable
-                        orders={attentionOrders}
-                    />
+                    <OrdersTable orders={attentionOrders} />
                 </section>
             )}
 
             <section className="mt-8">
                 <div className="mb-5 flex items-end justify-between gap-4">
                     <div>
-                        <h2 className="text-xl font-semibold">
-                            Recent orders
-                        </h2>
+                        <h2 className="text-xl font-semibold">Recent orders</h2>
 
                         <p className="mt-1 text-sm text-muted-foreground">
-                            The latest orders created in
-                            the store.
+                            The latest orders created in the store.
                         </p>
                     </div>
 
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                    >
-                        <Link href="/admin/orders">
-                            View all
-                        </Link>
+                    <Button variant="outline" size="sm" asChild>
+                        <Link href="/admin/orders">View all</Link>
                     </Button>
                 </div>
 
@@ -304,13 +264,9 @@ function MetricCard({
                 )}
             </div>
 
-            <p className="mt-5 text-3xl font-semibold">
-                {value}
-            </p>
+            <p className="mt-5 text-3xl font-semibold">{value}</p>
 
-            <p className="mt-1 text-sm text-muted-foreground">
-                {label}
-            </p>
+            <p className="mt-1 text-sm text-muted-foreground">{label}</p>
         </article>
     );
 }

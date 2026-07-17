@@ -10,11 +10,7 @@ export type ConfiguratorSpecification = {
 };
 
 export type ConfiguratorAvailability = {
-    status:
-        | 'available'
-        | 'limited'
-        | 'unavailable'
-        | 'made_to_order';
+    status: 'available' | 'limited' | 'unavailable' | 'made_to_order';
 
     label: string;
     available_builds: number | null;
@@ -52,10 +48,7 @@ export type ConfiguratorOption = {
     availability: ConfiguratorAvailability;
 
     compatibility: {
-        status:
-            | 'compatible'
-            | 'warning'
-            | 'requires_changes';
+        status: 'compatible' | 'warning' | 'requires_changes';
 
         has_errors: boolean;
 

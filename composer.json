@@ -1,11 +1,14 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/react-starter-kit",
+    "name": "stofzuiger2004/nexforge",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "NexForge gaming PC storefront, configurator, inventory, ordering, and administration application.",
     "keywords": [
         "laravel",
-        "framework"
+        "react",
+        "inertia",
+        "ecommerce",
+        "pc-configurator"
     ],
     "license": "MIT",
     "require": {
@@ -16,8 +19,8 @@
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
         "laravel/wayfinder": "^0.1.14",
-        "mollie/laravel-mollie": "*",
-        "spatie/laravel-permission": "*"
+        "mollie/laravel-mollie": "^4.1.0",
+        "spatie/laravel-permission": "^8.3.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
@@ -50,7 +53,7 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
             "@php artisan migrate --force",
-            "npm install",
+            "npm ci",
             "npm run build"
         ],
         "dev": [

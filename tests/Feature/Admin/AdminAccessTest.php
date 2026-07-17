@@ -58,9 +58,9 @@ function createAdminTestOrder(
         'total_in_cents' => $attributes['total_in_cents']
             ?? 100000,
 
-        'paid_in_cents' => 0,
-        'refunded_in_cents' => 0,
-        'charged_back_in_cents' => 0,
+        'paid_in_cents' => $attributes['paid_in_cents'] ?? 0,
+        'refunded_in_cents' => $attributes['refunded_in_cents'] ?? 0,
+        'charged_back_in_cents' => $attributes['charged_back_in_cents'] ?? 0,
 
         'placed_at' => now(),
     ]);
@@ -132,65 +132,58 @@ test(
     },
 );
 
-test(
-    'payment data is hidden from support agents',
-    function (): void {
-        $supportAgent =
-            User::factory()->create([
-                'email_verified_at' => now(),
-            ]);
+test('payment data is hidden from support agents on every admin surface', function (): void {
+    $supportAgent = User::factory()->create([
+        'email_verified_at' => now(),
+    ]);
+    $supportAgent->assignRole('support-agent');
 
-        $supportAgent->assignRole(
-            'support-agent',
+    $order = createAdminTestOrder([
+        'paid_in_cents' => 100000,
+    ]);
+
+    Payment::query()->create([
+        'order_id' => $order->id,
+        'provider' => PaymentProvider::Mollie,
+        'provider_payment_id' => 'tr_test_support',
+        'attempt_number' => 1,
+        'status' => PaymentStatus::Open,
+        'provider_status' => 'open',
+        'amount_in_cents' => $order->total_in_cents,
+        'currency' => $order->currency,
+        'description' => 'Test payment',
+        'idempotency_key' => 'test-support-payment',
+    ]);
+
+    $this->actingAs($supportAgent)
+        ->get(route('admin.orders.show', $order))
+        ->assertOk()
+        ->assertInertia(
+            fn (Assert $page) => $page
+                ->where('order.can.view_payments', false)
+                ->where('order.payments', null),
         );
 
-        $order =
-            createAdminTestOrder();
+    $this->actingAs($supportAgent)
+        ->get('/admin/orders')
+        ->assertOk()
+        ->assertInertia(
+            fn (Assert $page) => $page
+                ->component('admin/orders/index')
+                ->missing('orders.data.0.latest_payment'),
+        );
 
-        Payment::query()->create([
-            'order_id' => $order->id,
-
-            'provider' => PaymentProvider::Mollie,
-
-            'provider_payment_id' => 'tr_test_support',
-
-            'attempt_number' => 1,
-
-            'status' => PaymentStatus::Open,
-
-            'provider_status' => 'open',
-
-            'amount_in_cents' => $order->total_in_cents,
-
-            'currency' => $order->currency,
-
-            'description' => 'Test payment',
-
-            'idempotency_key' => 'test-support-payment',
-        ]);
-
-        $this
-            ->actingAs($supportAgent)
-            ->get(
-                route(
-                    'admin.orders.show',
-                    $order,
-                ),
-            )
-            ->assertOk()
-            ->assertInertia(
-                fn (Assert $page) => $page
-                    ->where(
-                        'order.can.view_payments',
-                        false,
-                    )
-                    ->where(
-                        'order.payments',
-                        null,
-                    ),
-            );
-    },
-);
+    $this->actingAs($supportAgent)
+        ->get('/admin')
+        ->assertOk()
+        ->assertInertia(
+            fn (Assert $page) => $page
+                ->component('admin/dashboard')
+                ->where('can.view_payments', false)
+                ->where('metrics.revenue_by_currency', [])
+                ->missing('recentOrders.0.latest_payment'),
+        );
+});
 
 test(
     'payment data is visible to administrators',

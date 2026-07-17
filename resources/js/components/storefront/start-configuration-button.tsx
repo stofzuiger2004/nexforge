@@ -1,8 +1,5 @@
 import { router } from '@inertiajs/react';
-import {
-    ArrowRight,
-    LoaderCircle,
-} from 'lucide-react';
+import { ArrowRight, LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -18,8 +15,7 @@ export function StartConfigurationButton({
     variant = 'default',
     className,
 }: StartConfigurationButtonProps) {
-    const [processing, setProcessing] =
-        useState(false);
+    const [processing, setProcessing] = useState(false);
 
     function startConfiguration() {
         router.post(
@@ -28,11 +24,9 @@ export function StartConfigurationButton({
             {
                 preserveScroll: true,
 
-                onStart: () =>
-                    setProcessing(true),
+                onStart: () => setProcessing(true),
 
-                onFinish: () =>
-                    setProcessing(false),
+                onFinish: () => setProcessing(false),
             },
         );
     }

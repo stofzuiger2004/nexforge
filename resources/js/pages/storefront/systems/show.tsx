@@ -22,25 +22,16 @@ import type {
     SystemDetailPageProps,
 } from '@/types/storefront';
 
-export default function SystemShow({
-    system,
-}: SystemDetailPageProps) {
-
+export default function SystemShow({ system }: SystemDetailPageProps) {
     return (
         <StorefrontLayout>
-            <Head
-                title={`${system.name} gaming PC`}
-            />
+            <Head title={`${system.name} gaming PC`} />
 
-            <SystemHero
-                system={system}
-            />
+            <SystemHero system={system} />
 
             <SystemDetails system={system} />
 
-            <BottomCallToAction
-                system={system}
-            />
+            <BottomCallToAction system={system} />
         </StorefrontLayout>
     );
 }
@@ -49,52 +40,30 @@ type SystemHeroProps = {
     system: SystemDetail;
 };
 
-function SystemHero({
-    system,
-}: SystemHeroProps) {
+function SystemHero({ system }: SystemHeroProps) {
     const price = system.price
+        ? formatMoney(system.price.amount_in_cents, system.price.currency)
+        : null;
+
+    const compareAtPrice = system.price?.compare_at_amount_in_cents
         ? formatMoney(
-              system.price.amount_in_cents,
+              system.price.compare_at_amount_in_cents,
               system.price.currency,
           )
         : null;
 
-    const compareAtPrice =
-        system.price
-            ?.compare_at_amount_in_cents
-        ? formatMoney(
-              system.price
-                  .compare_at_amount_in_cents,
-              system.price.currency,
-          )
-        : null;
+    const processor = componentForSlot(system, 'cpu');
 
-    const processor = componentForSlot(
-        system,
-        'cpu',
-    );
+    const graphicsCard = componentForSlot(system, 'graphics_card');
 
-    const graphicsCard = componentForSlot(
-        system,
-        'graphics_card',
-    );
+    const memory = componentForSlot(system, 'memory');
 
-    const memory = componentForSlot(
-        system,
-        'memory',
-    );
-
-    const storage = componentForSlot(
-        system,
-        'primary_storage',
-    );
+    const storage = componentForSlot(system, 'primary_storage');
 
     return (
         <section className="border-b bg-muted/20">
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                <Breadcrumbs
-                    systemName={system.name}
-                />
+                <Breadcrumbs systemName={system.name} />
 
                 <div className="mt-8 grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.9fr)]">
                     <SystemImageGallery
@@ -108,55 +77,42 @@ function SystemHero({
                             variant="outline"
                             className="rounded-full font-normal"
                         >
-                            {
-                                system
-                                    .availability
-                                    .label
-                            }
+                            {system.availability.label}
                         </Badge>
 
-                        <h1 className="mt-5 text-balance text-4xl font-semibold tracking-[-0.035em] sm:text-5xl">
+                        <h1 className="mt-5 text-4xl font-semibold tracking-[-0.035em] text-balance sm:text-5xl">
                             {system.name}
                         </h1>
 
                         <p className="mt-2 text-sm text-muted-foreground">
-                            System reference{' '}
-                            {system.sku}
+                            System reference {system.sku}
                         </p>
 
                         <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground">
-                            {system.description
-                                ?? system.short_description
-                                ?? 'A configurable gaming system built from carefully selected components.'}
+                            {system.description ??
+                                system.short_description ??
+                                'A configurable gaming system built from carefully selected components.'}
                         </p>
 
                         <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 border-y py-6">
                             <KeySpecification
                                 label="Processor"
-                                component={
-                                    processor
-                                }
+                                component={processor}
                             />
 
                             <KeySpecification
                                 label="Graphics"
-                                component={
-                                    graphicsCard
-                                }
+                                component={graphicsCard}
                             />
 
                             <KeySpecification
                                 label="Memory"
-                                component={
-                                    memory
-                                }
+                                component={memory}
                             />
 
                             <KeySpecification
                                 label="Storage"
-                                component={
-                                    storage
-                                }
+                                component={storage}
                             />
                         </div>
 
@@ -167,22 +123,17 @@ function SystemHero({
 
                             <div className="mt-1 flex flex-wrap items-baseline gap-3">
                                 <p className="text-3xl font-semibold tracking-tight">
-                                    {price
-                                        ?? 'Price on request'}
+                                    {price ?? 'Price on request'}
                                 </p>
 
                                 {compareAtPrice && (
                                     <p className="text-base text-muted-foreground line-through">
-                                        {
-                                            compareAtPrice
-                                        }
+                                        {compareAtPrice}
                                     </p>
                                 )}
                             </div>
 
-                            <AvailabilityDescription
-                                system={system}
-                            />
+                            <AvailabilityDescription system={system} />
                         </div>
 
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -191,20 +142,12 @@ function SystemHero({
                                     systemSlug={system.slug}
                                 />
                             ) : (
-                                <Button
-                                    size="lg"
-                                    disabled
-                                >
-                                    Configuration
-                                    unavailable
+                                <Button size="lg" disabled>
+                                    Configuration unavailable
                                 </Button>
                             )}
 
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                asChild
-                            >
+                            <Button size="lg" variant="outline" asChild>
                                 <Link href="/gaming-pcs">
                                     <ArrowLeft className="size-4" />
                                     All gaming PCs
@@ -213,10 +156,8 @@ function SystemHero({
                         </div>
 
                         <p className="mt-4 max-w-lg text-xs leading-5 text-muted-foreground">
-                            Final price and stock are
-                            recalculated after you change
-                            components in the
-                            configurator.
+                            Final price and stock are recalculated after you
+                            change components in the configurator.
                         </p>
                     </div>
                 </div>
@@ -225,20 +166,13 @@ function SystemHero({
     );
 }
 
-function Breadcrumbs({
-    systemName,
-}: {
-    systemName: string;
-}) {
+function Breadcrumbs({ systemName }: { systemName: string }) {
     return (
         <nav
             aria-label="Breadcrumb"
             className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground"
         >
-            <Link
-                href="/"
-                className="transition-colors hover:text-foreground"
-            >
+            <Link href="/" className="transition-colors hover:text-foreground">
                 Home
             </Link>
 
@@ -268,31 +202,20 @@ type KeySpecificationProps = {
     component: SystemDetailComponent | null;
 };
 
-function KeySpecification({
-    label,
-    component,
-}: KeySpecificationProps) {
+function KeySpecification({ label, component }: KeySpecificationProps) {
     return (
         <div className="min-w-0">
-            <p className="text-xs text-muted-foreground">
-                {label}
-            </p>
+            <p className="text-xs text-muted-foreground">{label}</p>
 
             <p className="mt-1 truncate text-sm font-medium">
-                {component?.name
-                    ?? 'To be confirmed'}
+                {component?.name ?? 'To be confirmed'}
             </p>
         </div>
     );
 }
 
-function AvailabilityDescription({
-    system,
-}: {
-    system: SystemDetail;
-}) {
-    const availableBuilds =
-        system.availability.available_builds;
+function AvailabilityDescription({ system }: { system: SystemDetail }) {
+    const availableBuilds = system.availability.available_builds;
 
     let message: string;
 
@@ -316,11 +239,7 @@ function AvailabilityDescription({
     );
 }
 
-function SystemDetails({
-    system,
-}: {
-    system: SystemDetail;
-}) {
+function SystemDetails({ system }: { system: SystemDetail }) {
     return (
         <section className="py-16 sm:py-20">
             <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:px-8">
@@ -334,46 +253,31 @@ function SystemDetails({
                     </h2>
 
                     <p className="mt-4 max-w-2xl leading-7 text-muted-foreground">
-                        This is the base configuration
-                        used to calculate the starting
-                        price. Components marked as
-                        changeable will be selectable in
-                        the configurator.
+                        This is the base configuration used to calculate the
+                        starting price. Components marked as changeable will be
+                        selectable in the configurator.
                     </p>
 
                     <div className="mt-8">
-                        <SystemComponentList
-                            components={
-                                system.components
-                            }
-                        />
+                        <SystemComponentList components={system.components} />
                     </div>
                 </div>
 
                 <aside>
                     <div className="sticky top-24 rounded-2xl border p-6">
-                        <h2 className="font-semibold">
-                            What happens next
-                        </h2>
+                        <h2 className="font-semibold">What happens next</h2>
 
                         <div className="mt-6 space-y-6">
                             <ProcessItem
-                                icon={
-                                    ShieldCheck
-                                }
+                                icon={ShieldCheck}
                                 title="Compatibility validation"
                             >
-                                Every component change is
-                                checked against the rest
-                                of the build.
+                                Every component change is checked against the
+                                rest of the build.
                             </ProcessItem>
 
-                            <ProcessItem
-                                icon={Check}
-                                title="Live stock check"
-                            >
-                                Component availability is
-                                checked before the
+                            <ProcessItem icon={Check} title="Live stock check">
+                                Component availability is checked before the
                                 configuration can proceed.
                             </ProcessItem>
 
@@ -381,8 +285,7 @@ function SystemDetails({
                                 icon={Wrench}
                                 title="Assembly and testing"
                             >
-                                The finished PC is
-                                assembled, inspected, and
+                                The finished PC is assembled, inspected, and
                                 stress-tested.
                             </ProcessItem>
 
@@ -390,8 +293,7 @@ function SystemDetails({
                                 icon={Truck}
                                 title="Protected delivery"
                             >
-                                The completed system is
-                                packaged for safe
+                                The completed system is packaged for safe
                                 transport.
                             </ProcessItem>
                         </div>
@@ -402,9 +304,8 @@ function SystemDetails({
                             </p>
 
                             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                                Opening the configurator
-                                does not reserve stock or
-                                place an order.
+                                Opening the configurator does not reserve stock
+                                or place an order.
                             </p>
                         </div>
                     </div>
@@ -420,11 +321,7 @@ type ProcessItemProps = {
     children: ReactNode;
 };
 
-function ProcessItem({
-    icon: Icon,
-    title,
-    children,
-}: ProcessItemProps) {
+function ProcessItem({ icon: Icon, title, children }: ProcessItemProps) {
     return (
         <div className="flex gap-4">
             <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-muted">
@@ -432,9 +329,7 @@ function ProcessItem({
             </span>
 
             <div>
-                <h3 className="text-sm font-medium">
-                    {title}
-                </h3>
+                <h3 className="text-sm font-medium">{title}</h3>
 
                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
                     {children}
@@ -448,9 +343,7 @@ type BottomCallToActionProps = {
     system: SystemDetail;
 };
 
-function BottomCallToAction({
-    system,
-}: BottomCallToActionProps) {
+function BottomCallToAction({ system }: BottomCallToActionProps) {
     return (
         <section className="pb-20 sm:pb-24">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -461,15 +354,12 @@ function BottomCallToAction({
                         </p>
 
                         <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-                            Configure the{' '}
-                            {system.name}
+                            Configure the {system.name}
                         </h2>
 
                         <p className="mt-4 max-w-xl leading-7 text-background/70">
-                            Use this build as your
-                            starting point and adjust the
-                            major components to match
-                            your performance target.
+                            Use this build as your starting point and adjust the
+                            major components to match your performance target.
                         </p>
                     </div>
 
@@ -480,11 +370,7 @@ function BottomCallToAction({
                                 variant="secondary"
                             />
                         ) : (
-                            <Button
-                                size="lg"
-                                variant="secondary"
-                                disabled
-                            >
+                            <Button size="lg" variant="secondary" disabled>
                                 Configuration unavailable
                             </Button>
                         )}
@@ -500,9 +386,6 @@ function componentForSlot(
     slot: string,
 ): SystemDetailComponent | null {
     return (
-        system.components.find(
-            (component) =>
-                component.slot === slot,
-        ) ?? null
+        system.components.find((component) => component.slot === slot) ?? null
     );
 }

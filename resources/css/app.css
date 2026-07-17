@@ -141,7 +141,7 @@
         @apply bg-background text-foreground antialiased;
     }
 
-    html{
+    html {
         scroll-behavior: smooth;
     }
 }

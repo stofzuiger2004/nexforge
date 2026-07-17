@@ -37,11 +37,7 @@ export function SystemVisual({
     );
 }
 
-function FallbackSystemVisual({
-    name,
-}: {
-    name: string;
-}) {
+function FallbackSystemVisual({ name }: { name: string }) {
     return (
         <div
             role="img"
@@ -50,14 +46,14 @@ function FallbackSystemVisual({
         >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(0,0,0,0.07),transparent_55%)] dark:bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.08),transparent_55%)]" />
 
-            <div className="relative h-[74%] aspect-[0.72] rounded-[1.6rem] border border-white/10 bg-zinc-950 p-3 shadow-2xl">
+            <div className="relative aspect-[0.72] h-[74%] rounded-[1.6rem] border border-white/10 bg-zinc-950 p-3 shadow-2xl">
                 <div className="relative flex size-full items-center justify-center overflow-hidden rounded-[1.15rem] border border-white/10 bg-zinc-900">
-                    <div className="absolute left-5 top-5 size-20 rounded-full border border-white/15">
+                    <div className="absolute top-5 left-5 size-20 rounded-full border border-white/15">
                         <div className="absolute inset-2 rounded-full border border-white/10" />
                         <div className="absolute inset-[1.15rem] rounded-full bg-white/5" />
                     </div>
 
-                    <div className="absolute right-4 top-5 h-24 w-1 rounded-full bg-white/10" />
+                    <div className="absolute top-5 right-4 h-24 w-1 rounded-full bg-white/10" />
 
                     <Cpu className="size-16 text-white/60" />
 

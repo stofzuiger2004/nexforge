@@ -22,8 +22,6 @@ class AdminOrderListResource extends JsonResource
     public function toArray(
         Request $request,
     ): array {
-        $latestPayment =
-            $this->latestPayment;
 
         return [
             'public_id' => $this->public_id,
@@ -66,24 +64,6 @@ class AdminOrderListResource extends JsonResource
             'placed_at' => $this
                 ->placed_at
                 ?->toIso8601String(),
-
-            'latest_payment' => $latestPayment === null
-                    ? null
-                    : [
-                    'provider' => $latestPayment
-                        ->provider
-                        ->value,
-
-                    'provider_payment_id' => $latestPayment
-                        ->provider_payment_id,
-
-                    'status' => $latestPayment
-                        ->status
-                        ->value,
-
-                    'method' => $latestPayment
-                        ->method,
-                ],
 
             'requires_attention' => $this->requiresAttention(),
         ];

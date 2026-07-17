@@ -1,8 +1,5 @@
 export type SystemAvailabilityStatus =
-    | 'available'
-    | 'limited'
-    | 'unavailable'
-    | 'made_to_order';
+    'available' | 'limited' | 'unavailable' | 'made_to_order';
 
 export type SystemComponentSummary = {
     name: string;

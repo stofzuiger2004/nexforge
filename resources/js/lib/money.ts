@@ -15,21 +15,10 @@ export function formatSignedMoney(
     locale = 'nl-BE',
 ): string {
     if (amountInCents === 0) {
-        return formatMoney(
-            0,
-            currency,
-            locale,
-        );
+        return formatMoney(0, currency, locale);
     }
 
-    const sign =
-        amountInCents > 0
-            ? '+'
-            : '−';
+    const sign = amountInCents > 0 ? '+' : '−';
 
-    return `${sign}${formatMoney(
-        Math.abs(amountInCents),
-        currency,
-        locale,
-    )}`;
+    return `${sign}${formatMoney(Math.abs(amountInCents), currency, locale)}`;
 }

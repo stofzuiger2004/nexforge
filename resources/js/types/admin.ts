@@ -24,30 +24,18 @@ export type AdminOrderListItem = {
     public_id: string;
     order_number: string;
     href: string;
-
     customer: {
         name: string;
         email: string;
         has_account: boolean;
     };
-
     status: string;
     payment_status: string;
     fulfillment_status: string;
-
     currency: string;
     total_in_cents: number;
-
     item_count: number;
     placed_at: string | null;
-
-    latest_payment: {
-        provider: string;
-        provider_payment_id: string | null;
-        status: string;
-        method: string | null;
-    } | null;
-
     requires_attention: boolean;
 };
 
@@ -128,9 +116,7 @@ export type AdminOrderDetail = {
 
     payments: AdminPayment[] | null;
 
-    inventory_reservations:
-        | AdminInventoryReservation[]
-        | null;
+    inventory_reservations: AdminInventoryReservation[] | null;
 
     timeline: AdminOrderTimelineItem[];
 

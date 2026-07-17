@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->configureDefaults();
         Gate::before(
             static function (User $user, string $ability): ?bool {
                 return $user->hasRole('super-admin') ? true : null;

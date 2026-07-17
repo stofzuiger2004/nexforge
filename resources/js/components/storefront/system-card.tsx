@@ -1,11 +1,5 @@
 import { Link } from '@inertiajs/react';
-import {
-    ArrowRight,
-    Cpu,
-    HardDrive,
-    MemoryStick,
-    Monitor,
-} from 'lucide-react';
+import { ArrowRight, Cpu, HardDrive, MemoryStick, Monitor } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { SystemVisual } from '@/components/storefront/system-visual';
@@ -28,26 +22,19 @@ type SystemCardProps = {
     system: FeaturedSystem;
 };
 
-export function SystemCard({
-    system,
-}: SystemCardProps) {
-    const detailsUrl =
-        `/gaming-pcs/${encodeURIComponent(system.slug)}`;
+export function SystemCard({ system }: SystemCardProps) {
+    const detailsUrl = `/gaming-pcs/${encodeURIComponent(system.slug)}`;
 
     const price = system.price
-        ? formatMoney(
-              system.price.amount_in_cents,
-              system.price.currency,
-          )
+        ? formatMoney(system.price.amount_in_cents, system.price.currency)
         : 'Price on request';
 
-    const compareAtPrice =
-        system.price?.compare_at_amount_in_cents
-            ? formatMoney(
-                  system.price.compare_at_amount_in_cents,
-                  system.price.currency,
-              )
-            : null;
+    const compareAtPrice = system.price?.compare_at_amount_in_cents
+        ? formatMoney(
+              system.price.compare_at_amount_in_cents,
+              system.price.currency,
+          )
+        : null;
 
     return (
         <Card className="group gap-0 overflow-hidden rounded-2xl p-0 shadow-none transition duration-300 hover:-translate-y-1 hover:shadow-lg">
@@ -92,41 +79,31 @@ export function SystemCard({
                 <SpecificationRow
                     icon={Cpu}
                     label="Processor"
-                    component={
-                        system.components.processor
-                    }
+                    component={system.components.processor}
                 />
 
                 <SpecificationRow
                     icon={Monitor}
                     label="Graphics"
-                    component={
-                        system.components.graphics_card
-                    }
+                    component={system.components.graphics_card}
                 />
 
                 <SpecificationRow
                     icon={MemoryStick}
                     label="Memory"
-                    component={
-                        system.components.memory
-                    }
+                    component={system.components.memory}
                 />
 
                 <SpecificationRow
                     icon={HardDrive}
                     label="Storage"
-                    component={
-                        system.components.storage
-                    }
+                    component={system.components.storage}
                 />
             </CardContent>
 
             <CardFooter className="flex items-end justify-between gap-4 border-t bg-muted/20 p-6">
                 <div>
-                    <p className="text-xs text-muted-foreground">
-                        Starting at
-                    </p>
+                    <p className="text-xs text-muted-foreground">Starting at</p>
 
                     <div className="mt-1 flex flex-wrap items-baseline gap-2">
                         <p className="text-2xl font-semibold tracking-tight">
@@ -170,13 +147,10 @@ function SpecificationRow({
             </span>
 
             <div className="min-w-0">
-                <p className="text-xs text-muted-foreground">
-                    {label}
-                </p>
+                <p className="text-xs text-muted-foreground">{label}</p>
 
                 <p className="truncate text-sm font-medium">
-                    {component?.name ??
-                        'To be confirmed'}
+                    {component?.name ?? 'To be confirmed'}
                 </p>
             </div>
         </div>

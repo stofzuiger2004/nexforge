@@ -1,8 +1,5 @@
 import { Link } from '@inertiajs/react';
-import {
-    CircleAlert,
-    Package,
-} from 'lucide-react';
+import { CircleAlert, Package } from 'lucide-react';
 
 import { StatusBadge } from '@/components/admin/status-badge';
 import {
@@ -24,17 +21,14 @@ type OrdersTableProps = {
 
 export function OrdersTable({
     orders,
-    emptyMessage =
-        'No orders match the current filters.',
+    emptyMessage = 'No orders match the current filters.',
 }: OrdersTableProps) {
     if (orders.length === 0) {
         return (
             <div className="rounded-2xl border border-dashed px-6 py-16 text-center">
                 <Package className="mx-auto size-8 text-muted-foreground" />
 
-                <h3 className="mt-4 font-semibold">
-                    No orders found
-                </h3>
+                <h3 className="mt-4 font-semibold">No orders found</h3>
 
                 <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
                     {emptyMessage}
@@ -49,43 +43,25 @@ export function OrdersTable({
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>
-                                Order
-                            </TableHead>
+                            <TableHead>Order</TableHead>
 
-                            <TableHead>
-                                Customer
-                            </TableHead>
+                            <TableHead>Customer</TableHead>
 
-                            <TableHead>
-                                Order status
-                            </TableHead>
+                            <TableHead>Order status</TableHead>
 
-                            <TableHead>
-                                Payment
-                            </TableHead>
+                            <TableHead>Payment</TableHead>
 
-                            <TableHead>
-                                Fulfilment
-                            </TableHead>
+                            <TableHead>Fulfilment</TableHead>
 
-                            <TableHead className="text-right">
-                                Total
-                            </TableHead>
+                            <TableHead className="text-right">Total</TableHead>
 
-                            <TableHead className="text-right">
-                                Placed
-                            </TableHead>
+                            <TableHead className="text-right">Placed</TableHead>
                         </TableRow>
                     </TableHeader>
 
                     <TableBody>
                         {orders.map((order) => (
-                            <TableRow
-                                key={
-                                    order.public_id
-                                }
-                            >
+                            <TableRow key={order.public_id}>
                                 <TableCell>
                                     <div className="flex items-center gap-2">
                                         {order.requires_attention && (
@@ -94,23 +70,15 @@ export function OrdersTable({
 
                                         <div>
                                             <Link
-                                                href={
-                                                    order.href
-                                                }
+                                                href={order.href}
                                                 className="font-medium hover:underline"
                                             >
-                                                {
-                                                    order.order_number
-                                                }
+                                                {order.order_number}
                                             </Link>
 
                                             <p className="mt-1 text-xs text-muted-foreground">
-                                                {
-                                                    order.item_count
-                                                }{' '}
-                                                item
-                                                {order.item_count
-                                                    === 1
+                                                {order.item_count} item
+                                                {order.item_count === 1
                                                     ? ''
                                                     : 's'}
                                             </p>
@@ -120,43 +88,27 @@ export function OrdersTable({
 
                                 <TableCell>
                                     <p className="font-medium">
-                                        {
-                                            order
-                                                .customer
-                                                .name
-                                        }
+                                        {order.customer.name}
                                     </p>
 
                                     <p className="mt-1 text-xs text-muted-foreground">
-                                        {
-                                            order
-                                                .customer
-                                                .email
-                                        }
+                                        {order.customer.email}
                                     </p>
                                 </TableCell>
 
                                 <TableCell>
+                                    <StatusBadge status={order.status} />
+                                </TableCell>
+
+                                <TableCell>
                                     <StatusBadge
-                                        status={
-                                            order.status
-                                        }
+                                        status={order.payment_status}
                                     />
                                 </TableCell>
 
                                 <TableCell>
                                     <StatusBadge
-                                        status={
-                                            order.payment_status
-                                        }
-                                    />
-                                </TableCell>
-
-                                <TableCell>
-                                    <StatusBadge
-                                        status={
-                                            order.fulfillment_status
-                                        }
+                                        status={order.fulfillment_status}
                                     />
                                 </TableCell>
 
@@ -168,9 +120,7 @@ export function OrdersTable({
                                 </TableCell>
 
                                 <TableCell className="text-right text-sm text-muted-foreground">
-                                    {formatDateTime(
-                                        order.placed_at,
-                                    )}
+                                    {formatDateTime(order.placed_at)}
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -193,24 +143,16 @@ export function OrdersTable({
                                     )}
 
                                     <p className="font-medium">
-                                        {
-                                            order.order_number
-                                        }
+                                        {order.order_number}
                                     </p>
                                 </div>
 
                                 <p className="mt-2 text-sm text-muted-foreground">
-                                    {
-                                        order.customer
-                                            .name
-                                    }
+                                    {order.customer.name}
                                 </p>
 
                                 <p className="mt-1 text-xs text-muted-foreground">
-                                    {
-                                        order.customer
-                                            .email
-                                    }
+                                    {order.customer.email}
                                 </p>
                             </div>
 
@@ -223,23 +165,11 @@ export function OrdersTable({
                         </div>
 
                         <div className="mt-4 flex flex-wrap gap-2">
-                            <StatusBadge
-                                status={
-                                    order.status
-                                }
-                            />
+                            <StatusBadge status={order.status} />
 
-                            <StatusBadge
-                                status={
-                                    order.payment_status
-                                }
-                            />
+                            <StatusBadge status={order.payment_status} />
 
-                            <StatusBadge
-                                status={
-                                    order.fulfillment_status
-                                }
-                            />
+                            <StatusBadge status={order.fulfillment_status} />
                         </div>
                     </Link>
                 ))}

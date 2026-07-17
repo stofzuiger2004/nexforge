@@ -1,7 +1,4 @@
-import {
-    Link,
-    usePage,
-} from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
     ExternalLink,
     LayoutDashboard,
@@ -10,10 +7,7 @@ import {
     PackageSearch,
     ShoppingBag,
 } from 'lucide-react';
-import type {
-    PropsWithChildren,
-    ReactNode,
-} from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -38,18 +32,14 @@ const navigation = [
         href: '/admin',
         icon: LayoutDashboard,
 
-        isActive: (url: string) =>
-            url === '/admin',
+        isActive: (url: string) => url === '/admin',
     },
     {
         label: 'Orders',
         href: '/admin/orders',
         icon: ShoppingBag,
 
-        isActive: (url: string) =>
-            url.startsWith(
-                '/admin/orders',
-            ),
+        isActive: (url: string) => url.startsWith('/admin/orders'),
     },
 ];
 
@@ -59,25 +49,19 @@ export default function AdminLayout({
     actions,
     children,
 }: AdminLayoutProps) {
-    const page =
-        usePage<AdminSharedProps>();
+    const page = usePage<AdminSharedProps>();
 
-    const user =
-        page.props.auth.user;
+    const user = page.props.auth.user;
 
     return (
         <div className="min-h-screen bg-muted/20">
             <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r bg-background lg:flex lg:flex-col">
                 <AdminBrand />
 
-                <AdminNavigation
-                    currentUrl={page.url}
-                />
+                <AdminNavigation currentUrl={page.url} />
 
                 <div className="mt-auto border-t p-4">
-                    <p className="truncate text-sm font-medium">
-                        {user?.name}
-                    </p>
+                    <p className="truncate text-sm font-medium">{user?.name}</p>
 
                     <p className="mt-1 truncate text-xs text-muted-foreground">
                         {user?.email}
@@ -99,22 +83,14 @@ export default function AdminLayout({
                 <header className="sticky top-0 z-30 border-b bg-background/90 backdrop-blur-xl">
                     <div className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
                         <div className="flex items-center gap-3">
-                            <MobileNavigation
-                                currentUrl={
-                                    page.url
-                                }
-                            />
+                            <MobileNavigation currentUrl={page.url} />
 
                             <p className="text-sm font-medium">
                                 Administration
                             </p>
                         </div>
 
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                        >
+                        <Button variant="outline" size="sm" asChild>
                             <Link href="/">
                                 Storefront
                                 <ExternalLink className="size-4" />
@@ -133,9 +109,7 @@ export default function AdminLayout({
 
                                 {description && (
                                     <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-                                        {
-                                            description
-                                        }
+                                        {description}
                                     </p>
                                 )}
                             </div>
@@ -164,31 +138,20 @@ function AdminBrand() {
             </span>
 
             <div>
-                <p className="font-semibold">
-                    NexForge
-                </p>
+                <p className="font-semibold">NexForge</p>
 
-                <p className="text-xs text-muted-foreground">
-                    Admin
-                </p>
+                <p className="text-xs text-muted-foreground">Admin</p>
             </div>
         </Link>
     );
 }
 
-function AdminNavigation({
-    currentUrl,
-}: {
-    currentUrl: string;
-}) {
+function AdminNavigation({ currentUrl }: { currentUrl: string }) {
     return (
         <nav className="space-y-1 p-4">
             {navigation.map((item) => {
                 const Icon = item.icon;
-                const active =
-                    item.isActive(
-                        currentUrl,
-                    );
+                const active = item.isActive(currentUrl);
 
                 return (
                     <Link
@@ -211,11 +174,7 @@ function AdminNavigation({
     );
 }
 
-function MobileNavigation({
-    currentUrl,
-}: {
-    currentUrl: string;
-}) {
+function MobileNavigation({ currentUrl }: { currentUrl: string }) {
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -229,19 +188,12 @@ function MobileNavigation({
                 </Button>
             </SheetTrigger>
 
-            <SheetContent
-                side="left"
-                className="w-72 p-0"
-            >
+            <SheetContent side="left" className="w-72 p-0">
                 <SheetHeader className="border-b p-5 text-left">
-                    <SheetTitle>
-                        NexForge Admin
-                    </SheetTitle>
+                    <SheetTitle>NexForge Admin</SheetTitle>
                 </SheetHeader>
 
-                <AdminNavigation
-                    currentUrl={currentUrl}
-                />
+                <AdminNavigation currentUrl={currentUrl} />
             </SheetContent>
         </Sheet>
     );

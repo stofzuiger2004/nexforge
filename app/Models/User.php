@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -31,8 +31,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
-class User extends Authenticatable implements PasskeyUser
-{
+class User extends Authenticatable implements PasskeyUser{
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable, PasskeyAuthenticatable,TwoFactorAuthenticatable;
 
@@ -41,8 +40,7 @@ class User extends Authenticatable implements PasskeyUser
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
+    protected function casts(): array{
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
@@ -50,33 +48,27 @@ class User extends Authenticatable implements PasskeyUser
         ];
     }
 
-    public function configurations(): HasMany
-    {
+    public function configurations(): HasMany{
         return $this->HasMany(Configuration::class);
     }
 
-    public function createdIventoryReservations(): HasMany
-    {
-        return $this->hasMany(IventoryReservation::class, 'created_by_user_id');
+    public function createdInventoryReservations(): HasMany{
+        return $this->hasMany(InventoryReservation::class, 'created_by_user_id');
     }
 
-    public function inventoryMovements(): HasMany
-    {
-        return $this->hasMany(inventoryMovement::class, 'actor_user_id');
+    public function inventoryMovements(): HasMany{
+        return $this->hasMany(InventoryMovement::class, 'actor_user_id');
     }
 
-    public function orders(): HasMany
-    {
+    public function orders(): HasMany{
         return $this->hasMany(Order::class);
     }
 
-    public function requestedPaymentRefunds(): HasMany
-    {
+    public function requestedPaymentRefunds(): HasMany{
         return $this->hasMany(PaymentRefund::class, 'requested_by_user_id');
     }
 
-    public function orderStatusHistory(): HasMany
-    {
+    public function orderStatusHistory(): HasMany{
         return $this->hasMany(OrderStatusHistory::class, 'actor_user_id');
     }
 }

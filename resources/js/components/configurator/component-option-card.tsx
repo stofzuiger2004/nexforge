@@ -1,15 +1,7 @@
-import {
-    Check,
-    LoaderCircle,
-    Package,
-    TriangleAlert,
-} from 'lucide-react';
+import { Check, LoaderCircle, Package, TriangleAlert } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
-import {
-    formatMoney,
-    formatSignedMoney,
-} from '@/lib/money';
+import { formatMoney, formatSignedMoney } from '@/lib/money';
 import { cn } from '@/lib/utils';
 import type { ConfiguratorOption } from '@/types/configurator';
 
@@ -18,9 +10,7 @@ type ComponentOptionCardProps = {
     disabled: boolean;
     pending: boolean;
 
-    onSelect: (
-        option: ConfiguratorOption,
-    ) => void;
+    onSelect: (option: ConfiguratorOption) => void;
 };
 
 export function ComponentOptionCard({
@@ -29,13 +19,9 @@ export function ComponentOptionCard({
     pending,
     onSelect,
 }: ComponentOptionCardProps) {
-    const immediateDelta =
-        option.price
-            .delta_from_current_in_cents;
+    const immediateDelta = option.price.delta_from_current_in_cents;
 
-    const baseDelta =
-        option.price
-            .delta_from_base_in_cents;
+    const baseDelta = option.price.delta_from_base_in_cents;
 
     return (
         <button
@@ -43,26 +29,22 @@ export function ComponentOptionCard({
             aria-pressed={option.is_selected}
             disabled={disabled}
             onClick={() => {
-                if (
-                    option.selectable
-                    && ! pending
-                ) {
+                if (option.selectable && !pending) {
                     onSelect(option);
                 }
             }}
             className={cn(
                 'relative w-full rounded-2xl border p-4 text-left transition',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
 
                 option.is_selected
                     ? 'border-foreground bg-muted/40'
                     : 'bg-background hover:border-muted-foreground/50 hover:bg-muted/15',
 
-                pending &&
-                    'border-foreground bg-muted/40',
+                pending && 'border-foreground bg-muted/40',
 
                 disabled &&
-                    ! option.is_selected &&
+                    !option.is_selected &&
                     'cursor-not-allowed opacity-60',
             )}
         >
@@ -78,7 +60,7 @@ export function ComponentOptionCard({
                                 </p>
                             )}
 
-                            <h4 className="mt-1 text-sm font-semibold leading-5">
+                            <h4 className="mt-1 text-sm leading-5 font-semibold">
                                 {option.name}
                             </h4>
 
@@ -103,24 +85,21 @@ export function ComponentOptionCard({
                                     className={cn(
                                         'text-sm font-semibold',
 
-                                        immediateDelta
-                                            > 0
+                                        immediateDelta > 0
                                             ? 'text-foreground'
                                             : 'text-muted-foreground',
                                     )}
                                 >
-                                    {immediateDelta
-                                        === 0
+                                    {immediateDelta === 0
                                         ? 'No change'
                                         : formatSignedMoney(
                                               immediateDelta,
-                                              option.price
-                                                  .currency,
+                                              option.price.currency,
                                           )}
                                 </p>
                             )}
 
-                            {! option.is_selected && (
+                            {!option.is_selected && (
                                 <p className="mt-1 text-[11px] text-muted-foreground">
                                     New total impact
                                 </p>
@@ -134,59 +113,41 @@ export function ComponentOptionCard({
                         </p>
                     )}
 
-                    {option.specifications.length
-                        > 0 && (
+                    {option.specifications.length > 0 && (
                         <dl className="mt-3 flex flex-wrap gap-2">
-                            {option.specifications.map(
-                                (
-                                    specification,
-                                ) => (
-                                    <div
-                                        key={
-                                            specification.key
-                                        }
-                                        className="rounded-lg border bg-background px-2.5 py-1.5"
-                                    >
-                                        <dt className="text-[10px] text-muted-foreground">
-                                            {
-                                                specification.label
-                                            }
-                                        </dt>
+                            {option.specifications.map((specification) => (
+                                <div
+                                    key={specification.key}
+                                    className="rounded-lg border bg-background px-2.5 py-1.5"
+                                >
+                                    <dt className="text-[10px] text-muted-foreground">
+                                        {specification.label}
+                                    </dt>
 
-                                        <dd className="mt-0.5 text-[11px] font-medium">
-                                            {
-                                                specification.value
-                                            }
-                                        </dd>
-                                    </div>
-                                ),
-                            )}
+                                    <dd className="mt-0.5 text-[11px] font-medium">
+                                        {specification.value}
+                                    </dd>
+                                </div>
+                            ))}
                         </dl>
                     )}
 
                     <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t pt-3 text-xs">
-                        <AvailabilityLabel
-                            option={option}
-                        />
+                        <AvailabilityLabel option={option} />
 
-                        {option.compatibility
-                            .status
-                            === 'compatible' && (
+                        {option.compatibility.status === 'compatible' && (
                             <span className="flex items-center gap-1.5 text-muted-foreground">
                                 <Check className="size-3.5" />
                                 Compatible
                             </span>
                         )}
 
-                        {option.compatibility
-                            .status
-                            !== 'compatible' && (
+                        {option.compatibility.status !== 'compatible' && (
                             <span className="flex items-center gap-1.5 text-destructive">
                                 <TriangleAlert className="size-3.5" />
 
-                                {option.compatibility
-                                    .status
-                                    === 'requires_changes'
+                                {option.compatibility.status ===
+                                'requires_changes'
                                     ? 'Requires another change'
                                     : 'Compatibility note'}
                             </span>
@@ -198,21 +159,15 @@ export function ComponentOptionCard({
                                     ? 'Included in base price'
                                     : `${formatSignedMoney(
                                           baseDelta,
-                                          option.price
-                                              .currency,
+                                          option.price.currency,
                                       )} from base`}
                             </span>
                         )}
                     </div>
 
-                    {option.compatibility
-                        .messages[0] && (
+                    {option.compatibility.messages[0] && (
                         <p className="mt-3 rounded-lg bg-muted/50 px-3 py-2 text-xs leading-5 text-muted-foreground">
-                            {
-                                option.compatibility
-                                    .messages[0]
-                                    .message
-                            }
+                            {option.compatibility.messages[0].message}
                         </p>
                     )}
                 </div>
@@ -221,8 +176,7 @@ export function ComponentOptionCard({
             <span className="sr-only">
                 Current price{' '}
                 {formatMoney(
-                    option.price
-                        .amount_in_cents,
+                    option.price.amount_in_cents,
                     option.price.currency,
                 )}
             </span>
@@ -230,11 +184,7 @@ export function ComponentOptionCard({
     );
 }
 
-function OptionImage({
-    option,
-}: {
-    option: ConfiguratorOption;
-}) {
+function OptionImage({ option }: { option: ConfiguratorOption }) {
     return (
         <div className="relative size-20 shrink-0 overflow-hidden rounded-xl border bg-muted/30">
             {option.image ? (
@@ -253,29 +203,16 @@ function OptionImage({
     );
 }
 
-function AvailabilityLabel({
-    option,
-}: {
-    option: ConfiguratorOption;
-}) {
-    const builds =
-        option.availability.available_builds;
+function AvailabilityLabel({ option }: { option: ConfiguratorOption }) {
+    const builds = option.availability.available_builds;
 
     let label = option.availability.label;
 
     if (builds === 1) {
-        label =
-            'One complete build available';
-    } else if (
-        builds !== null
-        && builds > 1
-    ) {
+        label = 'One complete build available';
+    } else if (builds !== null && builds > 1) {
         label = `${builds} complete builds available`;
     }
 
-    return (
-        <span className="text-muted-foreground">
-            {label}
-        </span>
-    );
+    return <span className="text-muted-foreground">{label}</span>;
 }

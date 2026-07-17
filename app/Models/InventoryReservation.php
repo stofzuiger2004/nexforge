@@ -32,7 +32,7 @@ class InventoryReservation extends Model
         'consumed_at',
         'metadata',
         'order_id',
-        'commited_at',
+        'committed_at',
     ];
 
     protected $hidden = ['idempotency_key'];
@@ -49,7 +49,7 @@ class InventoryReservation extends Model
             'cancelled_at' => 'datetime',
             'consumed_at' => 'datetime',
             'metadata' => 'array',
-            'commited_at' => 'datetime',
+            'committed_at' => 'datetime',
         ];
     }
 
@@ -67,7 +67,7 @@ class InventoryReservation extends Model
     {
         return $query->whereIn('status', [
             InventoryReservationStatus::Active->value,
-            InventoryReservationStatus::Commited->value,
+            InventoryReservationStatus::Committed->value,
         ]);
     }
 
