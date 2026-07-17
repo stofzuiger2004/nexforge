@@ -20,4 +20,5 @@ enum InventoryMovementType: string
 
     case CustomerReturn = 'customer_return';
     case Damaged = 'damaged';
+    case StockCount = 'stock_count';
 }

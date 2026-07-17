@@ -28,6 +28,11 @@ class AdminAuthorizationSeeder extends Seeder
 
             'payments.view',
             'inventory.view',
+            'inventory.adjust',
+            'inventory.manage',
+
+            'prices.view',
+            'prices.manage'
         ];
 
         $permissions = collect(
@@ -85,13 +90,12 @@ class AdminAuthorizationSeeder extends Seeder
             $permissions
                 ->only([
                     'admin.access',
-
                     'orders.viewAny',
                     'orders.view',
                     'orders.viewCustomerData',
-
                     'payments.view',
                     'inventory.view',
+                    'prices.view'
                 ])
                 ->values(),
         );

@@ -6,6 +6,7 @@ import {
     Menu,
     PackageSearch,
     ShoppingBag,
+    Boxes
 } from 'lucide-react';
 import type { PropsWithChildren, ReactNode } from 'react';
 
@@ -25,21 +26,43 @@ type AdminLayoutProps = PropsWithChildren<{
     description?: string;
     actions?: ReactNode;
 }>;
+type AdminNavigationProps = {
+    currentUrl: string;
+    items: NavigationItem[];
+};
+type NavigationPermission =
+    keyof AdminSharedProps['auth']['can'];
 
-const navigation = [
+type NavigationItem = {
+    label: string;
+    href: string;
+    icon: typeof LayoutDashboard;
+    permission?: NavigationPermission;
+    isActive: (url: string) => boolean;
+};
+const navigation: NavigationItem[] = [
     {
         label: 'Dashboard',
         href: '/admin',
         icon: LayoutDashboard,
-
-        isActive: (url: string) => url === '/admin',
+        isActive: (url: string) =>
+            url === '/admin',
     },
     {
         label: 'Orders',
         href: '/admin/orders',
         icon: ShoppingBag,
-
-        isActive: (url: string) => url.startsWith('/admin/orders'),
+        permission: 'viewOrders',
+        isActive: (url: string) =>
+            url.startsWith('/admin/orders'),
+    },
+    {
+        label: 'Inventory',
+        href: '/admin/inventory',
+        icon: Boxes,
+        permission: 'viewInventory',
+        isActive: (url: string) =>
+            url.startsWith('/admin/inventory'),
     },
 ];
 
@@ -50,7 +73,11 @@ export default function AdminLayout({
     children,
 }: AdminLayoutProps) {
     const page = usePage<AdminSharedProps>();
-
+    const visibleNavigation = navigation.filter(
+    (item) =>
+        item.permission === undefined ||
+        page.props.auth.can[item.permission],
+);
     const user = page.props.auth.user;
 
     return (
@@ -58,7 +85,7 @@ export default function AdminLayout({
             <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r bg-background lg:flex lg:flex-col">
                 <AdminBrand />
 
-                <AdminNavigation currentUrl={page.url} />
+                <AdminNavigation currentUrl={page.url} items={visibleNavigation} />
 
                 <div className="mt-auto border-t p-4">
                     <p className="truncate text-sm font-medium">{user?.name}</p>
@@ -146,10 +173,10 @@ function AdminBrand() {
     );
 }
 
-function AdminNavigation({ currentUrl }: { currentUrl: string }) {
+function AdminNavigation({ currentUrl, items }: AdminNavigationProps) {
     return (
         <nav className="space-y-1 p-4">
-            {navigation.map((item) => {
+            {items.map((item) => {
                 const Icon = item.icon;
                 const active = item.isActive(currentUrl);
 
@@ -175,6 +202,12 @@ function AdminNavigation({ currentUrl }: { currentUrl: string }) {
 }
 
 function MobileNavigation({ currentUrl }: { currentUrl: string }) {
+    const page = usePage<AdminSharedProps>();
+    const visibleNavigation = navigation.filter(
+    (item) =>
+        item.permission === undefined ||
+        page.props.auth.can[item.permission],
+);
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -193,7 +226,7 @@ function MobileNavigation({ currentUrl }: { currentUrl: string }) {
                     <SheetTitle>NexForge Admin</SheetTitle>
                 </SheetHeader>
 
-                <AdminNavigation currentUrl={currentUrl} />
+                <AdminNavigation currentUrl={currentUrl} items={visibleNavigation} />
             </SheetContent>
         </Sheet>
     );

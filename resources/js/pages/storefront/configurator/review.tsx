@@ -24,8 +24,6 @@ import type {
     ConfigurationReviewPageProps,
 } from '@/types/checkout';
 
-
-
 export default function ConfigurationReviewPage({
     review,
     checkout_defaults,

@@ -45,10 +45,7 @@ final class InventoryLedgerService
             );
         }
 
-        if (
-            $onHandDelta === 0
-            && $reservedDelta === 0
-        ) {
+        if ($onHandDelta === 0 && $reservedDelta === 0 && $type !== InventoryMovementType::StockCount){
             throw new InvalidArgumentException(
                 'An inventory movement must change at least one balance.',
             );

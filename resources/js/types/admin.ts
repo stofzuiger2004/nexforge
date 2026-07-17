@@ -14,8 +14,15 @@ export type AdminSharedProps = {
             viewCustomerData: boolean;
             viewPayments: boolean;
             viewInventory: boolean;
+            adjustInventory: boolean;
+            manageInventory: boolean;
+            viewPrices: boolean;
+            managePrices: boolean;
         };
     };
+    flash: {
+        success: string | null;
+    },
 
     [key: string]: unknown;
 };
@@ -281,4 +288,146 @@ export type AdminOrderTimelineItem = {
     reason: string | null;
     actor: string | null;
     created_at: string;
+};
+
+export type AdminInventoryPrice = {
+    amount_in_cents: number;
+    compare_at_amount_in_cents: number | null;
+    currency: string;
+    price_list_name: string;
+};
+
+export type AdminInventoryListItem = {
+    id: number;
+    href: string;
+
+    product: {
+        name: string;
+        brand: string | null;
+    };
+
+    variant: {
+        id: number;
+        name: string;
+        sku: string;
+    };
+
+    warehouse: {
+        id: number;
+        code: string;
+        name: string;
+    };
+
+    bin_location: string | null;
+
+    stock: {
+        quantity_on_hand: number;
+        quantity_reserved: number;
+        available: number;
+        reservable: number;
+        safety_stock: number;
+        reorder_point: number | null;
+        is_active: boolean;
+        state:
+            | 'in_stock'
+            | 'low_stock'
+            | 'out_of_stock'
+            | 'inactive';
+        lock_version: number;
+    };
+
+    price?: AdminInventoryPrice | null;
+};
+
+export type AdminPaginationLink = {
+    url: string | null;
+    label: string;
+    active: boolean;
+};
+
+export type AdminPaginationData = {
+    current_page: number;
+    from: number | null;
+    last_page: number;
+    per_page: number;
+    to: number | null;
+    total: number;
+    links: AdminPaginationLink[];
+};
+
+export type AdminInventoryDetailPrice = {
+    id: number;
+    price_list: {
+        id: number;
+        code: string;
+        name: string;
+        currency: string;
+        is_default: boolean;
+        is_active: boolean;
+    };
+    amount_in_cents: number;
+    compare_at_amount_in_cents: number | null;
+    lock_version: number;
+    update_url: string;
+};
+
+export type AdminInventoryMovement = {
+    public_id: string;
+    type: string;
+    on_hand_delta: number;
+    reserved_delta: number;
+    on_hand_after: number;
+    reserved_after: number;
+    reason: string | null;
+    reference: string | null;
+    actor: {
+        id: number;
+        name: string;
+        email: string;
+    } | null;
+    occurred_at: string;
+};
+
+
+export type AdminInventoryDetail = AdminInventoryListItem & {
+    last_counted_at: string | null;
+
+    update_url: string;
+    adjustment_url: string;
+
+    can: {
+        adjust_inventory: boolean;
+        manage_inventory: boolean;
+        view_prices: boolean;
+        manage_prices: boolean;
+    };
+
+    prices: AdminInventoryDetailPrice[] | null;
+
+    movements: AdminInventoryMovement[];
+
+    reservations: AdminInventoryReservation[];
+
+    form_tokens: {
+        adjustment: string;
+    };
+};
+
+export type AdminPriceHistoryItem = {
+    id: number;
+    price_list: {
+        name: string;
+        currency: string;
+    };
+    old_amount_in_cents: number;
+    new_amount_in_cents: number;
+    old_compare_at_amount_in_cents: number | null;
+    new_compare_at_amount_in_cents: number | null;
+    reason: string;
+    actor: {
+        id: number;
+        name: string;
+        email: string;
+    } | null;
+    changed_at: string;
 };
