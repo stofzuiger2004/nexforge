@@ -1231,8 +1231,7 @@ function SpecificationField({
 
                     <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         {specification.options.map((option) => {
-                            const optionValue = option.value.toString();
-
+                            const optionValue = option.value;
                             const checked =
                                 selectedValues.includes(optionValue);
 
@@ -1294,7 +1293,7 @@ function SpecificationField({
                         {specification.options.map((option) => (
                             <SelectItem
                                 key={option.value}
-                                value={option.value.toString()}
+                                value={option.value}
                             >
                                 {option.label}
                             </SelectItem>

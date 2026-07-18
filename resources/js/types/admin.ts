@@ -531,6 +531,6 @@ export type AdminComponentSpecificationDataType =
     | 'multi-option';
 
 export type AdminComponentSpecificationOption = {
-    value: number;
+    value: string;
     label: string;
 };

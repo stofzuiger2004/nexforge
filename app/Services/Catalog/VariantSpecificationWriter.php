@@ -117,12 +117,12 @@ final class VariantSpecificationWriter
         Specification $specification,
         mixed $value,
     ): void {
-        if (! is_int($value)) {
+        if (is_string($value) && preg_match('/^-?\d+$/D', trim($value)) === 1) {
+            $value = (int) trim($value);
+        }
+        if(! is_int($value)){
             throw new InvalidArgumentException(
-                sprintf(
-                    'Specification "%s" requires an integer.',
-                    $specification->key,
-                ),
+                sprintf('Specification "%s" requires an integer.',$specificationKey)
             );
         }
 
@@ -221,11 +221,7 @@ final class VariantSpecificationWriter
                 ),
             );
         }
-
-        $options = SpecificationOption::query()
-            ->where('specification_id', $specification->id)
-            ->whereIn('value', $requestedValues)
-            ->get();
+        $options = $specification->options()->whereIn('value',$requestedValues)->get();
 
         if ($options->count() !== count($requestedValues)) {
             throw new InvalidArgumentException(

@@ -8,6 +8,8 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\PriceList;
 use App\Models\Warehouse;
+use App\Models\Specification;
+use App\Models\SpecificationOption;
 
 final class AdminComponentFormDataService
 {
@@ -83,19 +85,12 @@ final class AdminComponentFormDataService
                                         ->pivot
                                         ->is_required,
 
-                                    'options' => $specification
-                                        ->options
-                                        ->map(
-                                            fn ($option) => [
-                                                'value' => $option
-                                                    ->id,
-
-                                                'label' => $option
-                                                    ->label,
-                                            ],
-                                        )
-                                        ->values()
-                                        ->all(),
+                                    'options' => $specification->options->map(
+                                        static fn (SpecificationOption $option): array => [
+                                            'value'=>$option->value,
+                                            'label'=>$option->label
+                                        ]
+                                    )->values()->all()
                                 ],
                             )
                             ->values()

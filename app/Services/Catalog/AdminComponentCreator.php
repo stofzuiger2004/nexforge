@@ -157,11 +157,16 @@ final class AdminComponentCreator
                         'lock_version' => 1,
                     ]);
 
-                    foreach($data['specifications'] ?? [] as $specificationKey => $values){
+                    /**
+                     * @var array<string, mixed> $specifications
+                     */
+                    $specifications = $data['specifications'] ?? [];
+                    foreach($specifications as $SpecificationKey => $values){
+                        if($values === null || $values === '' || $values === []){
+                            continue;
+                        }
                         $this->specificationWriter->set(
-                            variant: $variant,
-                            specificationKey: (string) $specificationKey,
-                            values: $values
+                            $variant,(string) $SpecificationKey,$values
                         );
                     }
 
