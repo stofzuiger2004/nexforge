@@ -157,12 +157,13 @@ final class AdminComponentCreator
                         'lock_version' => 1,
                     ]);
 
-                    $this->specificationWriter->write(
-                        variant: $variant,
-                        values: $data[
-                            'specifications'
-                        ],
-                    );
+                    foreach($data['specifications'] ?? [] as $specificationKey => $values){
+                        $this->specificationWriter->set(
+                            variant: $variant,
+                            specificationKey: (string) $specificationKey,
+                            values: $values
+                        );
+                    }
 
                     $inventoryItem = InventoryItem::query()
                         ->create([

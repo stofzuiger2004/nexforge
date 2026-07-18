@@ -22,6 +22,15 @@ final class AdminInventoryListResource extends JsonResource
     ): array {
         $available = $this->availableQuantity();
 
+        $image = $this
+            ->variant
+            ->product
+            ->images
+            ->firstWhere(
+                'is_primary',
+                true,
+            );
+
         $data = [
             'id' => $this->id,
 
@@ -86,6 +95,11 @@ final class AdminInventoryListResource extends JsonResource
                 'lock_version' => $this
                     ->lock_version,
             ],
+            'image' => $image === null ? null :
+            [
+                'url'=>$image->url,
+                'alt'=>$image->alt_text ?: $this->variant->product->name
+            ]
         ];
 
         if (

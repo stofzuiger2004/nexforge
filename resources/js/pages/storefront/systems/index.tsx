@@ -1,7 +1,4 @@
-import {
-    Head,
-    Link,
-} from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import {
     ArrowRight,
     Check,
@@ -18,10 +15,7 @@ import type { LucideIcon } from 'lucide-react';
 import { SystemCard } from '@/components/storefront/system-card';
 import { Button } from '@/components/ui/button';
 import StorefrontLayout from '@/layouts/storefront-layout';
-import type {
-    FeaturedSystem,
-    SystemIndexPageProps,
-} from '@/types/storefront';
+import type { FeaturedSystem, SystemIndexPageProps } from '@/types/storefront';
 
 const benefits: {
     icon: LucideIcon;
@@ -69,10 +63,7 @@ const processSteps = [
     },
 ];
 
-export default function SystemIndex({
-    systems,
-    page,
-}: SystemIndexPageProps) {
+export default function SystemIndex({ systems, page }: SystemIndexPageProps) {
     return (
         <StorefrontLayout>
             <Head title={page.title} />
@@ -88,16 +79,11 @@ export default function SystemIndex({
 
                 <BenefitsSection />
 
-                <SystemsSection
-                    systems={systems}
-                    context={page.context}
-                />
+                <SystemsSection systems={systems} context={page.context} />
 
                 <ProcessSection />
 
-                <BottomCallToAction
-                    context={page.context}
-                />
+                <BottomCallToAction context={page.context} />
             </main>
         </StorefrontLayout>
     );
@@ -137,25 +123,20 @@ function PageHero({
                         </p>
 
                         <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
-                            <HeroPoint>
-                                Server-authoritative pricing
-                            </HeroPoint>
+                            <HeroPoint>Server-authoritative pricing</HeroPoint>
 
                             <HeroPoint>
                                 Automatic compatibility checks
                             </HeroPoint>
 
-                            <HeroPoint>
-                                Complete-build availability
-                            </HeroPoint>
+                            <HeroPoint>Complete-build availability</HeroPoint>
                         </div>
                     </div>
 
                     <div className="rounded-2xl border bg-muted/20 p-6">
                         <div className="flex items-start gap-4">
                             <span className="grid size-11 shrink-0 place-items-center rounded-xl border bg-background">
-                                {context ===
-                                'configurator' ? (
+                                {context === 'configurator' ? (
                                     <Settings2 className="size-5" />
                                 ) : (
                                     <Cpu className="size-5" />
@@ -177,10 +158,9 @@ function PageHero({
 
                         <div className="mt-6 border-t pt-5">
                             <p className="text-sm leading-6 text-muted-foreground">
-                                Every preset includes a complete
-                                base component list. You can review
-                                the system first or start configuring
-                                immediately.
+                                Every preset includes a complete base component
+                                list. You can review the system first or start
+                                configuring immediately.
                             </p>
                         </div>
                     </div>
@@ -190,11 +170,7 @@ function PageHero({
     );
 }
 
-function HeroPoint({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+function HeroPoint({ children }: { children: React.ReactNode }) {
     return (
         <span className="inline-flex items-center gap-2">
             <Check className="size-4 text-foreground" />
@@ -220,9 +196,7 @@ function BenefitsSection() {
                             </span>
 
                             <div>
-                                <h2 className="font-medium">
-                                    {benefit.title}
-                                </h2>
+                                <h2 className="font-medium">{benefit.title}</h2>
 
                                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
                                     {benefit.description}
@@ -263,10 +237,7 @@ function SystemsSection({
                 </div>
 
                 {context === 'catalogue' && (
-                    <Button
-                        variant="outline"
-                        asChild
-                    >
+                    <Button variant="outline" asChild>
                         <Link href="/configure">
                             Open configurator
                             <ArrowRight className="size-4" />
@@ -278,10 +249,7 @@ function SystemsSection({
             {systems.length > 0 ? (
                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                     {systems.map((system) => (
-                        <SystemCard
-                            key={system.id}
-                            system={system}
-                        />
+                        <SystemCard key={system.id} system={system} />
                     ))}
                 </div>
             ) : (
@@ -303,18 +271,12 @@ function EmptyState() {
             </h2>
 
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                Published systems with an active storefront
-                price will appear here automatically.
+                Published systems with an active storefront price will appear
+                here automatically.
             </p>
 
-            <Button
-                asChild
-                variant="outline"
-                className="mt-6"
-            >
-                <Link href="/">
-                    Return to homepage
-                </Link>
+            <Button asChild variant="outline" className="mt-6">
+                <Link href="/">Return to homepage</Link>
             </Button>
         </div>
     );
@@ -379,14 +341,13 @@ function BottomCallToAction({
                         </div>
 
                         <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-tight">
-                            Start with a proven system.
-                            Finish with a PC built around you.
+                            Start with a proven system. Finish with a PC built
+                            around you.
                         </h2>
 
                         <p className="mt-4 max-w-2xl text-sm leading-6 text-background/70 sm:text-base">
-                            Every selection remains subject to
-                            server-side price, compatibility, and
-                            inventory validation.
+                            Every selection remains subject to server-side
+                            price, compatibility, and inventory validation.
                         </p>
                     </div>
 

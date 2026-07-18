@@ -281,8 +281,6 @@ export type AdminInventoryReservation = {
     }[];
 };
 
-
-
 export type AdminOrderTimelineItem = {
     id: number;
     category: string;
@@ -303,6 +301,11 @@ export type AdminInventoryPrice = {
 export type AdminInventoryListItem = {
     id: number;
     href: string;
+
+    image?: {
+        url: string;
+        alt: string;
+    } | null;
 
     product: {
         name: string;
@@ -442,30 +445,16 @@ export type AdminPriceHistoryItem = {
     } | null;
     changed_at: string;
 };
-export type AdminSelectOption = {
-    value: number;
-    label: string;
-};
-
-export type AdminSpecificationOption = {
-    value: number;
-    label: string;
-};
 
 export type AdminComponentSpecification = {
     id: number;
     key: string;
     label: string;
-    data_type:
-        | 'text'
-        | 'integer'
-        | 'decimal'
-        | 'boolean'
-        | 'option'
-        | 'multi-option';
+    description: string | null;
+    data_type: AdminComponentSpecificationDataType;
     unit: string | null;
     required: boolean;
-    options: AdminSpecificationOption[];
+    options: AdminComponentSpecificationOption[];
 };
 
 export type AdminComponentCategoryOption = {
@@ -477,9 +466,9 @@ export type AdminComponentCategoryOption = {
 
 export type AdminComponentCreatePageProps = {
     options: {
-        brands: AdminSelectOption[];
+        brands: AdminIdOption[];
         categories: AdminComponentCategoryOption[];
-        warehouses: AdminSelectOption[];
+        warehouses: AdminIdOption[];
         price_lists: {
             value: number;
             label: string;
@@ -493,5 +482,55 @@ export type AdminComponentCreatePageProps = {
     };
     formTokens: {
         creation: string;
-    }
+    };
+
+    routes: {
+        store: string;
+        inventoryIndex: string;
+    };
+};
+
+export type AdminInventoryFilters = {
+    search: string;
+    warehouse_id: string;
+    state: string;
+    sort: string;
+    per_page: string;
+};
+
+export type AdminInventoryPaginator = {
+    data: AdminInventoryListItem[];
+    meta: AdminPaginationData;
+};
+
+export type AdminInventoryIndexPageProps = {
+    inventoryItems: AdminInventoryPaginator;
+    filters: AdminInventoryFilters;
+    options: {
+        warehouses: AdminFilterOption[];
+        states: AdminFilterOption[];
+        sorts: AdminFilterOption[];
+        perPage: AdminFilterOption[];
+    };
+
+    createComponentUrl: string | null;
+};
+
+export type AdminIdOption = {
+    value: number;
+    label: string;
+};
+
+export type AdminComponentSpecificationDataType =
+    | 'text'
+    | 'integer'
+    | 'decimal'
+    | 'boolean'
+    | 'option'
+    | 'multi_option'
+    | 'multi-option';
+
+export type AdminComponentSpecificationOption = {
+    value: number;
+    label: string;
 };

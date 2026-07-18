@@ -25,28 +25,22 @@ const navigation = [
         href: '/support',
     },
 ];
-function isNavigationActive(
-    currentPath: string,
-    href: string,
-): boolean {
+function isNavigationActive(currentPath: string, href: string): boolean {
     if (href === '/gaming-pcs') {
-        return currentPath === '/gaming-pcs'
-            || currentPath.startsWith(
-                '/gaming-pcs/',
-            );
+        return (
+            currentPath === '/gaming-pcs' ||
+            currentPath.startsWith('/gaming-pcs/')
+        );
     }
 
     if (href === '/configure') {
-        return currentPath === '/configure'
-            || currentPath.startsWith(
-                '/configure/',
-            );
+        return (
+            currentPath === '/configure' ||
+            currentPath.startsWith('/configure/')
+        );
     }
 
-    return currentPath === href
-        || currentPath.startsWith(
-            `${href}/`,
-        );
+    return currentPath === href || currentPath.startsWith(`${href}/`);
 }
 
 export function SiteHeader() {
@@ -67,7 +61,12 @@ export function SiteHeader() {
                         <Link
                             key={item.href}
                             href={item.href}
-                            className={['text-sm font-medium transition-colors hover:text-foreground',isNavigationActive(currentPath,item.href) ? 'text-foreground' : 'text-muted-foreground'].join(' ')}
+                            className={[
+                                'text-sm font-medium transition-colors hover:text-foreground',
+                                isNavigationActive(currentPath, item.href)
+                                    ? 'text-foreground'
+                                    : 'text-muted-foreground',
+                            ].join(' ')}
                         >
                             {item.label}
                         </Link>
@@ -119,7 +118,15 @@ export function SiteHeader() {
                                 <Link
                                     key={item.href}
                                     href={item.href}
-                                    className={['rounded-lg px-3 py-2 text-sm font-medium transition-colors',isNavigationActive(currentPath,item.href) ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground',].join(' ')}
+                                    className={[
+                                        'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                                        isNavigationActive(
+                                            currentPath,
+                                            item.href,
+                                        )
+                                            ? 'bg-muted text-foreground'
+                                            : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                                    ].join(' ')}
                                 >
                                     {item.label}
                                 </Link>

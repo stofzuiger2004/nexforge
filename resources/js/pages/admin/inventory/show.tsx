@@ -168,11 +168,8 @@ function PriceEditor({ price }: { price: AdminInventoryDetailPrice }) {
                     <p className="mt-3 text-sm text-destructive">
                         {form.errors.expected_lock_version}
                     </p>
-                )
-
-                }
+                )}
             </div>
-
 
             <Button type="submit" className="mt-4" disabled={form.processing}>
                 {form.processing ? 'Saving…' : 'Update price'}
@@ -426,7 +423,8 @@ export default function InventoryShow({
                             {adjustmentForm.errors.expected_lock_version && (
                                 <p className="text-sm text-destructive">
                                     {
-                                        adjustmentForm.errors.expected_lock_version
+                                        adjustmentForm.errors
+                                            .expected_lock_version
                                     }
                                 </p>
                             )}

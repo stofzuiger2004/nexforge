@@ -2,6 +2,7 @@ import { Link } from '@inertiajs/react';
 import { Cpu, HardDrive, MemoryStick, Monitor } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
+import { StartConfigurationButton } from '@/components/storefront/start-configuration-button';
 import { SystemVisual } from '@/components/storefront/system-visual';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -17,7 +18,6 @@ import type {
     FeaturedSystem,
     SystemComponentSummary,
 } from '@/types/storefront';
-import { StartConfigurationButton } from '@/components/storefront/start-configuration-button';
 
 type SystemCardProps = {
     system: FeaturedSystem;
@@ -125,9 +125,7 @@ export function SystemCard({ system }: SystemCardProps) {
                         variant="outline"
                         className="w-full sm:w-auto"
                     >
-                        <Link href={detailsUrl}>
-                            View details
-                        </Link>
+                        <Link href={detailsUrl}>View details</Link>
                     </Button>
 
                     <StartConfigurationButton

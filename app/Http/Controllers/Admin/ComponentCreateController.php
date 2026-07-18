@@ -13,6 +13,14 @@ class ComponentCreateController extends Controller
 {
     public function __invoke(AdminComponentFormDataService $formData): Response
     {
-        return Inertia::render('admin/inventory/components/create',['options'=>$formData->all(),'formTokens'=>['creation'=>(string) Str::ulid()]]);
+        return Inertia::render('admin/inventory/components/create',
+        [
+            'options'=>$formData->all(),
+            'formTokens'=>['creation'=>(string) Str::ulid()],
+            'routes' => [
+                'store' => route('admin.inventory.components.store'),
+                'inventoryIndex' => route('admin.inventory.index')
+            ]
+        ]);
     }
 }
