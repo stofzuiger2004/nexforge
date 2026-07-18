@@ -18,7 +18,7 @@ class InventorySettingsController extends Controller
                 inventoryItem: $inventoryItem,
                 values: [
                     'bin_location' => $request->validated('bin_location'),
-                    'safety_stock' => (int) $request->validated('safety_lock'),
+                    'safety_stock' => (int) $request->validated('safety_stock'),
                     'reorder_point' => $request->validated('reorder_point') === null ? null : (int) $request->validated('reorder_point'),
                     'is_active' => (bool) $request->validated('is_active')
                 ],
@@ -26,7 +26,7 @@ class InventorySettingsController extends Controller
             );
         }catch(StaleResourceVersionException $e){
             return back()->withErrors([
-                'inventory'=>$e->getMessage()
+                'expected_lock_version'=>$e->getMessage()
             ]);
         }
 

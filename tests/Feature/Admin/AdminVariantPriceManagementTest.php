@@ -131,7 +131,7 @@ test('stale price updates are rejected', function (): void {
                 'expected_lock_version' => $submittedVersion,
             ],
         )
-        ->assertSessionHasErrors('price');
+        ->assertSessionHasErrors('expected_lock_version');
 });
 
 test('compare at price must exceed the selling price', function (): void {
@@ -154,7 +154,7 @@ test('compare at price must exceed the selling price', function (): void {
                     ->lock_version,
             ],
         )
-        ->assertSessionHasErrors('price');
+        ->assertSessionHasErrors('compare_at_amount');
 });
 
 test('price history records are immutable', function (): void {

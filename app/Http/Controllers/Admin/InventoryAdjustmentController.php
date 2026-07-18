@@ -23,20 +23,25 @@ class InventoryAdjustmentController extends Controller
             $service->adjust(
                 inventoryItem: $inventoryItem,
                 type: $request->adjustmentType(),
-                quantity: (int) $request->validated('reason'),
+                quantity: (int) $request->validated('quantity'),
+                reason: (string) $request->validated('reason'),
                 expectedLockVersion: (int) $request->validated('expected_lock_version'),
                 idempotencyKey: (string) $request->validated('idempotency_key'),
                 reference: $request->validated('reference'),
                 actor: $user
             );
-        }catch(StaleResourceVersionException|DomainException $e){
+        }catch(StaleResourceVersionException $e){
             return back()->withErrors([
-                'inventory' => $e->getMessage
+                'expected_lock_version' => $e->getMessage()
+            ]);
+        }catch(DomainException $e){
+            return back()->withErrors([
+                'quantity' => $e->getMessage()
             ]);
         }catch(Throwable $e){
             report($e);
             return back()->withErrors([
-                'inventory' => 'The inventory adjustment could not be saved.'
+                'quantity' => 'The inventory adjustment could not be saved.'
             ]);
         }
 

@@ -48,8 +48,7 @@ beforeEach(function (): void {
 });
 
 test('an administrator can receive stock exactly once', function (): void {
-    $before = $this->inventoryItem
-        ->quantity_on_hand;
+    $before = $this->inventoryItem->quantity_on_hand;
 
     $key = 'admin-receipt-'.Str::ulid();
 
@@ -64,39 +63,29 @@ test('an administrator can receive stock exactly once', function (): void {
         'idempotency_key' => $key,
     ];
 
-    $response = $this->actingAs($this->administrator)
-    ->post(
-        route(
-            'admin.inventory.adjustments.store',
-            $this->inventoryItem,
-        ),
-        $payload,
-    );
-
-    $response
+    $this->actingAs($this->administrator)
+        ->post(
+            route(
+                'admin.inventory.adjustments.store',
+                $this->inventoryItem,
+            ),
+            $payload,
+        )
         ->assertRedirect()
         ->assertSessionHasNoErrors();
 
     /*
-     * Simulate a duplicate browser or network retry
-     * with the original version and idempotency key.
+     * Repeat the original request to verify idempotency.
+     * The original lock version is intentionally retained.
      */
-    $response = $this->actingAs($this->administrator)
-    ->post(
-        route(
-            'admin.inventory.adjustments.store',
-            $item,
-        ),
-        [
-            'type' => 'stock_count',
-            'quantity' => $item->quantity_on_hand,
-            'reason' => 'Monthly physical stock count.',
-            'expected_lock_version' => $item->lock_version,
-            'idempotency_key' => (string) Str::ulid(),
-        ],
-    );
-
-    $response
+    $this->actingAs($this->administrator)
+        ->post(
+            route(
+                'admin.inventory.adjustments.store',
+                $this->inventoryItem,
+            ),
+            $payload,
+        )
         ->assertRedirect()
         ->assertSessionHasNoErrors();
 
@@ -108,18 +97,12 @@ test('an administrator can receive stock exactly once', function (): void {
 
     expect(
         InventoryMovement::query()
-            ->where(
-                'idempotency_key',
-                $key,
-            )
+            ->where('idempotency_key', $key)
             ->count(),
     )->toBe(1);
 
     $movement = InventoryMovement::query()
-        ->where(
-            'idempotency_key',
-            $key,
-        )
+        ->where('idempotency_key', $key)
         ->firstOrFail();
 
     expect($movement->type)
@@ -131,6 +114,10 @@ test('an administrator can receive stock exactly once', function (): void {
 });
 
 test('stale stock adjustments are rejected', function (): void {
+    $submittedVersion = $this
+        ->inventoryItem
+        ->lock_version;
+
     $this->inventoryItem->increment(
         'lock_version',
     );
@@ -151,14 +138,12 @@ test('stale stock adjustments are rejected', function (): void {
                 'type' => 'receipt',
                 'quantity' => 1,
                 'reason' => 'Stale version test.',
-                'expected_lock_version' => $this
-                    ->inventoryItem
-                    ->lock_version,
+                'expected_lock_version' => $submittedVersion,
                 'idempotency_key' => (string) Str::ulid(),
             ],
         )
         ->assertSessionHasErrors(
-            'inventory',
+            'expected_lock_version',
         );
 });
 
@@ -189,7 +174,7 @@ test('stock cannot be reduced below reserved quantity', function (): void {
             ],
         )
         ->assertSessionHasErrors(
-            'inventory',
+            'quantity',
         );
 
     expect(
@@ -201,26 +186,30 @@ test('a physical count is audited even when quantity is unchanged', function ():
     $item = $this->inventoryItem->fresh();
 
     $this->actingAs($this->administrator)
-        ->post(
-            route(
-                'admin.inventory.adjustments.store',
-                $item,
-            ),
-            [
-                'type' => 'stock_count',
-                'quantity' => $item
-                    ->quantity_on_hand,
-                'reason' => 'Monthly physical stock count.',
-                'expected_lock_version' => $item
-                    ->lock_version,
-                'idempotency_key' => (string) Str::ulid(),
-            ],
-        )
-        ->assertRedirect();
+    ->post(
+        route(
+            'admin.inventory.adjustments.store',
+            $item,
+        ),
+        [
+            'type' => 'stock_count',
+            'quantity' => $item->quantity_on_hand,
+            'reason' => 'Monthly physical stock count.',
+            'expected_lock_version' => $item->lock_version,
+            'idempotency_key' => (string) Str::ulid(),
+        ],
+    )
+    ->assertRedirect()
+    ->assertSessionHasNoErrors();
 
     $movement = $item
-        ->movements()
-        ->firstOrFail();
+    ->movements()
+    ->where(
+        'type',
+        InventoryMovementType::StockCount->value,
+    )
+    ->latest('id')
+    ->firstOrFail();
 
     expect($movement->type)
         ->toBe(

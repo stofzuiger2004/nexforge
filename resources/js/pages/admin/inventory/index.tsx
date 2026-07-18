@@ -1,8 +1,4 @@
-import {
-    Head,
-    Link,
-    useForm,
-} from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import type { FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,10 +34,7 @@ type InventoryIndexProps = {
     };
 };
 
-function formatMoney(
-    amountInCents: number,
-    currency: string,
-): string {
+function formatMoney(amountInCents: number, currency: string): string {
     return new Intl.NumberFormat('en-BE', {
         style: 'currency',
         currency,
@@ -60,9 +53,7 @@ function stockStateLabel(
 }
 
 function paginationLabel(label: string): string {
-    return label
-        .replace('&laquo;', '«')
-        .replace('&raquo;', '»');
+    return label.replace('&laquo;', '«').replace('&raquo;', '»');
 }
 
 export default function InventoryIndex({
@@ -72,16 +63,13 @@ export default function InventoryIndex({
 }: InventoryIndexProps) {
     const form = useForm({
         search: filters.search ?? '',
-        warehouse_id:
-            filters.warehouse_id?.toString() ?? '',
+        warehouse_id: filters.warehouse_id?.toString() ?? '',
         stock_state: filters.stock_state ?? '',
         sort: filters.sort,
         per_page: filters.per_page.toString(),
     });
 
-    const submit = (
-        event: FormEvent<HTMLFormElement>,
-    ): void => {
+    const submit = (event: FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
 
         form.get('/admin/inventory', {
@@ -132,10 +120,7 @@ export default function InventoryIndex({
                         id="search"
                         value={form.data.search}
                         onChange={(event) =>
-                            form.setData(
-                                'search',
-                                event.target.value,
-                            )
+                            form.setData('search', event.target.value)
                         }
                         placeholder="Product, SKU, bin, warehouse…"
                     />
@@ -153,27 +138,17 @@ export default function InventoryIndex({
                         id="warehouse"
                         value={form.data.warehouse_id}
                         onChange={(event) =>
-                            form.setData(
-                                'warehouse_id',
-                                event.target.value,
-                            )
+                            form.setData('warehouse_id', event.target.value)
                         }
                         className="h-9 w-full rounded-md border bg-background px-3 text-sm"
                     >
-                        <option value="">
-                            All warehouses
-                        </option>
+                        <option value="">All warehouses</option>
 
-                        {filterOptions.warehouses.map(
-                            (option) => (
-                                <option
-                                    key={option.value}
-                                    value={option.value}
-                                >
-                                    {option.label}
-                                </option>
-                            ),
-                        )}
+                        {filterOptions.warehouses.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
@@ -189,27 +164,17 @@ export default function InventoryIndex({
                         id="stock-state"
                         value={form.data.stock_state}
                         onChange={(event) =>
-                            form.setData(
-                                'stock_state',
-                                event.target.value,
-                            )
+                            form.setData('stock_state', event.target.value)
                         }
                         className="h-9 w-full rounded-md border bg-background px-3 text-sm"
                     >
-                        <option value="">
-                            All statuses
-                        </option>
+                        <option value="">All statuses</option>
 
-                        {filterOptions.stock_states.map(
-                            (option) => (
-                                <option
-                                    key={option.value}
-                                    value={option.value}
-                                >
-                                    {option.label}
-                                </option>
-                            ),
-                        )}
+                        {filterOptions.stock_states.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
@@ -225,23 +190,15 @@ export default function InventoryIndex({
                         id="sort"
                         value={form.data.sort}
                         onChange={(event) =>
-                            form.setData(
-                                'sort',
-                                event.target.value,
-                            )
+                            form.setData('sort', event.target.value)
                         }
                         className="h-9 w-full rounded-md border bg-background px-3 text-sm"
                     >
-                        {filterOptions.sorts.map(
-                            (option) => (
-                                <option
-                                    key={option.value}
-                                    value={option.value}
-                                >
-                                    {option.label}
-                                </option>
-                            ),
-                        )}
+                        {filterOptions.sorts.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
@@ -257,10 +214,7 @@ export default function InventoryIndex({
                         id="per-page"
                         value={form.data.per_page}
                         onChange={(event) =>
-                            form.setData(
-                                'per_page',
-                                event.target.value,
-                            )
+                            form.setData('per_page', event.target.value)
                         }
                         className="h-9 w-full rounded-md border bg-background px-3 text-sm"
                     >
@@ -271,18 +225,11 @@ export default function InventoryIndex({
                 </div>
 
                 <div className="flex gap-2 md:col-span-2 xl:col-span-6">
-                    <Button
-                        type="submit"
-                        disabled={form.processing}
-                    >
+                    <Button type="submit" disabled={form.processing}>
                         Apply filters
                     </Button>
 
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={reset}
-                    >
+                    <Button type="button" variant="outline" onClick={reset}>
                         Reset
                     </Button>
                 </div>
@@ -291,14 +238,10 @@ export default function InventoryIndex({
             <div className="overflow-hidden rounded-xl border bg-background">
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-[960px] text-left text-sm">
-                        <thead className="border-b bg-muted/40 text-xs uppercase text-muted-foreground">
+                        <thead className="border-b bg-muted/40 text-xs text-muted-foreground uppercase">
                             <tr>
-                                <th className="px-4 py-3">
-                                    Product
-                                </th>
-                                <th className="px-4 py-3">
-                                    Warehouse
-                                </th>
+                                <th className="px-4 py-3">Product</th>
+                                <th className="px-4 py-3">Warehouse</th>
                                 <th className="px-4 py-3 text-right">
                                     On hand
                                 </th>
@@ -311,123 +254,81 @@ export default function InventoryIndex({
                                 <th className="px-4 py-3 text-right">
                                     Reservable
                                 </th>
-                                <th className="px-4 py-3">
-                                    Price
-                                </th>
-                                <th className="px-4 py-3">
-                                    Status
-                                </th>
+                                <th className="px-4 py-3">Price</th>
+                                <th className="px-4 py-3">Status</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            {inventoryItems.data.map(
-                                (item) => (
-                                    <tr
-                                        key={item.id}
-                                        className="border-b last:border-b-0 hover:bg-muted/20"
-                                    >
-                                        <td className="px-4 py-4">
-                                            <Link
-                                                href={item.href}
-                                                className="font-medium hover:underline"
-                                            >
-                                                {
-                                                    item
-                                                        .product
-                                                        .name
-                                                }
-                                            </Link>
+                            {inventoryItems.data.map((item) => (
+                                <tr
+                                    key={item.id}
+                                    className="border-b last:border-b-0 hover:bg-muted/20"
+                                >
+                                    <td className="px-4 py-4">
+                                        <Link
+                                            href={item.href}
+                                            className="font-medium hover:underline"
+                                        >
+                                            {item.product.name}
+                                        </Link>
 
-                                            <div className="mt-1 text-xs text-muted-foreground">
-                                                {item.product
-                                                    .brand
-                                                    ? `${item.product.brand} · `
-                                                    : ''}
-                                                {
-                                                    item
-                                                        .variant
-                                                        .sku
-                                                }
-                                            </div>
-                                        </td>
+                                        <div className="mt-1 text-xs text-muted-foreground">
+                                            {item.product.brand
+                                                ? `${item.product.brand} · `
+                                                : ''}
+                                            {item.variant.sku}
+                                        </div>
+                                    </td>
 
-                                        <td className="px-4 py-4">
-                                            {
-                                                item
-                                                    .warehouse
-                                                    .name
-                                            }
+                                    <td className="px-4 py-4">
+                                        {item.warehouse.name}
 
-                                            <div className="mt-1 text-xs text-muted-foreground">
-                                                {item.bin_location ??
-                                                    'No bin'}
-                                            </div>
-                                        </td>
+                                        <div className="mt-1 text-xs text-muted-foreground">
+                                            {item.bin_location ?? 'No bin'}
+                                        </div>
+                                    </td>
 
-                                        <td className="px-4 py-4 text-right tabular-nums">
-                                            {
-                                                item.stock
-                                                    .quantity_on_hand
-                                            }
-                                        </td>
+                                    <td className="px-4 py-4 text-right tabular-nums">
+                                        {item.stock.quantity_on_hand}
+                                    </td>
 
-                                        <td className="px-4 py-4 text-right tabular-nums">
-                                            {
-                                                item.stock
-                                                    .quantity_reserved
-                                            }
-                                        </td>
+                                    <td className="px-4 py-4 text-right tabular-nums">
+                                        {item.stock.quantity_reserved}
+                                    </td>
 
-                                        <td className="px-4 py-4 text-right font-medium tabular-nums">
-                                            {
-                                                item.stock
-                                                    .available
-                                            }
-                                        </td>
+                                    <td className="px-4 py-4 text-right font-medium tabular-nums">
+                                        {item.stock.available}
+                                    </td>
 
-                                        <td className="px-4 py-4 text-right tabular-nums">
-                                            {
-                                                item.stock
-                                                    .reservable
-                                            }
-                                        </td>
+                                    <td className="px-4 py-4 text-right tabular-nums">
+                                        {item.stock.reservable}
+                                    </td>
 
-                                        <td className="px-4 py-4">
-                                            {item.price
-                                                ? formatMoney(
-                                                      item
-                                                          .price
-                                                          .amount_in_cents,
-                                                      item
-                                                          .price
-                                                          .currency,
-                                                  )
-                                                : '—'}
-                                        </td>
+                                    <td className="px-4 py-4">
+                                        {item.price
+                                            ? formatMoney(
+                                                  item.price.amount_in_cents,
+                                                  item.price.currency,
+                                              )
+                                            : '—'}
+                                    </td>
 
-                                        <td className="px-4 py-4">
-                                            <span className="rounded-full border px-2 py-1 text-xs">
-                                                {stockStateLabel(
-                                                    item
-                                                        .stock
-                                                        .state,
-                                                )}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ),
-                            )}
+                                    <td className="px-4 py-4">
+                                        <span className="rounded-full border px-2 py-1 text-xs">
+                                            {stockStateLabel(item.stock.state)}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
 
-                            {inventoryItems.data.length ===
-                                0 && (
+                            {inventoryItems.data.length === 0 && (
                                 <tr>
                                     <td
                                         colSpan={8}
                                         className="px-4 py-12 text-center text-muted-foreground"
                                     >
-                                        No inventory items match
-                                        these filters.
+                                        No inventory items match these filters.
                                     </td>
                                 </tr>
                             )}
@@ -438,42 +339,35 @@ export default function InventoryIndex({
 
             <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-sm text-muted-foreground">
-                    Showing{' '}
-                    {inventoryItems.pagination.from ??
-                        0}
-                    –{inventoryItems.pagination.to ?? 0}{' '}
-                    of {inventoryItems.pagination.total}
+                    Showing {inventoryItems.pagination.from ?? 0}–
+                    {inventoryItems.pagination.to ?? 0} of{' '}
+                    {inventoryItems.pagination.total}
                 </p>
 
                 <div className="flex flex-wrap gap-1">
-                    {inventoryItems.pagination.links.map(
-                        (link, index) =>
-                            link.url ? (
-                                <Link
-                                    key={`${link.label}-${index}`}
-                                    href={link.url}
-                                    preserveScroll
-                                    className={[
-                                        'rounded-md border px-3 py-1.5 text-sm',
-                                        link.active
-                                            ? 'bg-foreground text-background'
-                                            : 'bg-background hover:bg-muted',
-                                    ].join(' ')}
-                                >
-                                    {paginationLabel(
-                                        link.label,
-                                    )}
-                                </Link>
-                            ) : (
-                                <span
-                                    key={`${link.label}-${index}`}
-                                    className="rounded-md border px-3 py-1.5 text-sm text-muted-foreground opacity-50"
-                                >
-                                    {paginationLabel(
-                                        link.label,
-                                    )}
-                                </span>
-                            ),
+                    {inventoryItems.pagination.links.map((link, index) =>
+                        link.url ? (
+                            <Link
+                                key={`${link.label}-${index}`}
+                                href={link.url}
+                                preserveScroll
+                                className={[
+                                    'rounded-md border px-3 py-1.5 text-sm',
+                                    link.active
+                                        ? 'bg-foreground text-background'
+                                        : 'bg-background hover:bg-muted',
+                                ].join(' ')}
+                            >
+                                {paginationLabel(link.label)}
+                            </Link>
+                        ) : (
+                            <span
+                                key={`${link.label}-${index}`}
+                                className="rounded-md border px-3 py-1.5 text-sm text-muted-foreground opacity-50"
+                            >
+                                {paginationLabel(link.label)}
+                            </span>
+                        ),
                     )}
                 </div>
             </div>

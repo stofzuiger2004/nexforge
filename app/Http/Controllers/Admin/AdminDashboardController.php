@@ -19,19 +19,14 @@ use Inertia\Response;
 
 class AdminDashboardController extends Controller
 {
-    public function __invoke(
-        Request $request,
-    ): Response {
+    public function __invoke(Request $request): Response
+    {
         Gate::authorize('admin.access');
         $canViewPayments = Gate::allows('payments.view');
 
         $revenueByCurrency = $canViewPayments ? $this->revenueByCurrency() : [];
 
-        $recentOrders = $this
-            ->baseOrderListQuery()
-            ->orderByDesc('placed_at')
-            ->limit(8)
-            ->get();
+        $recentOrders = $this->baseOrderListQuery()->orderByDesc('placed_at')->limit(8)->get();
 
         $attentionOrders = $this
             ->baseOrderListQuery()

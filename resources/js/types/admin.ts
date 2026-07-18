@@ -22,7 +22,7 @@ export type AdminSharedProps = {
     };
     flash: {
         success: string | null;
-    },
+    };
 
     [key: string]: unknown;
 };
@@ -280,6 +280,8 @@ export type AdminInventoryReservation = {
     }[];
 };
 
+
+
 export type AdminOrderTimelineItem = {
     id: number;
     category: string;
@@ -328,11 +330,7 @@ export type AdminInventoryListItem = {
         safety_stock: number;
         reorder_point: number | null;
         is_active: boolean;
-        state:
-            | 'in_stock'
-            | 'low_stock'
-            | 'out_of_stock'
-            | 'inactive';
+        state: 'in_stock' | 'low_stock' | 'out_of_stock' | 'inactive';
         lock_version: number;
     };
 
@@ -388,7 +386,6 @@ export type AdminInventoryMovement = {
     occurred_at: string;
 };
 
-
 export type AdminInventoryDetail = AdminInventoryListItem & {
     last_counted_at: string | null;
 
@@ -406,11 +403,24 @@ export type AdminInventoryDetail = AdminInventoryListItem & {
 
     movements: AdminInventoryMovement[];
 
-    reservations: AdminInventoryReservation[];
+    reservations: AdminInventoryItemReservation[];
 
     form_tokens: {
         adjustment: string;
     };
+};
+
+export type AdminInventoryItemReservation = {
+    public_id: string;
+    status: string;
+    quantity: number;
+    outstanding_quantity: number;
+    expires_at: string | null;
+
+    order: {
+        public_id: string;
+        order_number: string;
+    } | null;
 };
 
 export type AdminPriceHistoryItem = {

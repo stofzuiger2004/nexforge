@@ -6,7 +6,7 @@ use InvalidArgumentException;
 
 final class DecimalMoney{
     public static function toCents(string $value): int{
-        $normalized = str_replace(',','.',trim(value));
+        $normalized = str_replace(',','.',trim($value));
 
         if(!preg_match('/^\d{1,9}(?:\.\d{1,2})?$/',$normalized)){
             throw new InvalidArgumentException('The amount must contain no more than two decimal places.');

@@ -29,9 +29,13 @@ class VariantPriceUpdateController extends Controller
                 expectedLockVersion: $request->validated('expected_lock_version'),
                 actor: $user
             );
-        }catch(StaleResourceVersionException|DomainException $e){
+        }catch(StaleResourceVersionException $e){
             return back()->withErrors([
-                'price' => $e->getMessage()
+                'expected_lock_version' => $e->getMessage()
+            ]);
+        }catch(DomainException $e){
+            return back()->withErrors([
+                'compare_at_amount' => $e->getMessage()
             ]);
         }
 
