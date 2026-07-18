@@ -18,6 +18,7 @@ export type AdminSharedProps = {
             manageInventory: boolean;
             viewPrices: boolean;
             managePrices: boolean;
+            manageCatalog: boolean;
         };
     };
     flash: {
@@ -440,4 +441,57 @@ export type AdminPriceHistoryItem = {
         email: string;
     } | null;
     changed_at: string;
+};
+export type AdminSelectOption = {
+    value: number;
+    label: string;
+};
+
+export type AdminSpecificationOption = {
+    value: number;
+    label: string;
+};
+
+export type AdminComponentSpecification = {
+    id: number;
+    key: string;
+    label: string;
+    data_type:
+        | 'text'
+        | 'integer'
+        | 'decimal'
+        | 'boolean'
+        | 'option'
+        | 'multi-option';
+    unit: string | null;
+    required: boolean;
+    options: AdminSpecificationOption[];
+};
+
+export type AdminComponentCategoryOption = {
+    value: number;
+    label: string;
+    slug: string;
+    specifications: AdminComponentSpecification[];
+};
+
+export type AdminComponentCreatePageProps = {
+    options: {
+        brands: AdminSelectOption[];
+        categories: AdminComponentCategoryOption[];
+        warehouses: AdminSelectOption[];
+        price_lists: {
+            value: number;
+            label: string;
+            currency: string;
+            is_default: boolean;
+        }[];
+        statuses: {
+            value: 'draft' | 'active';
+            label: string;
+        }[];
+    };
+    formTokens: {
+        creation: string;
+    }
 };

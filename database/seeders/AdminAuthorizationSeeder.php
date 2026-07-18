@@ -32,7 +32,9 @@ class AdminAuthorizationSeeder extends Seeder
             'inventory.manage',
 
             'prices.view',
-            'prices.manage'
+            'prices.manage',
+
+            'catalog.manage'
         ];
 
         $permissions = collect(

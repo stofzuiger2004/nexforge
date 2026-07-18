@@ -87,6 +87,10 @@ class HandleInertiaRequests extends Middleware
                     'managePrices' => $user?->can(
                         'prices.manage',
                     ) ?? false,
+
+                    'manageCatalog' => $user?->can(
+                        'catalog.manage'
+                    ) ?? false
                 ],
             ],
             'flash' => [

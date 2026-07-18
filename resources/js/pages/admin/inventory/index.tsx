@@ -6,6 +6,7 @@ import AdminLayout from '@/layouts/admin-layout';
 import type {
     AdminInventoryListItem,
     AdminPaginationData,
+    AdminSharedProps,
 } from '@/types/admin';
 
 type FilterOption = {

@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\InventoryIndexController;
 use App\Http\Controllers\Admin\InventorySettingsController;
 use App\Http\Controllers\Admin\InventoryShowController;
 use App\Http\Controllers\Admin\VariantPriceUpdateController;
+use App\Http\Controllers\Admin\ComponentCreateController;
+use App\Http\Controllers\Admin\ComponentStoreController;
 use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 
@@ -43,7 +45,8 @@ Route::prefix('admin')
                 'can:view,order',
             )
             ->name('orders.show');
-        
+        Route::get('/inventory/components/create',ComponentCreateController::class)->middleware('can:catalog.manage')->name('inventory.components.create');
+        Route::post('/inventory/components',ComponentStoreController::class)->middleware('can:catalog.manage')->name('inventory.components.store');
         Route::get('/inventory',InventoryIndexController::class)->middleware('can:inventory.view')->name('inventory.index');
         Route::get('/inventory/{inventoryItem}',InventoryShowController::class)->middleware('can:inventory.view')->name('inventory.show');
         Route::post('/inventory/{inventoryItem}/adjustments',InventoryAdjustmentController::class)->middleware('can:inventory.adjust')->name('inventory.adjustments.store');
