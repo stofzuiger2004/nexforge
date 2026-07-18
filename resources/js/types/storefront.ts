@@ -46,6 +46,22 @@ export type HomePageProps = {
     featuredSystems: FeaturedSystem[];
 };
 
+export type SystemIndexPageContext = 
+    | 'catalogue'
+    | 'configurator';
+
+    
+export type SystemIndexPageProps = {
+    systems: FeaturedSystem[];
+    page:{
+        context: SystemIndexPageContext;
+        eyebrow: string;
+        title: string;
+        description: string;
+    };
+};
+
+
 export type StorefrontAuthUser = {
     id: number;
     name: string;

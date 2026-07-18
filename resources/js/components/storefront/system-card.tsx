@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { ArrowRight, Cpu, HardDrive, MemoryStick, Monitor } from 'lucide-react';
+import { Cpu, HardDrive, MemoryStick, Monitor } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { SystemVisual } from '@/components/storefront/system-visual';
@@ -17,6 +17,7 @@ import type {
     FeaturedSystem,
     SystemComponentSummary,
 } from '@/types/storefront';
+import { StartConfigurationButton } from '@/components/storefront/start-configuration-button';
 
 type SystemCardProps = {
     system: FeaturedSystem;
@@ -118,12 +119,24 @@ export function SystemCard({ system }: SystemCardProps) {
                     </div>
                 </div>
 
-                <Button asChild>
-                    <Link href={detailsUrl}>
-                        Configure
-                        <ArrowRight className="size-4" />
-                    </Link>
-                </Button>
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                    <Button
+                        asChild
+                        variant="outline"
+                        className="w-full sm:w-auto"
+                    >
+                        <Link href={detailsUrl}>
+                            View details
+                        </Link>
+                    </Button>
+
+                    <StartConfigurationButton
+                        systemSlug={system.slug}
+                        label="Configure"
+                        className="w-full sm:w-auto"
+                        disabled={!system.is_configurable}
+                    />
+                </div>
             </CardFooter>
         </Card>
     );
