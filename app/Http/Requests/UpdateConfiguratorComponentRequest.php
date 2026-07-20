@@ -26,8 +26,9 @@ class UpdateConfiguratorComponentRequest extends FormRequest
     {
         return [
             'variant_id' => [
-                'required',
+                'present',
                 'integer',
+                'nullable',
                 'exists:product_variants,id',
             ],
             'quantity' => [

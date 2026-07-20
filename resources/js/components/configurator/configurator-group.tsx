@@ -10,6 +10,7 @@ import {
     Package,
     TriangleAlert,
     Zap,
+    CircleOff
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -25,6 +26,7 @@ import type {
     ConfiguratorGroup,
     ConfiguratorOption,
 } from '@/types/configurator';
+import { Config } from 'tailwind-merge';
 
 const slotIcons: Record<string, LucideIcon> = {
     cpu: Cpu,
@@ -49,19 +51,23 @@ type ConfiguratorGroupProps = {
 
     requestPending: boolean;
     pendingVariantId: number | null;
+    clearing: boolean;
 
     onSelect: (group: ConfiguratorGroup, option: ConfiguratorOption) => void;
+    onClear: (group: ConfiguratorGroup) => void;
 };
 
 export function ConfiguratorGroupSection({
     group,
     requestPending,
     pendingVariantId,
+    clearing,
     onSelect,
+    onClear
 }: ConfiguratorGroupProps) {
     const Icon = slotIcons[group.slot] ?? Package;
 
-    const currency = group.selected?.price.currency ?? 'EUR';
+    const currency = group.selected?.price.currency ?? group.options[0]?.price.currency ?? 'EUR';
 
     return (
         <AccordionItem
@@ -100,7 +106,10 @@ export function ConfiguratorGroupSection({
                         </div>
 
                         <p className="mt-1 truncate text-sm font-normal text-muted-foreground">
-                            {group.selected?.name ?? 'No component selected'}
+                            {group.selected?.name ??
+                                (group.slot === 'operating_system'
+                                    ? 'No operating system'
+                                    : 'No component selected')}
 
                             {group.selected && group.quantity > 1
                                 ? ` × ${group.quantity}`
@@ -152,7 +161,56 @@ export function ConfiguratorGroupSection({
                         current selection.
                     </p>
                 )}
+                {group.can_clear && (
+                    <button
+                        type="button"
+                        disabled={
+                            requestPending ||
+                            !group.can_edit ||
+                            group.selected === null
+                        }
+                        onClick={() => onClear(group)}
+                        className={[
+                            'mt-5 flex w-full items-center justify-between gap-4 rounded-xl border p-4 text-left transition-colors',
+                            group.selected === null
+                                ? 'border-foreground bg-muted/40'
+                                : 'hover:bg-muted/40',
+                            requestPending ||
+                            !group.can_edit ||
+                            group.selected === null
+                                ? 'cursor-not-allowed opacity-60'
+                                : '',
+                        ].join(' ')}
+                    >
+                        <span className="flex min-w-0 items-center gap-3">
+                            <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-muted">
+                                <CircleOff className="size-5" />
+                            </span>
 
+                            <span className="min-w-0">
+                                <span className="block font-medium">
+                                    No operating system
+                                </span>
+
+                                <span className="mt-1 block text-xs text-muted-foreground">
+                                    The system is supplied without an operating-system
+                                    licence or installation.
+                                </span>
+                            </span>
+                        </span>
+
+                        <span className="shrink-0 text-sm font-medium">
+                            {group.selected === null
+                                ? 'Selected'
+                                : clearing
+                                ? 'Saving…'
+                                : formatSignedMoney(
+                                        group.clear_price_delta_in_cents,
+                                        currency,
+                                    )}
+                        </span>
+                    </button>
+                )}
                 <div className="mt-5 grid gap-3 xl:grid-cols-2">
                     {group.options.map((option) => (
                         <ComponentOptionCard

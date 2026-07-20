@@ -145,7 +145,7 @@ export function ConfigurationSummary({
                                     </span>
 
                                     <span className="max-w-[13rem] truncate text-right font-medium">
-                                        {group.selected?.name ?? 'Not selected'}
+                                        {selectedComponentLabel(group)}
                                     </span>
                                 </a>
                             ))}
@@ -354,7 +354,7 @@ function ReviewDialog({
                             </span>
 
                             <span className="text-right text-sm font-medium">
-                                {group.selected?.name ?? 'Not selected'}
+                                {selectedComponentLabel(group)}
                             </span>
                         </div>
                     ))}
@@ -405,4 +405,14 @@ function ReviewDialog({
             </DialogContent>
         </Dialog>
     );
+}
+
+function selectedComponentLabel(group: ConfiguratorGroup): string{
+    if(group.selected){
+        return group.selected.name;
+    }
+    if(group.slot === 'operating_system'){
+        return 'No operating system';
+    }
+    return 'Not selected';
 }

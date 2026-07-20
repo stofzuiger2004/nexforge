@@ -400,12 +400,14 @@ final class ConfiguratorPageDataService
             'is_required' => $baseComponent->is_required,
             'is_replaceable' => $baseComponent->is_replaceable,
             'can_edit' => $canEdit,
+            'can_clear' => $canEdit && $slot->allowsNone() && !$baseComponent->is_required,
+            'clear_price_delta_in_cents' => $selectedItem === null ? 0 : -$selectedItem->line_total_in_cents,
             'selection_mode' => $slot->allowsMultiple()
                     ? 'multiple'
                     : 'single',
             'selected' => $selectedOption,
             'selected_price_change_from_base_in_cents' => $selectedItem === null
-                    ? 0
+                    ? -$baseLineTotal
                     : $selectedLineTotal - $baseLineTotal,
             'issues' => $this->issuesForSlot(
                 $latestValidationRun,

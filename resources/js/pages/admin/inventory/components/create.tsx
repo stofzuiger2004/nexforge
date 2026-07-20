@@ -1134,7 +1134,7 @@ function SpecificationsCard({
                     <p className="font-medium">No specifications configured</p>
 
                     <p className="mt-2 text-sm text-muted-foreground">
-                        This category has no specification definitions.
+                        This component type can be saved without technical specification values.
                     </p>
                 </div>
             ) : (

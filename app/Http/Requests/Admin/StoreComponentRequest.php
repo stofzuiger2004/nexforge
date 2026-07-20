@@ -6,6 +6,7 @@ namespace App\Http\Requests\Admin;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\Validator;
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreComponentRequest extends FormRequest
@@ -15,6 +16,13 @@ class StoreComponentRequest extends FormRequest
         return $this->user()?->can('catalog.manage') ?? false;
     }
 
+    protected function prepareForValidation(): void{
+        $specifications = $this->input('specifications');
+
+        if($specifications === null || $specifications === ''){
+            $this->merge(['specifications'=>[]]);
+        }
+    }
     /**
      * @return array<string, ValidationRule|array<mixed>|string>
      */
@@ -184,7 +192,7 @@ class StoreComponentRequest extends FormRequest
             ],
 
             'specifications' => [
-                'required',
+                'present',
                 'array',
             ],
 
@@ -204,7 +212,70 @@ class StoreComponentRequest extends FormRequest
                 if($reorderPoint !== null && $reorderPoint !== '' && (int) $reorderPoint < $safetyStock){
                     $validator->errors()->add('reorder_point','The reorder point should be greater than or equal to the safety stock.');
                 }
+
+                $submittedSpecifications = $this->input('specifications',[]);
+
+                if(! is_array($submittedSpecifications)){
+                    return;
+                }
+
+                $category = Category::query()->with([
+                    'specifications' => static fn ($query) =>
+                        $query->where('specifications.is_active',true)
+                ])->find((int) $this->input('category_id'));
+
+                if($category === null){
+                    return;
+                }
+
+                $allowedSpecificationKeys = $category->specifications->pluck('key')->all();
+
+                foreach(array_keys($submittedSpecifications) as $submittedKey){
+                    if(!in_array($submittedKey,$allowedSpecificationKeys,true)){
+                        $validator->errors()->add('specifications.'.$submittedKey,'This specification does not belong to the selected component type.');
+                    }
+                }
+
+                foreach($category->specifications as $specification){
+                    if(! (bool) $specification->pivot->is_required){
+                        continue;
+                    }
+
+                    $value = $submittedSpecifications[$specification->key] ?? null;
+
+                    if($this->specificationValueIsEmpty($value)){
+                        $validator->errors()->add('specifications.'.$specification->key,sprintf('The %s specification is required.',$specification->name));
+                    }
             }
+                }
+
+                
         ];
     }
+    private function specificationValueIsEmpty(
+            mixed $value,
+        ): bool {
+            if ($value === null) {
+                return true;
+            }
+
+            if (
+                is_string($value)
+                && trim($value) === ''
+            ) {
+                return true;
+            }
+
+            if (
+                is_array($value)
+                && $value === []
+            ) {
+                return true;
+            }
+
+            /*
+            * false and 0 are valid specification values.
+            */
+            return false;
+}
 }

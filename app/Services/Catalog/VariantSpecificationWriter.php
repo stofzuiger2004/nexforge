@@ -122,7 +122,7 @@ final class VariantSpecificationWriter
         }
         if(! is_int($value)){
             throw new InvalidArgumentException(
-                sprintf('Specification "%s" requires an integer.',$specificationKey)
+                sprintf('Specification "%s" requires an integer.',$specification->key)
             );
         }
 

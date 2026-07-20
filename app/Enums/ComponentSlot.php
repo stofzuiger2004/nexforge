@@ -34,6 +34,10 @@ enum ComponentSlot: string
         };
     }
 
+    public function allowsNone(): bool{
+        return $this === self::OperatingSystem;
+    }
+
     public function sortOrder(): int
     {
         return match ($this) {

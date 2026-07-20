@@ -16,7 +16,7 @@ import type {
 
 type PendingSelection = {
     slot: string;
-    variantId: number;
+    variantId: number | null;
     priceDeltaInCents: number;
 };
 
@@ -95,6 +95,51 @@ export default function ConfiguratorShow({
             },
         );
     }
+    function clearOption(group: ConfiguratorGroup) {
+    if (
+        requestPending ||
+        !group.can_edit ||
+        !group.can_clear ||
+        group.selected === null
+    ) {
+        return;
+    }
+
+    setRequestError(null);
+
+    setPendingSelection({
+        slot: group.slot,
+        variantId: null,
+        priceDeltaInCents:
+            group.clear_price_delta_in_cents,
+    });
+
+    router.patch(
+        `/configure/${configuration.public_id}/components/${group.slot}`,
+        {
+            variant_id: null,
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+
+            onError: (errors) => {
+                const variantError =
+                    errors.variant_id;
+
+                setRequestError(
+                    typeof variantError === 'string'
+                        ? variantError
+                        : 'The component could not be removed.',
+                );
+            },
+
+            onFinish: () => {
+                setPendingSelection(null);
+            },
+        },
+    );
+}
 
     return (
         <StorefrontLayout>
@@ -141,15 +186,20 @@ export default function ConfiguratorShow({
                         >
                             {groups.map((group) => (
                                 <ConfiguratorGroupSection
-                                    key={group.slot}
-                                    group={group}
-                                    requestPending={requestPending}
-                                    pendingVariantId={
-                                        pendingSelection?.slot === group.slot
-                                            ? pendingSelection.variantId
-                                            : null
-                                    }
-                                    onSelect={selectOption}
+                                        key={group.slot}
+                                        group={group}
+                                        requestPending={requestPending}
+                                        pendingVariantId={
+                                            pendingSelection?.slot === group.slot
+                                                ? pendingSelection.variantId
+                                                : null
+                                        }
+                                        clearing={
+                                            pendingSelection?.slot === group.slot &&
+                                            pendingSelection.variantId === null
+                                        }
+                                        onSelect={selectOption}
+                                        onClear={clearOption}
                                 />
                             ))}
                         </Accordion>

@@ -76,6 +76,9 @@ export type ConfiguratorGroup = {
     is_replaceable: boolean;
     can_edit: boolean;
 
+    can_clear: boolean;
+    clear_price_delta_in_cents: number;
+
     selection_mode: 'single' | 'multiple';
 
     selected: ConfiguratorOption | null;
