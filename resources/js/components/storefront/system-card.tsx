@@ -1,11 +1,10 @@
 import { Link } from '@inertiajs/react';
-import { Cpu, HardDrive, MemoryStick, Monitor } from 'lucide-react';
+import { Cpu, HardDrive, MemoryStick, Monitor, Dot } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { StartConfigurationButton } from '@/components/storefront/start-configuration-button';
 import { SystemVisual } from '@/components/storefront/system-visual';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -46,33 +45,33 @@ export function SystemCard({ system }: SystemCardProps) {
             />
 
             <CardHeader className="space-y-4 p-6">
-                <div className="flex items-center justify-between gap-4">
-                    <Badge
-                        variant="outline"
-                        className="rounded-full font-normal"
-                    >
-                        {system.availability.label}
-                    </Badge>
-
-                    <span className="text-xs text-muted-foreground">
-                        Customizable
-                    </span>
-                </div>
 
                 <div>
                     <CardTitle className="text-xl">
-                        <Link
-                            href={detailsUrl}
-                            className="transition-colors hover:text-muted-foreground"
-                        >
-                            {system.name}
-                        </Link>
+                        <div className="w-full inline-flex justify-between">
+                            <div>
+                                <p className="uppercase text-xs text-gray-400 font-light">1080p gaming</p>
+                                <Link
+                                    href={detailsUrl}
+                                    className="transition-colors hover:text-muted-foreground"
+                                >
+                                    {system.name}
+                                </Link>
+                            </div>
+                            <div>
+                                <p className="uppercase text-xs text-gray-400 font-light text-end">From</p>
+                                <p className="font-semibold tracking-tight">
+                                    {price}
+                                </p>
+                            </div>
+                            
+                        </div>
+                        {compareAtPrice && (
+                            <p className="text-sm text-muted-foreground line-through">
+                                {compareAtPrice}
+                            </p>
+                        )}
                     </CardTitle>
-
-                    <p className="mt-2 min-h-12 text-sm leading-6 text-muted-foreground">
-                        {system.description ??
-                            'A balanced gaming system ready to configure.'}
-                    </p>
                 </div>
             </CardHeader>
 
@@ -102,39 +101,13 @@ export function SystemCard({ system }: SystemCardProps) {
                 />
             </CardContent>
 
-            <CardFooter className="flex items-end justify-between gap-4 border-t bg-muted/20 p-6">
-                <div>
-                    <p className="text-xs text-muted-foreground">Starting at</p>
-
-                    <div className="mt-1 flex flex-wrap items-baseline gap-2">
-                        <p className="text-2xl font-semibold tracking-tight">
-                            {price}
-                        </p>
-
-                        {compareAtPrice && (
-                            <p className="text-sm text-muted-foreground line-through">
-                                {compareAtPrice}
-                            </p>
-                        )}
-                    </div>
-                </div>
-
-                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-                    <Button
-                        asChild
-                        variant="outline"
-                        className="w-full sm:w-auto"
-                    >
-                        <Link href={detailsUrl}>View details</Link>
-                    </Button>
-
+            <CardFooter className="border-t bg-muted/20 p-6 flex justify-center">
                     <StartConfigurationButton
                         systemSlug={system.slug}
-                        label="Configure"
+                        label="Configure & Buy"
                         className="w-full sm:w-auto"
                         disabled={!system.is_configurable}
                     />
-                </div>
             </CardFooter>
         </Card>
     );

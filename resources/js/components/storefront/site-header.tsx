@@ -1,6 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Cpu, Menu, UserRound } from 'lucide-react';
-
+import { Menu, UserRound } from 'lucide-react';
+import AppLogoIcon from '@/components/app-logo-icon';
 import { Button } from '@/components/ui/button';
 import {
     Sheet,
@@ -185,9 +185,7 @@ function Brand() {
             className="flex items-center gap-3"
             aria-label="NexForge homepage"
         >
-            <span className="grid size-9 place-items-center rounded-xl bg-foreground text-background">
-                <Cpu className="size-5" />
-            </span>
+            <AppLogoIcon className="size-9"/>
 
             <span className="text-lg font-semibold tracking-tight">
                 NexForge

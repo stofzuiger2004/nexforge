@@ -19,7 +19,7 @@ export function SystemVisual({
     return (
         <div
             className={cn(
-                'relative isolate aspect-[4/3] overflow-hidden rounded-2xl border bg-muted/40',
+                'relative isolate aspect-[4/3] overflow-hidden border bg-[#EDEAE4] dark:bg-background',
                 className,
             )}
         >

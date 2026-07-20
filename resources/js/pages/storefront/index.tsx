@@ -6,6 +6,7 @@ import {
     SlidersHorizontal,
     Truck,
     Wrench,
+    Dot
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -117,11 +118,9 @@ function HeroSection({ system }: { system: FeaturedSystem | null }) {
                         </Button>
                     </div>
 
-                    <div className="mt-9 flex flex-col gap-3 text-sm text-muted-foreground sm:flex-row sm:flex-wrap sm:gap-x-7">
+                    <div className="mt-9 flex flex-col w-100 gap-3 text-sm text-muted-foreground sm:flex-row sm:flex-wrap sm:gap-x-7">
                         <TrustPoint>Automatic compatibility checks</TrustPoint>
-
                         <TrustPoint>Component-level inventory</TrustPoint>
-
                         <TrustPoint>Built and tested by hand</TrustPoint>
                     </div>
                 </div>
@@ -135,8 +134,8 @@ function HeroSection({ system }: { system: FeaturedSystem | null }) {
 function TrustPoint({ children }: { children: React.ReactNode }) {
     return (
         <span className="flex items-center gap-2">
-            <span className="grid size-5 place-items-center rounded-full border bg-background">
-                <Check className="size-3" />
+            <span className="grid size-5 place-items-center">
+                <Check className="size-3 font-bold" />
             </span>
 
             {children}
@@ -153,12 +152,12 @@ function HeroSystemPanel({ system }: { system: FeaturedSystem | null }) {
         <div className="relative">
             <div className="absolute -inset-10 -z-10 rounded-full bg-foreground/[0.04] blur-3xl" />
 
-            <div className="rounded-[2rem] border bg-card p-3 shadow-[0_30px_100px_-45px_rgba(0,0,0,0.4)]">
+            <div className="rounded-[2rem] border bg-card shadow-[0_30px_100px_-45px_rgba(0,0,0,0.4)]">
                 <SystemVisual
                     name={system?.name ?? 'Custom gaming PC'}
                     image={system?.image ?? null}
                     eager
-                    className="rounded-[1.5rem]"
+                    className="rounded-tl-[1.5rem] rounded-tr-[1.5rem] bg-[#EDEAE4]"
                 />
 
                 <div className="p-5 sm:p-6">
@@ -170,6 +169,7 @@ function HeroSystemPanel({ system }: { system: FeaturedSystem | null }) {
                                         variant="outline"
                                         className="mb-3 rounded-full font-normal"
                                     >
+                                        <Dot data-icon="inline-start" className="!size-5"/>
                                         {system.availability.label}
                                     </Badge>
 

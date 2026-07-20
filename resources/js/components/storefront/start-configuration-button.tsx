@@ -16,7 +16,7 @@ type StartConfigurationButtonProps = {
 
 export function StartConfigurationButton({
     systemSlug,
-    variant = 'default',
+    variant = 'outline',
     label = 'Configure this system',
     className,
     disabled = false,

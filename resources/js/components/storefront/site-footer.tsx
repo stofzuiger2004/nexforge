@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { Cpu } from 'lucide-react';
+import AppLogoIcon from '@/components/app-logo-icon';
 
 const shopLinks = [
     {
@@ -37,10 +38,7 @@ export function SiteFooter() {
             <div className="mx-auto grid max-w-7xl gap-12 px-4 py-14 sm:px-6 md:grid-cols-[1fr_auto] lg:px-8">
                 <div className="max-w-sm">
                     <Link href="/" className="inline-flex items-center gap-3">
-                        <span className="grid size-9 place-items-center rounded-xl bg-foreground text-background">
-                            <Cpu className="size-5" />
-                        </span>
-
+                            <AppLogoIcon className="size-9"/>
                         <span className="text-lg font-semibold tracking-tight">
                             NexForge
                         </span>

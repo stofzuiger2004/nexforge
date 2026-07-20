@@ -1,4 +1,5 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { ImageIcon } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +11,7 @@ import type {
     AdminSharedProps,
 } from '@/types/admin';
 
-import { ImageIcon } from 'lucide-react';
+
 
 type AdjustmentOption = {
     value: string;
