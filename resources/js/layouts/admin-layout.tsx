@@ -7,6 +7,7 @@ import {
     PackageSearch,
     ShoppingBag,
     Boxes,
+    MonitorCog,
 } from 'lucide-react';
 import type { PropsWithChildren, ReactNode } from 'react';
 
@@ -52,6 +53,13 @@ const navigation: NavigationItem[] = [
         icon: ShoppingBag,
         permission: 'viewOrders',
         isActive: (url: string) => url.startsWith('/admin/orders'),
+    },
+    {
+        label: 'System presets',
+        href: '/admin/systems',
+        icon: MonitorCog,
+        permission: 'manageCatalog',
+        isActive: (url: string) => url.startsWith('/admin/systems')
     },
     {
         label: 'Inventory',

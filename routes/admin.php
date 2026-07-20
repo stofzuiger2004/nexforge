@@ -13,6 +13,9 @@ use App\Http\Controllers\Admin\VariantPriceUpdateController;
 use App\Http\Controllers\Admin\ComponentCreateController;
 use App\Http\Controllers\Admin\ComponentStoreController;
 use App\Http\Controllers\Admin\SystemDefaultComponentUpdateController;
+use App\Http\Controllers\Admin\SystemIndexController;
+use App\Http\Controllers\Admin\SystemEditController;
+use App\Http\Controllers\Admin\SystemPriceUpdateController;
 use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 
@@ -24,28 +27,9 @@ Route::prefix('admin')
         'can:admin.access',
     ])
     ->group(function (): void {
-        Route::get(
-            '/',
-            AdminDashboardController::class,
-        )->name('admin');
-
-        Route::get(
-            '/orders',
-            OrderIndexController::class,
-        )
-            ->middleware(
-                'can:viewAny,'.Order::class,
-            )
-            ->name('orders.index');
-
-        Route::get(
-            '/orders/{order}',
-            OrderShowController::class,
-        )
-            ->middleware(
-                'can:view,order',
-            )
-            ->name('orders.show');
+        Route::get('/',AdminDashboardController::class)->name('admin');
+        Route::get('/orders',OrderIndexController::class)->middleware('can:viewAny,'.Order::class)->name('orders.index');
+        Route::get('/orders/{order}',OrderShowController::class)->middleware('can:view,order')->name('orders.show');
         Route::get('/inventory/components/create',ComponentCreateController::class)->middleware('can:catalog.manage')->name('inventory.components.create');
         Route::post('/inventory/components',ComponentStoreController::class)->middleware('can:catalog.manage')->name('inventory.components.store');
         Route::get('/inventory',InventoryIndexController::class)->middleware('can:inventory.view')->name('inventory.index');
@@ -53,5 +37,8 @@ Route::prefix('admin')
         Route::post('/inventory/{inventoryItem}/adjustments',InventoryAdjustmentController::class)->middleware('can:inventory.adjust')->name('inventory.adjustments.store');
         Route::patch('/inventory/{inventoryItem}',InventorySettingsController::class)->middleware('can:inventory.manage')->name('inventory.update');
         Route::patch('/variants/{variant}/prices/{priceList}',VariantPriceUpdateController::class)->middleware('can:prices.manage')->name('variant-prices.update');
+        Route::get('/systems',SystemIndexController::class)->middleware('can:catalog.manage')->name('systems.index');
+        Route::get('systems/{system}/edit',SystemEditController::class)->middleware('can:catalog.manage')->name('systems.edit');
         Route::put('/systems/{system}/components/{slot}',SystemDefaultComponentUpdateController::class)->middleware('can:catalog.manage')->name('systems.components.update');
+        Route::patch('/systems/{system}/prices/{priceList}',SystemPriceUpdateController::class)->middleware('can:catalog.manage')->name('systems.prices.update');
     });

@@ -479,10 +479,6 @@ export type AdminComponentCreatePageProps = {
             value: 'draft' | 'active';
             label: string;
         }[];
-        configurable_options: {
-            value: 'yes' | 'no';
-            label: string;
-        }[];
     };
     formTokens: {
         creation: string;
@@ -537,4 +533,160 @@ export type AdminComponentSpecificationDataType =
 export type AdminComponentSpecificationOption = {
     value: string;
     label: string;
+};
+
+export type AdminSystemPrice = {
+    price_list_id: number;
+    price_list_name: string;
+    currency: string;
+    amount_in_cents: number;
+};
+
+export type AdminSystemPresetPrice = AdminSystemPrice & {
+    id: number;
+    compare_at_amount_in_cents: number | null;
+    lock_version: number;
+    update_url: string;
+};
+
+export type AdminSystemListItem = {
+    id: number;
+    sku: string;
+    name: string;
+    slug: string;
+    status: 'draft' | 'active' | 'archived';
+    is_configurable: boolean;
+    published_at: string | null;
+    component_count: number;
+    prices: AdminSystemPrice[];
+    edit_url: string;
+    storefront_url: string;
+};
+
+export type AdminSystemPaginator = {
+    data: AdminSystemListItem[];
+    meta: AdminPaginationData;
+};
+
+export type AdminSystemIndexPageProps = {
+    systems: AdminSystemPaginator;
+};
+
+export type AdminSystemVariantPrice = {
+    price_list_id: number;
+    price_list_name: string;
+    currency: string;
+    amount_in_cents: number;
+};
+
+export type AdminSystemVariantOption = {
+    id: number;
+    sku: string;
+    name: string;
+    product_name: string;
+    brand: string | null;
+    category: {
+        name: string;
+        slug: string;
+    };
+    prices: AdminSystemVariantPrice[];
+    inventory: {
+        tracked: boolean;
+        available: number;
+        reservable: number;
+    };
+    selected: boolean;
+    disabled_reason: string | null;
+};
+
+export type AdminSystemCurrentComponent = {
+    component_id: number;
+    variant_id: number;
+    quantity: number;
+    is_required: boolean;
+    is_replaceable: boolean;
+};
+
+export type AdminSystemSlotPreset = {
+    value: string;
+    label: string;
+    description: string;
+    allows_multiple: boolean;
+    current: AdminSystemCurrentComponent | null;
+    options: AdminSystemVariantOption[];
+    update_url: string;
+};
+
+export type AdminSystemPreset = {
+    id: number;
+    sku: string;
+    name: string;
+    slug: string;
+    status: 'draft' | 'active' | 'archived';
+    is_configurable: boolean;
+    published_at: string | null;
+    prices: AdminSystemPresetPrice[];
+    components: {
+        id: number;
+        slot: string;
+        quantity: number;
+        is_required: boolean;
+        is_replaceable: boolean;
+        variant: {
+            id: number;
+            sku: string;
+            name: string;
+            product_name: string;
+            brand: string | null;
+            category: string | null;
+        };
+    }[];
+    index_url: string;
+    storefront_url: string;
+};
+
+export type AdminSystemCompatibilityIssue = {
+    rule_key: string;
+    rule_name: string;
+    status: 'passed' | 'failed' | 'skipped';
+    severity: 'error' | 'warning' | 'info';
+    message: string | null;
+    source_slot: string;
+    target_slot: string | null;
+    context: Record<string, unknown>;
+};
+
+export type AdminSystemCompatibility = {
+    is_compatible: boolean;
+    summary: {
+        passed: number;
+        failed: number;
+        warnings: number;
+        skipped: number;
+    };
+    results: AdminSystemCompatibilityIssue[];
+};
+
+export type AdminSystemPricingSummary = {
+    system_price_id: number;
+    price_list_id: number;
+    price_list_name: string;
+    currency: string;
+    system_price_in_cents: number;
+    compare_at_amount_in_cents: number | null;
+    lock_version: number;
+    update_url: string;
+    component_subtotal_in_cents: number | null;
+    package_adjustment_in_cents: number | null;
+    missing_price_skus: string[];
+};
+
+export type AdminSystemEditPageProps = {
+    system: AdminSystemPreset;
+    slots: AdminSystemSlotPreset[];
+    compatibility: AdminSystemCompatibility;
+    pricing: AdminSystemPricingSummary[];
+    can: {
+        manage_prices: boolean;
+    };
 };

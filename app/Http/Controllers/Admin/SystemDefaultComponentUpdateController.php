@@ -17,7 +17,7 @@ class SystemDefaultComponentUpdateController extends Controller
 {
     public function __invoke(UpdateSystemDefaultComponentRequest $request, System $system,ComponentSlot $slot,SystemDefaultComponentService $service): RedirectResponse{
         $validated = $request->validated();
-        $variant = ProductVariant::query()->findOrFail($validated['product_variant_id']);
+        $variant = ProductVariant::query()->findOrFail($validated['variant_id']);
 
         try{
             $service->assign(
@@ -29,7 +29,7 @@ class SystemDefaultComponentUpdateController extends Controller
                 isReplaceable: (bool) $validated['is_replaceable']
             );
         }catch(DomainException $e){
-            throw ValidationException::withMessages(['product_variant_id'=>$e->getMessage()]);
+            throw ValidationException::withMessages(['variant_id'=>$e->getMessage()]);
         }
 
         return back(status: 303)->with('success',sprintf('The default %s for %s was updated.',$slot->label(),$system->name));

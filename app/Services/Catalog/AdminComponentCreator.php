@@ -60,23 +60,60 @@ final class AdminComponentCreator
                     $disk,
                     $actor,
                 ): InventoryItem {
+                    $active =
+                        $data['status'] === 'active';
+
                     $product = Product::query()->create([
-                        'brand_id' => $data['brand_id'],
-                        'category_id' => $data['category_id'],
+                        'brand_id' => $data[
+                            'brand_id'
+                        ],
+
+                        'category_id' => $data[
+                            'category_id'
+                        ],
+
                         'name' => $data['name'],
-                        'slug' => Str::slug($data['name'].'-'.$data['sku']),
-                        'description' => $data['description'],
+
+                        'slug' => Str::slug(
+                            $data['name']
+                            .'-'
+                            .$data['sku'],
+                        ),
+
+                        'description' => $data[
+                            'description'
+                        ],
+
                         'status' => $data['status'],
                         'is_configurable' => true,
-                        'published_at' => now()
+                        'published_at' => $active
+                            ? now()
+                            : null,
                     ]);
-                    $variant = $product->variants()->create([
-                            'sku' => strtoupper($data['sku']),
-                            'name' => $data['variant_name'],
-                            'manufacturer_part_number' => $data['manufacturer_part_number'],
-                            'barcode' => $data['barcode'],
+
+                    $variant = $product
+                        ->variants()
+                        ->create([
+                            'sku' => strtoupper(
+                                $data['sku'],
+                            ),
+
+                            'name' => $data[
+                                'variant_name'
+                            ],
+
+                            'manufacturer_part_number' =>
+                                $data[
+                                    'manufacturer_part_number'
+                                ],
+
+                            'barcode' => $data[
+                                'barcode'
+                            ],
+
                             'status' => $data['status'],
-                            'track_inventory' => true
+                            'is_default' => true,
+                            'track_inventory' => true,
                         ]);
 
                     $product->images()->create([
@@ -163,7 +200,7 @@ final class AdminComponentCreator
                                 'bin_location'
                             ],
 
-                            'is_active' => true,
+                            'is_active' => $active,
 
                             'lock_version' => 0,
                         ]);

@@ -17,4 +17,8 @@ final class StaleResourceVersionException extends DomainException
     {
         return new self('This price changed after you opened the page. Refresh and try again.');
     }
+    public static function forSystemPrice(): self
+    {
+        return new self('This system price changed after you opened the page. Refresh and try again.');
+    }
 }

@@ -19,7 +19,7 @@ class UpdateSystemDefaultComponentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_variant_id' => [
+            'variant_id' => [
                 'required',
                 'integer',
                 Rule::exists('product_variants','id')->whereNull('deleted_at')
