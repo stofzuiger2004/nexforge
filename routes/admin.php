@@ -26,7 +26,7 @@ Route::prefix('admin')
         Route::get(
             '/',
             AdminDashboardController::class,
-        )->name('dashboard');
+        )->name('admin');
 
         Route::get(
             '/orders',

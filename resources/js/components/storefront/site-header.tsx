@@ -76,7 +76,7 @@ export function SiteHeader() {
                 <div className="hidden items-center gap-2 lg:flex">
                     {user ? (
                         <Button variant="ghost" asChild>
-                            <Link href="/dashboard">
+                            <Link href="/admin">
                                 <UserRound className="size-4" />
                                 Account
                             </Link>

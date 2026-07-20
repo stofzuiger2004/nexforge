@@ -656,7 +656,6 @@ function GeneralInformationCard({
                         </SelectContent>
                     </Select>
                 </Field>
-
                 <div className="md:col-span-2">
                     <Field
                         label="Description"

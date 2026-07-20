@@ -479,6 +479,10 @@ export type AdminComponentCreatePageProps = {
             value: 'draft' | 'active';
             label: string;
         }[];
+        configurable_options: {
+            value: 'yes' | 'no';
+            label: string;
+        }[];
     };
     formTokens: {
         creation: string;
