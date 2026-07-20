@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\InventoryReservationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\AdminInventoryDetailResource;
+use Illuminate\Support\Facades\Storage;
 use App\Models\InventoryItem;
 use App\Models\VariantPriceHistory;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ final class InventoryShowController extends Controller
         $inventoryItem->load([
             'warehouse',
             'variant.product.brand',
+            'variant.product.images'
         ]);
 
         if (
@@ -68,6 +70,7 @@ final class InventoryShowController extends Controller
         );
 
         $priceHistory = [];
+        
 
         if (
             $request->user()?->can(

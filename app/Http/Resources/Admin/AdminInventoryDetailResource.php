@@ -29,9 +29,20 @@ final class AdminInventoryDetailResource extends JsonResource
             ->user()
             ?->can('prices.view') ?? false;
 
+        $image = $this->variant->product->images->firstWhere('is_primary',true);
+
+
         return [
             'id' => $this->id,
+            'image' => $image === null
+                ? null
+                : [
+                    'url' => '/storage/'
+                        . ltrim($image->path, '/'),
 
+                    'alt' => $image->alt_text
+                        ?: $product->name,
+                ],
             'href' => route(
                 'admin.inventory.show',
                 $this->resource,

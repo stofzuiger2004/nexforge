@@ -10,6 +10,8 @@ import type {
     AdminSharedProps,
 } from '@/types/admin';
 
+import { ImageIcon } from 'lucide-react';
+
 type AdjustmentOption = {
     value: string;
     label: string;
@@ -308,6 +310,21 @@ export default function InventoryShow({
                                 {formatDate(inventoryItem.last_counted_at)}
                             </dd>
                         </div>
+                        {inventoryItem.image ? (
+                            <div className="overflow-hidden rounded-xl border bg-muted/30">
+                                <div className="aspect-square">
+                                    <img
+                                        src={inventoryItem.image.url}
+                                        alt={inventoryItem.image.alt}
+                                        className="h-full w-full object-contain p-6"
+                                    />
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex aspect-square items-center justify-center rounded-xl border bg-muted/30 text-sm text-muted-foreground">
+                                No image available
+                            </div>
+                        )}
                     </dl>
                 </section>
 
@@ -737,5 +754,50 @@ export default function InventoryShow({
                 </section>
             )}
         </AdminLayout>
+    );
+}
+
+function ProductImage({
+    image,
+    productName,
+}: {
+    image: {
+        url: string;
+        alt: string;
+    } | null;
+    productName: string;
+}) {
+    return (
+        <div className="overflow-hidden rounded-xl border bg-muted/30">
+            <div className="aspect-square">
+                {image ? (
+                    <img
+                        src={image.url}
+                        alt={image.alt}
+                        className="h-full w-full object-contain p-6"
+                        loading="eager"
+                        decoding="async"
+                    />
+                ) : (
+                    <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-muted-foreground">
+                        <ImageIcon
+                            className="size-10"
+                            strokeWidth={1.5}
+                        />
+
+                        <div className="text-center">
+                            <p className="text-sm font-medium">
+                                No image available
+                            </p>
+
+                            <p className="mt-1 max-w-48 text-xs">
+                                No product image has been
+                                uploaded for {productName}.
+                            </p>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
     );
 }

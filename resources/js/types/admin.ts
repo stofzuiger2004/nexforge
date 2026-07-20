@@ -302,7 +302,7 @@ export type AdminInventoryListItem = {
     id: number;
     href: string;
 
-    image?: {
+    image: {
         url: string;
         alt: string;
     } | null;
