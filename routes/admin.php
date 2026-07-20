@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\InventoryShowController;
 use App\Http\Controllers\Admin\VariantPriceUpdateController;
 use App\Http\Controllers\Admin\ComponentCreateController;
 use App\Http\Controllers\Admin\ComponentStoreController;
+use App\Http\Controllers\Admin\SystemDefaultComponentUpdateController;
 use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 
@@ -52,4 +53,5 @@ Route::prefix('admin')
         Route::post('/inventory/{inventoryItem}/adjustments',InventoryAdjustmentController::class)->middleware('can:inventory.adjust')->name('inventory.adjustments.store');
         Route::patch('/inventory/{inventoryItem}',InventorySettingsController::class)->middleware('can:inventory.manage')->name('inventory.update');
         Route::patch('/variants/{variant}/prices/{priceList}',VariantPriceUpdateController::class)->middleware('can:prices.manage')->name('variant-prices.update');
+        Route::put('/systems/{system}/components/{slot}',SystemDefaultComponentUpdateController::class)->middleware('can:catalog.manage')->name('systems.components.update');
     });
