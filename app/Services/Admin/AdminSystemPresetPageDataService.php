@@ -237,6 +237,7 @@ final class AdminSystemPresetPageDataService
                         'label' => $slot->label(),
                         'description' => $slot->description(),
                         'allows_multiple' => $slot->allowsMultiple(),
+                        'supports_quantity'=>$slot->supportsQuantity(),
                         'current' => $current === null
                             ? null
                             : [

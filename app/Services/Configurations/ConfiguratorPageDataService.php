@@ -260,24 +260,12 @@ final class ConfiguratorPageDataService
                 ): bool => $item->slot === $slot,
             );
 
-        $basePrice = (int) (
-            $baseComponent
-                ->variant
-                ->prices
-                ->first()
-                ?->amount_in_cents
-            ?? 0
-        );
-
-        $selectedPrice =
-            $selectedItem?->unit_price_in_cents
-            ?? $basePrice;
-
-        $canEdit =
-            $configuration->status->isEditable()
-            && $baseComponent->is_replaceable
-            && ! $slot->allowsMultiple();
-
+        $baseQuantity = max(1,(int) $baseComponent->quantity);
+        $quantity = max(1,(int) ($selectedItem?->quantity ?? $baseQuantity));
+        $basePrice = (int) ($baseComponent->variant->prices->first()?->amount_in_cents ?? 0);
+        $baseLineTotal = $basePrice * $baseQuantity;
+        $selectedLineTotal = $selectedItem?->line_total_in_cents ?? $baseLineTotal;
+        $canEdit = $configuration->status->isEditable() && $baseComponent->is_replaceable && ! $slot->allowsMultiple();
         $variants = $canEdit
             ? $this->variantsForGroup(
                 $baseComponent,
@@ -299,9 +287,10 @@ final class ConfiguratorPageDataService
                     $rules,
                     $slot,
                     $selectedItem,
-                    $selectedPrice,
+                    $quantity,
+                    $selectedLineTotal,
                     $baseComponent,
-                    $basePrice,
+                    $baseLineTotal,
                     $canEdit,
                 ): array {
                     $price = $variant
@@ -316,6 +305,7 @@ final class ConfiguratorPageDataService
                             ),
                         );
                     }
+                    $candidateLineTotal = $price->amount_in_cents * $quantity;
 
                     $isSelected =
                         $selectedItem
@@ -379,23 +369,10 @@ final class ConfiguratorPageDataService
                             && ! $isSelected,
 
                         'price' => [
-                            'amount_in_cents' => $price
-                                ->amount_in_cents,
-
-                            /*
-                             * Immediate effect when clicked.
-                             */
-                            'delta_from_current_in_cents' => $price
-                                ->amount_in_cents
-                                - $selectedPrice,
-
-                            /*
-                             * Difference from the original system.
-                             */
-                            'delta_from_base_in_cents' => $price
-                                ->amount_in_cents
-                                - $basePrice,
-
+                            'amount_in_cents' => $price->amount_in_cents,
+                            'line_total_in_cents' => $candidateLineTotal,
+                            'delta_from_current_in_cents' => $candidateLineTotal - $selectedLineTotal,
+                            'delta_from_base_in_cents' => $candidateLineTotal - $selectedLineTotal,
                             'currency' => $configuration->currency,
                         ],
 
@@ -417,34 +394,23 @@ final class ConfiguratorPageDataService
         return [
             'slot' => $slot->value,
             'label' => $slot->label(),
-
             'description' => $slot->description(),
-
             'sort_order' => $baseComponent->sort_order,
-
+            'quantity'=>$quantity,
             'is_required' => $baseComponent->is_required,
-
             'is_replaceable' => $baseComponent->is_replaceable,
-
             'can_edit' => $canEdit,
-
             'selection_mode' => $slot->allowsMultiple()
                     ? 'multiple'
                     : 'single',
-
             'selected' => $selectedOption,
-
             'selected_price_change_from_base_in_cents' => $selectedItem === null
                     ? 0
-                    : $selectedItem
-                        ->unit_price_in_cents
-                    - $basePrice,
-
+                    : $selectedLineTotal - $baseLineTotal,
             'issues' => $this->issuesForSlot(
                 $latestValidationRun,
                 $slot->value,
             ),
-
             'options' => $options->all(),
         ];
     }

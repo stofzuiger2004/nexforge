@@ -612,6 +612,7 @@ export type AdminSystemSlotPreset = {
     label: string;
     description: string;
     allows_multiple: boolean;
+    supports_quantity: boolean;
     current: AdminSystemCurrentComponent | null;
     options: AdminSystemVariantOption[];
     update_url: string;

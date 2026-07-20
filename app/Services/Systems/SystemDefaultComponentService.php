@@ -45,7 +45,7 @@ final class SystemDefaultComponentService{
             if($quantity < 1){
                 throw new DomainException('The component quantity must be at least one.');
             }
-            if(!$slot->allowsMultiple() && $quantity !== 1){
+            if(!$slot->supportsQuantity() && $quantity !== 1){
                 throw new DomainException(sprintf(
                     'The %s slot only supports a quantity of one.',
                     $slot->label()

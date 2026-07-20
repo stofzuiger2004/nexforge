@@ -564,15 +564,20 @@ function SystemSlotEditor({ slot }: { slot: AdminSystemSlotPreset }) {
                                 max={100}
                                 className="mt-2"
                                 value={form.data.quantity}
-                                disabled={!slot.allows_multiple}
+                                disabled={!slot.supports_quantity}
                                 onChange={(event) =>
                                     form.setData('quantity', event.target.value)
                                 }
                             />
 
-                            {!slot.allows_multiple && (
+                            {slot.supports_quantity ? (
                                 <p className="mt-2 text-xs text-muted-foreground">
-                                    This slot always uses one component.
+                                    Set how many identical units are included in this
+                                    system preset.
+                                </p>
+                            ) : (
+                                <p className="mt-2 text-xs text-muted-foreground">
+                                    This slot always uses a quantity of one.
                                 </p>
                             )}
                         </div>

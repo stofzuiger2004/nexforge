@@ -25,6 +25,7 @@ class ConfiguratorComponentController extends Controller
      */
     public function __invoke(UpdateConfiguratorComponentRequest $request, Configuration $configuration, ComponentSlot $slot, ConfigurationAccessService $access, ConfigurationEditor $editor, ConfigurationValidator $validator): RedirectResponse
     {
+        $access->assertCanAccess($request,$configuration);
         if (! $configuration->status->isEditable()) {
             abort(409, 'This configuration can no longer be changed.');
         }
@@ -45,8 +46,8 @@ class ConfiguratorComponentController extends Controller
 
         $validated = $request->validated();
         $variant = ProductVariant::query()->findOrFail($validated['variant_id']);
-        $quantity = (int) ($validated['quantity'] ?? 1);
-        $currentItem = $configuration->items()->where('slot', $slot->value)->first();
+        $currentItem = $configuration->items()->where('slot',$slot->value)->first();
+        $quantity = max(1,(int) ($validated['quantity'] ?? $currentItem?->quantity ?? $systemComponent->quantity ?? 1));
 
         if ($currentItem !== null && $currentItem->product_variant_id === $variant->id && $currentItem->quantity === $quantity) {
             return to_route('configurator.show', $configuration);

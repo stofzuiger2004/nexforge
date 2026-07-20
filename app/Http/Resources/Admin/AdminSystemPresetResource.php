@@ -22,11 +22,21 @@ class AdminSystemPresetResource extends JsonResource
             'status' => $this->status->value,
             'is_configurable' => $this->is_configurable,
             'published_at' => $this->published_at?->toIso8601String(),
-            'prices' => $this->prices->map(static fn ($price): array => [
+            'prices' => $this->prices->map(fn ($price): array => [
+                        'id' => $price->id,
                         'price_list_id' => $price->price_list_id,
                         'price_list_name' => $price->priceList->name,
                         'currency' => $price->priceList->currency,
                         'amount_in_cents' => $price->amount_in_cents,
+                        'compare_at_amount_in_cents' => $price->compare_at_amount_in_cents,
+                        'lock_version' => $price->lock_version,
+                        'update_url' => route(
+                            'admin.systems.prices.update',
+                            [
+                                'system' => $this->resource,
+                                'priceList' => $price->priceList
+                            ]
+                        )
                     ])->values()->all(),
             'components' => $this->components->map(static fn (SystemComponent $component): array => [
                         'id' => $component->id,

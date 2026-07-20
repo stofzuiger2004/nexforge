@@ -73,7 +73,7 @@ export default function ConfiguratorShow({
             `/configure/${configuration.public_id}/components/${group.slot}`,
             {
                 variant_id: option.id,
-                quantity: 1,
+                quantity: group.quantity,
             },
             {
                 preserveScroll: true,

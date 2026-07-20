@@ -21,10 +21,16 @@ enum ComponentSlot: string
     public function allowsMultiple(): bool
     {
         return match ($this) {
+            self::SecondaryStorage => true,
+            default => false,
+        };
+    }
+
+    public function supportsQuantity(): bool{
+        return match ($this){
             self::SecondaryStorage,
             self::CaseFan => true,
-
-            default => false,
+            default=>false
         };
     }
 

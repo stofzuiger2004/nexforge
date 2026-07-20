@@ -40,8 +40,11 @@ export type ConfiguratorOption = {
 
     price: {
         amount_in_cents: number;
+        line_total_in_cents: number;
+
         delta_from_current_in_cents: number;
         delta_from_base_in_cents: number;
+
         currency: string;
     };
 
@@ -68,7 +71,7 @@ export type ConfiguratorGroup = {
     description: string;
 
     sort_order: number;
-
+    quantity: number;
     is_required: boolean;
     is_replaceable: boolean;
     can_edit: boolean;

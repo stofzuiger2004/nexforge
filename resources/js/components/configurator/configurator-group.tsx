@@ -101,6 +101,10 @@ export function ConfiguratorGroupSection({
 
                         <p className="mt-1 truncate text-sm font-normal text-muted-foreground">
                             {group.selected?.name ?? 'No component selected'}
+
+                            {group.selected && group.quantity > 1
+                                ? ` × ${group.quantity}`
+                                : null}
                         </p>
                     </div>
 
