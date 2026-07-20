@@ -26,7 +26,7 @@ class ConfiguratorComponentController extends Controller
     public function __invoke(UpdateConfiguratorComponentRequest $request, Configuration $configuration, ComponentSlot $slot, ConfigurationAccessService $access, ConfigurationEditor $editor, ConfigurationValidator $validator): RedirectResponse
     {
         if (! $configuration->status->isEditable()) {
-            abort(409, 'This configuratio can no longer be changed.');
+            abort(409, 'This configuration can no longer be changed.');
         }
 
         $systemComponent = SystemComponent::query()->where('system_id', $configuration->source_system_id)->where('slot', $slot->value)->orderBy('sort_order')->firstOrFail();
